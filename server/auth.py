@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from . import db
 from .models import *
 import datetime, random
-from sqlalchemy import or_
+from .utils import *
 
 auth = Blueprint('auth', __name__)
 
@@ -19,7 +19,8 @@ def login():
         post_data = request.get_json()
         username = post_data.get('username')
         password = post_data.get('password')
-        user = User.query.filter_by(username=username).first()
+        pw = encrypt_password(str(password))
+        user = User.query.filter_by(username=username).filter_by(password=pw).first()
         # if user exists
         if user:
             response_object["status"] = True
@@ -30,9 +31,9 @@ def login():
 
 
 def register():
-    username = "Jack"
-    password = "0602"
-    email = "jack@gmail.com"
+    username = "admin"
+    password = encrypt_password("123456")
+    email = "admin@gmail.com"
     phone = "12345678901"
     birthday = datetime.date(1998, 7, 31)
     user1 = User.query.filter_by(username=username).first()

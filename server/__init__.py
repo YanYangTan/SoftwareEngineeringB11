@@ -1,13 +1,18 @@
-from flask import Flask
+from flask import Flask, current_app
 from flask_sqlalchemy import SQLAlchemy
+import configparser
 
 db = SQLAlchemy()
 
 
 def create_app():
     app = Flask(__name__)
-    app.config["SECRET_KEY"] = "secret"
-    app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqlconnector://root:guiyan2021@82.156.102.67:8888/guiyan"
+
+    config = configparser.RawConfigParser()
+    config.read('config.cfg')
+    db_dict = dict(config.items('DATABASE'))
+    app.config["SECRET_KEY"] = db_dict["secret_key"]
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_dict["db"]
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     db.init_app(app)
