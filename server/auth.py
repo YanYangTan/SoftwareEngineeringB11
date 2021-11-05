@@ -14,13 +14,14 @@ def login_success():
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    register()
     response_object = {"status": False}
     if request.method == 'POST':
         post_data = request.get_json()
         username = post_data.get('username')
         password = post_data.get('password')
         pw = encrypt_password(str(password))
-        user = User.query.filter_by(username=username).filter_by(password=pw).first()
+        user = User.query.filter_by(username=username, password=pw).first()
         # if user exists
         if user:
             response_object["status"] = True
@@ -31,16 +32,18 @@ def login():
 
 
 def register():
-    username = "admin"
-    password = encrypt_password("123456")
-    email = "admin@gmail.com"
+    username = "Kun"
+    password = encrypt_password("0602")
+    email = "kun@gmail.com"
     phone = "12345678901"
-    birthday = datetime.date(1998, 7, 31)
+    birthday = datetime.date(1999, 6, 2)
     user1 = User.query.filter_by(username=username).first()
     user2 = User.query.filter_by(email=email).first()
-    if user1 or user2:
-        print("Username or email occupied!")
-    else:
+    if user1 and not user2:
+        print("Username occupied!")
+    elif user2 and not user1:
+        print("Email occupied!")
+    elif not user1 and not user2:
         rand_number = 0
         while True:
             rand_number = random.randint(1, 100000)
