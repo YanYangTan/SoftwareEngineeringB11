@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <el-empty description="描述文字"></el-empty>
     <label>{{ msg }}</label>
   </div>
 </template>
