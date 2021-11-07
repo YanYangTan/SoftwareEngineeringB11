@@ -2,3 +2,4 @@ Flask==1.1.2
 Flask-Cors==3.0.10
 mysql-connector-python
 scrypt
+flask_sqlalchemy
