@@ -12,7 +12,7 @@
                 <label>Password</label>
                 <input type="password" required  class="form-control form-control-lg" v-model="userForm.password"/>
             </div>
-
+<!--hihi-->
           <div class="form-group">
                 <label>Email</label>
                 <input type="email" required class="form-control form-control-lg" v-model="userForm.email"/>
