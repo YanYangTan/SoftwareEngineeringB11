@@ -1,7 +1,7 @@
 <template>
     <div class="vue-template">
       <el-card>
-        <form @submit.prevent="temp">
+        <form @submit.prevent="register">
             <h3>Register</h3>
             <div class="form-group">
                 <label>Username</label>
@@ -55,8 +55,9 @@ export default {
         username: this.userForm.username, password: this.userForm.password, email: this.userForm.email, phone: this.userForm.phone, birthday: this.userForm.birthday,
       })
         .then((res) => {
+          console.log(res.data.message);
           if (res.data.status) {
-            this.$router.push('/Home');
+            this.$router.push('/');
           }
         })
         .catch((err) => {
