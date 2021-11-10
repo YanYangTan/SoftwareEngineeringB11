@@ -8,3 +8,12 @@
  flask run
  ```
 执行set FLASK_APP=\_\_init\_\_.py，set FLASK_RUN_HOST=0.0.0.0 和 set FLASK_RUN_PORT=8000，最后再执行flask run启动后端
+
+### models.py
+- 调用数据库的类
+
+### auth.py
+- 与前端关联函数
+
+### utils.py
+- 后端的函数（与前端无关）
