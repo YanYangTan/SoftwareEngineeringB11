@@ -1,5 +1,6 @@
 <template>
     <div class="vue-template">
+<el-card>
         <form @submit.prevent="login">
             <h3>Sign In</h3>
 
@@ -15,6 +16,12 @@
 
             <button type="login" class="btn btn-dark btn-lg btn-block">Sign In</button>
         </form>
+      <form @submit.prevent="register">
+        <div class="form-group">
+          <button type="login" class="btn btn-black btn-lg btn-block">Register</button>
+        </div>
+      </form>
+  </el-card>
     </div>
 </template>
 
@@ -34,6 +41,7 @@ export default {
     login() {
       axios.post('/api/login', { username: this.userForm.username, password: this.userForm.password })
         .then((res) => {
+          console.log(res.data.message);
           if (res.data.status) {
             this.$router.push('/success');
           }
@@ -41,6 +49,9 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+    register() {
+      this.$router.push('/register');
     },
   },
 };
