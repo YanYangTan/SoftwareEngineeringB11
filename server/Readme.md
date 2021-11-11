@@ -2,7 +2,6 @@
 2. (Linux) 运行./run.sh启动后端（可能需要先执行chmod u+x run.sh)
 3. (Windows) 依次执行
  ```
- venv\Scripts\activate
  set FLASK_APP=__init__.py
  set FLASK_RUN_HOST=0.0.0.0
  set FLASK_RUN_PORT=8000
