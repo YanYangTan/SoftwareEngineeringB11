@@ -64,12 +64,10 @@ def register():
         print("Username occupied!")
         response_object["status"] = False
         response_object["message"] = "Username occupied!"
-        return jsonify(response_object)
     elif user2 and not user1:
         print("Email occupied!")
         response_object["status"] = False
         response_object["message"] = "Email occupied!"
-        return jsonify(response_object)
     elif not user1 and not user2:
         rand_number = 0
         while True:
@@ -78,9 +76,14 @@ def register():
             if not res:
                 break
         new_user = User(idusers=rand_number, username=username, password=pw, email=email, phone=phone, birthday=birthday)
-        db.session.add(new_user)
-        db.session.commit()
-        print("Registered!")
-        response_object["message"] = "Registered!"
-        response_object["userid"] = new_user.idusers
-        return jsonify(response_object)
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            print("Registered!")
+            response_object["message"] = "Registered!"
+            response_object["userid"] = new_user.idusers
+        except Exception as e:
+            print(e)
+            response_object["status"] = False
+            response_object["message"] = "Registered failed"
+    return jsonify(response_object)
