@@ -26,6 +26,7 @@ def login():
         if user:
             response_object["status"] = True
             response_object["message"] = "Login success!"
+            response_object["userid"] = user.idusers
         else:
             response_object["message"] = "Incorrect username/password!"
     return jsonify(response_object)
@@ -81,4 +82,5 @@ def register():
         db.session.commit()
         print("Registered!")
         response_object["message"] = "Registered!"
+        response_object["userid"] = new_user.idusers
         return jsonify(response_object)

@@ -23,4 +23,7 @@ def create_app():
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
+    from .group import group as group_blueprint
+    app.register_blueprint(group_blueprint)
+
     return app
