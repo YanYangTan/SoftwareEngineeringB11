@@ -8,7 +8,9 @@ group = Blueprint('group', __name__)
 
 @group.route('/create-group', methods=['GET', 'POST'])
 def create_group():
-    group_name = "Test Group 4"
+    if request.method == "POST":
+        post_data = request.get_json()
+        group_name = post_data.get('group_name')
     response_object = {}
     rand_number = 0
     while True:
@@ -37,7 +39,9 @@ def create_group():
 
 @group.route('/generate-key', methods=['GET', 'POST'])
 def generate_key():
-    group_id = 0
+    if request.method == "POST":
+        post_data = request.get_json()
+        group_id = post_data.get('group_id')
     group = Group.query.filter_by(idgroups=group_id).first()
     response_object = {}
     response_object["status"] = False
@@ -59,9 +63,11 @@ def generate_key():
 
 @group.route('/join-group', methods=['GET', 'POST'])
 def join_group():
-    user_id = 74893
-    group_id = 31530
-    invite_key = str(655294)
+    if request.get_method == "POST":
+        post_data = request.get_json()
+        user_id = post_data.get('user_id')
+        group_id = post_data.get('group_id')
+        invite_key = str(post_data.get('invite_key'))
     response_object = {}
     response_object["status"] = False
     user = User.query.filter_by(idusers=user_id).first()
@@ -100,7 +106,9 @@ def join_group():
 
 @group.route('/query-group', methods=['GET', 'POST'])
 def query_group():
-    user_id = 74893
+    if request.get_method == "POST":
+        post_data = request.get_json()
+        user_id = post_data.get('user_id')
     response_object = {}
     response_object["status"] = False
     user = User.query.filter_by(idusers=user_id).first()
@@ -125,7 +133,9 @@ def query_group():
 
 @group.route('/query-user', methods=['GET', 'POST'])
 def query_user():
-    group_id = 0
+    if request.get_method == "POST":
+        post_data = request.get_json()
+        group_id = post_data.get('group_id')
     response_object = {}
     response_object["status"] = False
     group = Group.query.filter_by(idgroups=group_id).first()
