@@ -1,6 +1,6 @@
 <template>
     <div class="vue-template">
-      <el-card>
+      <el-card class="carrd">
         <form @submit.prevent="register">
             <h3>Register</h3>
             <div class="form-group">
