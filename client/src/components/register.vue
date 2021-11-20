@@ -5,12 +5,12 @@
             <h3>Register</h3>
             <div class="form-group">
                 <label>Username</label>
-                <input type="username" required class="form-control form-control-lg" v-model="userForm.username"/>
+                <input type="username" minlength="6" maxlength="10" required class="form-control form-control-lg" v-model="userForm.username"/>
             </div>
 
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" required  class="form-control form-control-lg" v-model="userForm.password"/>
+                <input type="password" required minlength="6" maxlength="18" class="form-control form-control-lg" v-model="userForm.password"/>
             </div>
 <!--hihi-->
           <div class="form-group">
@@ -20,12 +20,13 @@
 
           <div class="form-group">
                 <label>Phone</label>
-                <input type="number" required class="form-control form-control-lg" v-model="userForm.phone"/>
+                <input type="number" min="10000000000" max="99999999999" required class="form-control form-control-lg" v-model="userForm.phone"/>
             </div>
 
           <div class="form-group">
                 <label>Birthday</label>
-                <input type="date" required class="form-control form-control-lg" v-model="userForm.birthday"/>
+                <input type="date" id="birthdayID" required class="form-control form-control-lg" v-model="userForm.birthday"/>
+                <script type="application/javascript">birthdayID.max = new Date().toISOString().split("T")[0];</script>
             </div>
 
             <button type="submit" class="btn btn-dark btn-lg btn-block">register</button>
@@ -51,6 +52,8 @@ export default {
   },
   methods: {
     register() {
+      const today = new Date().toISOString().substr(0, 10);
+      this.querySelector('.userform.Birthday').value = today;
       axios.post('/api/register', {
         username: this.userForm.username, password: this.userForm.password, email: this.userForm.email, phone: this.userForm.phone, birthday: this.userForm.birthday,
       })
