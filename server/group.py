@@ -63,7 +63,7 @@ def generate_key():
 
 @group.route('/join-group', methods=['GET', 'POST'])
 def join_group():
-    if request.get_method == "POST":
+    if request.method == "POST":
         post_data = request.get_json()
         user_id = post_data.get('user_id')
         group_id = post_data.get('group_id')
@@ -106,7 +106,7 @@ def join_group():
 
 @group.route('/query-group', methods=['GET', 'POST'])
 def query_group():
-    if request.get_method == "POST":
+    if request.method == "POST":
         post_data = request.get_json()
         user_id = post_data.get('user_id')
     response_object = {}
@@ -133,7 +133,7 @@ def query_group():
 
 @group.route('/query-user', methods=['GET', 'POST'])
 def query_user():
-    if request.get_method == "POST":
+    if request.method == "POST":
         post_data = request.get_json()
         group_id = post_data.get('group_id')
     response_object = {}
