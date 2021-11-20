@@ -1,5 +1,7 @@
 <template>
     <div class="vue-template">
+      <div class="bg">
+      </div>
       <div class="sidebar">
         <div class="side-form">
           <form @submit.prevent="login">
