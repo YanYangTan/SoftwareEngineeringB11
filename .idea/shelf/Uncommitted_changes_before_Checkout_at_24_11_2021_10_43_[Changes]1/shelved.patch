@@ -1,0 +1,452 @@
+Index: client/src/components/success.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><template>\r\n  <div class=\"container\">\r\n    <label>{{ msg }}</label>\r\n  </div>\r\n</template>\r\n\r\n<script>\r\nimport axios from 'axios';\r\n\r\nexport default {\r\n  name: 'Success',\r\n  data() {\r\n    return {\r\n      msg: '',\r\n    };\r\n  },\r\n  methods: {\r\n    getMessage() {\r\n      const path = '/api/success';\r\n      axios.get(path)\r\n        .then((res) => {\r\n          this.msg = res.data;\r\n        })\r\n        .catch((error) => {\r\n          console.error(error);\r\n        });\r\n    },\r\n  },\r\n  created() {\r\n    this.getMessage();\r\n  },\r\n};\r\n</script>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/client/src/components/success.vue b/client/src/components/success.vue
+--- a/client/src/components/success.vue	
++++ b/client/src/components/success.vue	
+@@ -1,17 +1,22 @@
+ <template>
+   <div class="container">
+     <label>{{ msg }}</label>
++    <div id='account-info'>{{username}}</div>
+   </div>
+ </template>
+ 
+ <script>
+ import axios from 'axios';
++// import Home from './Home.vue';
+ 
+ export default {
+   name: 'Success',
+   data() {
+     return {
+       msg: '',
++      user: {
++        username: '',
++      },
+     };
+   },
+   methods: {
+Index: src/components/HelloWorld.vue
+===================================================================
+diff --git a/src/components/HelloWorld.vue b/src/components/HelloWorld.vue
+deleted file mode 100644
+--- a/src/components/HelloWorld.vue	
++++ /dev/null	
+@@ -1,59 +0,0 @@
+-<template>
+-  <div class="hello">
+-    <h1>{{ msg }}</h1>
+-    <p>
+-      For a guide and recipes on how to configure / customize this project,<br>
+-      check out the
+-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
+-    </p>
+-    <h3>Installed CLI Plugins</h3>
+-    <ul>
+-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
+-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-router" target="_blank" rel="noopener">router</a></li>
+-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
+-    </ul>
+-    <h3>Essential Links</h3>
+-    <ul>
+-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
+-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
+-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
+-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
+-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
+-    </ul>
+-    <h3>Ecosystem</h3>
+-    <ul>
+-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
+-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
+-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
+-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
+-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
+-    </ul>
+-  </div>
+-</template>
+-
+-<script>
+-export default {
+-  name: 'HelloWorld',
+-  props: {
+-    msg: String,
+-  },
+-};
+-</script>
+-
+-<!-- Add "scoped" attribute to limit CSS to this component only -->
+-<style scoped>
+-h3 {
+-  margin: 40px 0 0;
+-}
+-ul {
+-  list-style-type: none;
+-  padding: 0;
+-}
+-li {
+-  display: inline-block;
+-  margin: 0 10px;
+-}
+-a {
+-  color: #42b983;
+-}
+-</style>
+Index: src/components/success.vue
+===================================================================
+diff --git a/src/components/success.vue b/src/components/success.vue
+deleted file mode 100644
+--- a/src/components/success.vue	
++++ /dev/null	
+@@ -1,33 +0,0 @@
+-<template>
+-  <div class="container">
+-    <label>{{ msg }}</label>
+-  </div>
+-</template>
+-
+-<script>
+-import axios from 'axios';
+-
+-export default {
+-  name: 'Success',
+-  data() {
+-    return {
+-      msg: '',
+-    };
+-  },
+-  methods: {
+-    getMessage() {
+-      const path = '/api/success';
+-      axios.get(path)
+-        .then((res) => {
+-          this.msg = res.data;
+-        })
+-        .catch((error) => {
+-          console.error(error);
+-        });
+-    },
+-  },
+-  created() {
+-    this.getMessage();
+-  },
+-};
+-</script>
+Index: src/components/register.vue
+===================================================================
+diff --git a/src/components/register.vue b/src/components/register.vue
+deleted file mode 100644
+--- a/src/components/register.vue	
++++ /dev/null	
+@@ -1,97 +0,0 @@
+-<template>
+-  <div class="container">
+-    <el-card>
+-    <el-form :model="userForm" :rules="rules" ref="userForm" label-width="120px" class="demo-userForm"><img class="logo" src="../assets/logo.jpg" alt=logo/ width=260 length=260/>
+-      <el-form-item label="Username" prop="username">
+-        <el-input v-model="userForm.username"></el-input>
+-      </el-form-item>
+-    <el-form-item label="Password" prop="password">
+-    <el-input v-model="userForm.password" show-pasword></el-input>
+-  </el-form-item>
+-          <el-form-item label="Email" prop="email">
+-    <el-input v-model="userForm.email"></el-input>
+-  </el-form-item>
+-      <el-form-item label="Phone" prop="phone">
+-    <el-input v-model="userForm.phone"></el-input>
+-  </el-form-item>
+-<!--sadcommenthere-->
+-  <el-form-item label="Birthdate" required>
+-      <el-form-item prop="birthdate">
+-        <el-date-picker default-value="2000-01-01"
+-                  editable="false"
+-                  type="date"
+-                  contenteditable="false"
+-                  v-model="userForm.birthday" style="width: 100%;"></el-date-picker>
+-      </el-form-item>
+-  </el-form-item>
+-  <el-form-item>
+-    <el-button type="primary" @click="register">Register</el-button>
+-    <el-button @click="home">Home</el-button>
+-  </el-form-item>
+-</el-form></el-card>
+-  </div>
+-</template>
+-
+-<script>
+-import axios from 'axios';
+-
+-export default {
+-  data() {
+-    return {
+-      userForm: {
+-        username: '',
+-        password: '',
+-        email: '',
+-        phone: '',
+-        birthday: '',
+-      },
+-      rules: {
+-        username: [
+-          { required: true, message: 'Please input Username', trigger: 'blur' },
+-          {
+-            min: 6, max: 16, message: 'Length should be 6 to 16', trigger: 'blur',
+-          },
+-        ],
+-        password: [
+-          { required: true, message: 'Please input Password', trigger: 'blur' },
+-          {
+-            min: 6, max: 32, message: 'Length should be 6 to 32', trigger: 'blur',
+-          },
+-        ],
+-        email: [
+-          { required: true, message: 'Please input Email', trigger: 'blur' },
+-        ],
+-        phone: [
+-          { required: true, message: 'Please input Phone', trigger: 'blur' },
+-          {
+-            min: 6, max: 16, message: 'Length should be 6 to 16', trigger: 'blur',
+-          },
+-        ],
+-      },
+-    };
+-  },
+-  methods: {
+-    register() {
+-      axios.post('/api/register', {
+-        username: this.userForm.username,
+-        password: this.userForm.password,
+-        email: this.userForm.email,
+-        phone: this.userForm.phone,
+-        birthday: this.userForm.birthday,
+-      });
+-      this.$router.push('/');
+-      // .then((res) => {
+-      //   if (res.data.status) {
+-      //     this.$router.push('/');
+-      //   }
+-      // })
+-      // .catch((err) => {
+-      //   console.log(err);
+-      // });
+-    },
+-    home() {
+-      this.$router.push('/');
+-    },
+-  },
+-};
+-</script>
+Index: src/assets/css/main.css
+===================================================================
+diff --git a/src/assets/css/main.css b/src/assets/css/main.css
+deleted file mode 100644
+--- a/src/assets/css/main.css	
++++ /dev/null	
+@@ -1,59 +0,0 @@
+-* {
+-  box-sizing: border-box;
+-}
+-
+-body {
+-  background: #e3e8f9 !important;
+-  min-height: 100vh;
+-  display: flex;
+-  font-weight: 400;
+-}
+-
+-body,
+-html,
+-.App,
+-.vue-template,
+-.vertical-center {
+-  width: 100%;
+-  height: 100%;
+-  margin-left: 20%;
+-  margin-top: 5%;
+-}
+-
+-.navbar-light {
+-  background-color: #ffffff;
+-  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+-}
+-
+-.vertical-center {
+-  display: flex;
+-  text-align: left;
+-  justify-content: center;
+-  flex-direction: column;
+-}
+-
+-.inner-block {
+-  width: 450px;
+-  margin: auto;
+-  background: #ffffff;
+-  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+-  padding: 40px 55px 45px 55px;
+-  border-radius: 15px;
+-  transition: all .3s;
+-}
+-
+-.vertical-center .form-control:focus {
+-  border-color: #2554FF;
+-  box-shadow: none;
+-}
+-
+-.vertical-center h3 {
+-  text-align: center;
+-  margin: 0;
+-  line-height: 1;
+-  padding-bottom: 20px;
+-}
+-
+-label {
+-  font-weight: 500;
+-}
+\ No newline at end of file
+Index: src/components/Home.vue
+===================================================================
+diff --git a/src/components/Home.vue b/src/components/Home.vue
+deleted file mode 100644
+--- a/src/components/Home.vue	
++++ /dev/null	
+@@ -1,55 +0,0 @@
+-<template>
+-    <div class="vue-template">
+-        <form @submit.prevent="login">
+-            <h3>Sign In</h3>
+-
+-            <div class="form-group">
+-                <label>Username</label>
+-                <input type="username" class="form-control form-control-lg" v-model="userForm.username"/>
+-            </div>
+-
+-            <div class="form-group">
+-                <label>Password</label>
+-                <input type="password" class="form-control form-control-lg" v-model="userForm.password"/>
+-            </div>
+-
+-            <button type="login" class="btn btn-dark btn-lg btn-block">Sign In</button>
+-        </form>
+-      <form @submit.prevent="register">
+-        <div class="form-group">
+-          <button type="login" class="btn btn-black btn-lg btn-block">Register</button>
+-        </div>
+-      </form>
+-    </div>
+-</template>
+-
+-<script>
+-import axios from 'axios';
+-
+-export default {
+-  data() {
+-    return {
+-      userForm: {
+-        username: '',
+-        password: '',
+-      },
+-    };
+-  },
+-  methods: {
+-    login() {
+-      axios.post('/api/login', { username: this.userForm.username, password: this.userForm.password })
+-        .then((res) => {
+-          if (res.data.status) {
+-            this.$router.push('/success');
+-          }
+-        })
+-        .catch((err) => {
+-          console.log(err);
+-        });
+-    },
+-    register() {
+-      this.$router.push('/register');
+-    },
+-  },
+-};
+-</script>
+Index: src/router/index.js
+===================================================================
+diff --git a/src/router/index.js b/src/router/index.js
+deleted file mode 100644
+--- a/src/router/index.js	
++++ /dev/null	
+@@ -1,29 +0,0 @@
+-import Vue from 'vue';
+-import Router from 'vue-router';
+-import Success from '../components/success.vue';
+-import Home from '../components/Home.vue';
+-import Register from '../components/register.vue';
+-
+-Vue.use(Router);
+-
+-export default new Router({
+-  mode: 'history',
+-  base: process.env.BASE_URL,
+-  routes: [
+-    {
+-      path: '/',
+-      name: 'Home',
+-      component: Home,
+-    },
+-    {
+-      path: '/success',
+-      name: 'Success',
+-      component: Success,
+-    },
+-    {
+-      path: '/register',
+-      name: 'Register',
+-      component: Register,
+-    },
+-  ],
+-});
+Index: src/App.vue
+===================================================================
+diff --git a/src/App.vue b/src/App.vue
+deleted file mode 100644
+--- a/src/App.vue	
++++ /dev/null	
+@@ -1,11 +0,0 @@
+-<template>
+-  <div id="app">
+-    <router-view/>
+-  </div>
+-</template>
+-
+-<style>
+-#app {
+-  margin-top: 60px
+-}
+-</style>
+Index: src/main.js
+===================================================================
+diff --git a/src/main.js b/src/main.js
+deleted file mode 100644
+--- a/src/main.js	
++++ /dev/null	
+@@ -1,19 +0,0 @@
+-import BootstrapVue from 'bootstrap-vue';
+-import Vue from 'vue';
+-// eslint-disable-next-line import/no-extraneous-dependencies
+-import ElementUI from 'element-ui';
+-// eslint-disable-next-line import/no-extraneous-dependencies
+-import 'element-ui/lib/theme-chalk/index.css';
+-import App from './App.vue';
+-import router from './router';
+-import 'bootstrap/dist/css/bootstrap.css';
+-import '@/assets/css/main.css';
+-
+-Vue.use(BootstrapVue);
+-Vue.use(ElementUI);
+-Vue.config.productionTip = false;
+-
+-new Vue({
+-  router,
+-  render: (h) => h(App),
+-}).$mount('#app');
