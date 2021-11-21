@@ -1,5 +1,6 @@
 <template>
     <div class="vue-template">
+       <el-button type="text" @click="open">点击打开 Message Box</el-button>
       <el-card>
         <form @submit.prevent="register">
             <h3>Register</h3>
@@ -38,6 +39,7 @@
 import axios from 'axios';
 
 export default {
+  name: 'RegisterPage',
   data() {
     return {
       userForm: {
@@ -50,6 +52,11 @@ export default {
     };
   },
   methods: {
+    open() {
+      this.$alert('这是一段内容', '标题名称', {
+        confirmButtonText: '确定',
+      });
+    },
     register() {
       axios.post('/api/register', {
         username: this.userForm.username, password: this.userForm.password, email: this.userForm.email, phone: this.userForm.phone, birthday: this.userForm.birthday,
@@ -66,6 +73,8 @@ export default {
     },
     temp() {
       this.$router.push('/');
+    },
+    created() {
     },
   },
 };
