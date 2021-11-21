@@ -52,8 +52,6 @@ export default {
   },
   methods: {
     register() {
-      const today = new Date().toISOString().substr(0, 10);
-      this.querySelector('.userform.Birthday').value = today;
       axios.post('/api/register', {
         username: this.userForm.username, password: this.userForm.password, email: this.userForm.email, phone: this.userForm.phone, birthday: this.userForm.birthday,
       })
