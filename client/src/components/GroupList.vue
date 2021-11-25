@@ -1,32 +1,16 @@
 <template>
   <div>
-    <label>{{this.$route.params.userid}}</label>
+    <el-button class="el-icon-circle-plus">创建群组</el-button>
   </div>
 </template>
 
 <script>
-// import MainPage from './MainPage.vue';
 
 export default {
-  name: 'GroupList',
-  // components: {
-  //   // eslint-disable-next-line vue/no-unused-components
-  //   MainPage,
-  // },
-  data() {
-    return {
-      // userid: '',
-      msg: '',
-    };
-  },
-  methods: {
-  },
-  created() {
-    // console.log(userid);
-  },
+
+  name: 'app',
+
+  methods:
+    {},
 };
 </script>
-
-<style scoped>
-
-</style>
