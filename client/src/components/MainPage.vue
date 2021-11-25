@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="main-page" style="height: 780px;">
 <el-container style="height: 100%; border: 1px solid #eee"> <!-- fix here -->
   <el-aside width="200x" style="background-color: rgb(238, 241, 246)">
     <el-menu :default-openeds="['1', '3']">
@@ -26,7 +26,7 @@
 
     <el-main>
 <!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
-      <iframe src="/Calender" v-if="this.$data.index==='Calender'"
+      <iframe src="/Calender" v-if="this.$data.index==='Calender'" frameborder=”no”
               style="height: 100%;width: 105%;position: relative;margin-top: -20px;margin-left: -20px;"></iframe>
       <GroupList v-if="this.$data.index==='GroupList'"></GroupList>
     </el-main>
@@ -93,3 +93,8 @@ export default {
   },
 };
 </script>
+<style>
+#main-page{
+  background: #fff6f9;
+}
+</style>
