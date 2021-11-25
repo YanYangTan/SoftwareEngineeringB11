@@ -27,13 +27,14 @@
     </el-header>
 
     <el-main>
-        <label>{{this.$route.params.userid}}</label>
           <GroupList
 
           ></GroupList>
     </el-main>
   </el-container>
 </el-container>
+
+<!--    <GroupList></GroupList>-->
 </div>
 </template>
 
@@ -43,7 +44,7 @@ import RegisterPage from './register.vue';
 import GroupList from './GroupList.vue';
 
 export default {
-  name: 'Success',
+  name: 'MainPage',
   // props: {
   //   // eslint-disable-next-line vue/require-prop-type-constructor
   //   userid: {
