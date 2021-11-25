@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span>GroupList</span>
+    <el-button class="el-icon-circle-plus">创建群组</el-button>
   </div>
 </template>
 
