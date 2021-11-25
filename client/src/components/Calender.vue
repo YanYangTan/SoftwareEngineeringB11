@@ -149,7 +149,7 @@ export default {
 body, html, #app, #dayspan {
   font-family: Roboto, sans-serif !important;
   width: 100%;
-  height: 100%;
+  height: 50%;
 }
 
 .v-btn--flat,
