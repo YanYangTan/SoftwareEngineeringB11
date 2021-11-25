@@ -49,8 +49,6 @@ export default {
         .then((res) => {
           if (res.data.status) {
             this.loginpath += String(res.data.userid);
-            this.loginpath += '/';
-            this.loginpath += String(this.$data.userForm.username);
             this.$router.push(this.loginpath);
           }
         })
