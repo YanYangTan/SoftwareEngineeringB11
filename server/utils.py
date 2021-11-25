@@ -2,6 +2,7 @@ import scrypt, base64, configparser
 import re
 import datetime
 
+
 def encrypt_password(pw):
     config = configparser.RawConfigParser()
     config.read('config.cfg')
@@ -9,6 +10,7 @@ def encrypt_password(pw):
     salt = db_dict["salt"]
     key = scrypt.hash(pw, salt, 32768, 8, 1, 32)
     return base64.b64encode(key).decode("ascii")
+
 
 def checkregister(content):
     # username
@@ -39,3 +41,10 @@ def checkregister(content):
         return "birthday", False
 
     return "ok", True
+
+
+def check_groupname(name):
+    flag = True
+    if len(name) == 0 or len(name) > 45:
+        flag = False
+    return flag

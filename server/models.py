@@ -27,3 +27,4 @@ class RelationGroupUser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.idgroups'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.idusers'))
+    admin = db.Column(db.Boolean, default=False)
