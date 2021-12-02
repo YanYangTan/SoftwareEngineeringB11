@@ -87,3 +87,21 @@ def register():
             response_object["status"] = False
             response_object["message"] = "Registered failed"
     return jsonify(response_object)
+
+
+@auth.route('/query-username', methods=['GET', 'POST'])
+def query_username():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        user_id = post_data.get('user_id')
+    response_object = {}
+    response_object['status'] = False
+
+    user = User.query.filter_by(idusers=user_id).first()
+    if not user:
+        response_object['message'] = "Error: User does not exist!"
+    else:
+        response_object['status'] = True
+        response_object['message'] = "Query success!"
+        response_object['username'] = query_username_by_id(user_id)
+    return jsonify(response_object)

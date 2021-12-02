@@ -1,6 +1,7 @@
 import scrypt, base64, configparser
 import re
 import datetime
+from .models import *
 
 
 def encrypt_password(pw):
@@ -48,3 +49,8 @@ def check_groupname(name):
     if len(name) == 0 or len(name) > 45:
         flag = False
     return flag
+
+
+def query_username_by_id(user_id):
+    user = User.query.filter_by(idusers=user_id).first()
+    return user.username

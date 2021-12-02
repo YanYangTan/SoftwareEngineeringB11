@@ -26,4 +26,7 @@ def create_app():
     from .group import group as group_blueprint
     app.register_blueprint(group_blueprint)
 
+    from .gathering import gathering as gathering_blueprint
+    app.register_blueprint(gathering_blueprint)
+
     return app
