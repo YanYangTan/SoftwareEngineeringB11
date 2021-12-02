@@ -27,7 +27,12 @@ def create_group():
         group = Group()
         group.idgroups = rand_number
         group.name = group_name
-        tmp = random.randint(10000, 1000000)
+        tmp = 0
+        while True:
+            tmp = random.randint(10000, 1000000)
+            res = Group.query.filter_by(invite_key=tmp).first()
+            if not res:
+                break
         group.invite_key = tmp
 
         rel = RelationGroupUser()
@@ -64,7 +69,12 @@ def generate_key():
     response_object = {}
     response_object["status"] = False
     if group:
-        tmp = random.randint(10000, 1000000)
+        tmp = 0
+        while True:
+            tmp = random.randint(10000, 1000000)
+            res = Group.query.filter_by(invite_key=tmp).first()
+            if not res:
+                break
         group.invite_key = tmp
         try:
             db.session.commit()
@@ -84,22 +94,19 @@ def join_group():
     if request.method == "POST":
         post_data = request.get_json()
         user_id = post_data.get('user_id')
-        group_id = post_data.get('group_id')
         invite_key = str(post_data.get('invite_key'))
     response_object = {}
     response_object["status"] = False
     user = User.query.filter_by(idusers=user_id).first()
-    group = Group.query.filter_by(idgroups=group_id).first()
-    rel = RelationGroupUser.query.filter_by(group_id=group_id, user_id=user_id).first()
-    if rel:
-        response_object["message"] = "Error: User already in group"
-    elif not user:
+    group = Group.query.filter_by(invite_key=invite_key).first()
+    if not user:
         response_object["message"] = "Error: User does not exist"
     elif not group:
         response_object["message"] = "Error: Group does not exist"
     else:
-        if group.invite_key != invite_key:
-            response_object["message"] = "Error: Invalid invite key!"
+        rel = RelationGroupUser.query.filter_by(group_id=group.idgroups, user_id=user_id).first()
+        if rel:
+            response_object["message"] = "Error: User already in group"
         else:
             rel_group = RelationGroupUser()
             rand_number = 0
@@ -109,7 +116,7 @@ def join_group():
                 if not res:
                     break
             rel_group.id = rand_number
-            rel_group.group_id = group_id
+            rel_group.group_id = group.idgroups
             rel_group.user_id = user_id
             db.session.add(rel_group)
             try:
