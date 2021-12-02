@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Success from '../components/success.vue';
 import Home from '../components/Home.vue';
 import Register from '../components/register.vue';
+import MainPage from '../components/MainPage.vue';
 
 Vue.use(Router);
 
@@ -24,6 +25,11 @@ export default new Router({
       path: '/register',
       name: 'Register',
       component: Register,
+    },
+    {
+      path: '/main',
+      name: "MainPage",
+      component: MainPage,
     },
   ],
 });
