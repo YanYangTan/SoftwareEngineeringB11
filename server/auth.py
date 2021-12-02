@@ -1,7 +1,7 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, make_response
 from . import db
 from .models import *
-import datetime, random
+import datetime, random, jwt, configparser
 from .utils import *
 
 auth = Blueprint('auth', __name__)
@@ -10,6 +10,28 @@ auth = Blueprint('auth', __name__)
 @auth.route('/success', methods=['GET'])
 def login_success():
     return jsonify('Success!')
+
+
+@auth.route('/login2', methods=['GET', 'POST'])
+def login2():
+    auth = request.authorization
+
+    if not auth or not auth.username or not auth.password:
+        return make_response('Could not verify', 401, {'WWW.Authentication': 'Basic realm: "login required"'})
+
+    user = User.query.filter_by(username=auth.username).first()
+
+    if user.password == encrypt_password(auth.password):
+        config = configparser.RawConfigParser()
+        config.read('config.cfg')
+        db_dict = dict(config.items('DATABASE'))
+        secret = db_dict['secret_key']
+
+        token = jwt.encode({'idusers': user.idusers, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
+                           secret, algorithm="HS256")
+        return jsonify({'token': token})
+
+    return make_response('Could not verify',  401, {'WWW.Authentication': 'Basic realm: "login required"'})
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -89,8 +111,8 @@ def register():
     return jsonify(response_object)
 
 
-@auth.route('/query-username', methods=['GET', 'POST'])
-def query_username():
+@auth.route('/query-userinfo', methods=['GET', 'POST'])
+def query_userinfo():
     if request.method == 'POST':
         post_data = request.get_json()
         user_id = post_data.get('user_id')
@@ -104,4 +126,36 @@ def query_username():
         response_object['status'] = True
         response_object['message'] = "Query success!"
         response_object['username'] = query_username_by_id(user_id)
+        response_object['email'] = user.email
+        response_object['phone'] = user.phone
+        response_object['birthday'] = user.birthday
     return jsonify(response_object)
+
+
+@auth.route('/token', methods=['GET', 'POST'])
+def token():
+    response_object = {}
+    response_object['status'] = False
+    token = None
+    if 'x-access-tokens' in request.headers:
+        token = request.headers['x-access-tokens']
+
+    if not token:
+        response_object['message'] = "Token missing!"
+
+    config = configparser.RawConfigParser()
+    config.read('config.cfg')
+    db_dict = dict(config.items('DATABASE'))
+    secret = db_dict['secret_key']
+
+    try:
+        data = jwt.decode(token, secret, algorithms=["HS256"])
+        current_user = User.query.filter_by(idusers=data['idusers']).first()
+        response_object['status'] = True
+        response_object['message'] = "Token verify success!"
+        response_object['user_id'] = data['idusers']
+    except Exception as e:
+        print(e)
+        response_object['message'] = "Token invalid!"
+    return jsonify(response_object)
+
