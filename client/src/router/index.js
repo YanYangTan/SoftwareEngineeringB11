@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Success from '../components/MainPage.vue';
-import Login from '../components/Login.vue';
+import Success from '../components/success.vue';
+import Home from '../components/Home.vue';
 import Register from '../components/register.vue';
 
 Vue.use(Router);
@@ -12,11 +12,11 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Login',
-      component: Login,
+      name: 'Home',
+      component: Home,
     },
     {
-      path: '/success/:userid',
+      path: '/success',
       name: 'Success',
       component: Success,
     },
@@ -25,6 +25,5 @@ export default new Router({
       name: 'Register',
       component: Register,
     },
-
   ],
 });
