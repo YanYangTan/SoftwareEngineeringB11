@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-<el-container style="height: 100%; border: 10px solid #eee"> <!-- fix here -->
+  <div id="main-page" style="height: 780px;">
+<el-container style="height: 100%; border: 1px solid #eee"> <!-- fix here -->
   <el-aside width="200x" style="background-color: rgb(238, 241, 246)">
     <el-menu :default-openeds="['1', '3']">
       <el-submenu index="2">
@@ -31,12 +31,17 @@
               style="height: 100%;width: 100%;position: relative;margin-top: -20px;margin-left: -20px;"></iframe>
       <GroupList v-if="this.$data.index==='GroupList'"></GroupList>
       <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
+      <iframe src="/Calender" v-if="this.$data.index==='Calender'" frameborder=”no”
+              style="height: 100%;width: 105%;position: relative;margin-top: -20px;margin-left: -20px;"></iframe>
+      <GroupList @groupPage='groupInfo' v-if="this.$data.index==='GroupList' "></GroupList>
+      <GroupPage v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
     </el-main>
   </el-container>
 </el-container>
 
 <!--    <GroupList></GroupList>-->
 </div>
+
 </template>
 
 <script>
@@ -44,6 +49,7 @@ import axios from 'axios';
 import RegisterPage from './register.vue';
 import GroupList from './GroupList.vue';
 import Calender from './Calender.vue';
+import GroupPage from './GroupPage.vue';
 import Roulette from './roulette.vue';
 
 export default {
@@ -62,6 +68,7 @@ export default {
     Calender,
     // eslint-disable-next-line vue/no-unused-components
     GroupList,
+    GroupPage,
     // eslint-disable-next-line vue/no-unused-components
     Roulette,
   },
@@ -69,10 +76,16 @@ export default {
     return {
       // userid: '',
       msg: '',
-      index: 'Calender',
+      index: 'GroupList',
+      currentgroup: {},
     };
   },
   methods: {
+    groupInfo(ev) {
+      this.currentgroup = ev;
+      this.$data.index = 'GroupPage';
+      console.log(this.currentgroup);
+    },
     getMessage() {
       const path = '/api/success';
       axios.get(path)
@@ -101,3 +114,8 @@ export default {
   },
 };
 </script>
+<style>
+#main-page{
+  background: #fff6f9;
+}
+</style>

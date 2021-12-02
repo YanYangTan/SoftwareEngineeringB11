@@ -2,7 +2,6 @@
   <div>
     <el-card>
       <el-header>
-        <roller text="lol"></roller>
         <p>{{chosenName}}</p>
       </el-header>
         <el-input placeholder="Please input" v-model="list"></el-input>
@@ -25,6 +24,7 @@ export default {
   methods: {
     locationPicker() {
       this.locationNames = this.list.split(',');
+      this.locationNames = this.list.split('，');
       const chosenNumber = Math.floor(Math.random() * this.locationNames.length);
       this.chosenName = this.locationNames[chosenNumber];
     },
