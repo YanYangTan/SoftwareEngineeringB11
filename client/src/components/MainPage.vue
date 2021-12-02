@@ -1,22 +1,23 @@
 <template>
-  <div id="app">
-<el-container style="height: 800px; border: 1px solid #eee">
-  <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+  <div id="main-page" style="height: 780px;">
+<el-container style="height: 100%; border: 1px solid #eee"> <!-- fix here -->
+  <el-aside width="200x" style="background-color: rgb(238, 241, 246)">
     <el-menu :default-openeds="['1', '3']">
       <el-submenu index="2">
-        <template slot="title"><i class="el-icon-user"></i>用户</template>
+        <template slot="title"><i class="el-icon-user"></i>{{this.$route.params.username}}</template>
         <el-menu-item-group>
           <el-menu-item index="2-1">个人信息</el-menu-item>
-          <el-menu-item index="2-2"><el-button type="text" style="color: crimson" @click="SignIn">退出登录</el-button></el-menu-item>
+          <el-menu-item index="2-2" @click="SignIn"><el-button type="text" style="color: crimson" @click="SignIn">退出登录</el-button></el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <el-submenu index="1">
-        <template slot="title"><i class="el-icon-menu"></i>导航</template>
+        <template slot="title"><i class="el-icon-menu"></i>归雁</template>
         <el-menu-item-group>
-          <el-menu-item index="1-1"><el-button type="text" style="color: black" @click="TurnToGroupList">群组管理</el-button></el-menu-item>
-          <el-menu-item index="1-2">动态管理</el-menu-item>
-          <el-menu-item index="1-3">家谱管理</el-menu-item>
-          <el-menu-item index="1-4"><el-button type="text" style="color: black" @click="TurnToCalender">日历管理</el-button></el-menu-item>
+          <el-menu-item index="1-1" @click="TurnToGroupList">群组管理</el-menu-item>
+          <el-menu-item index="1-2" @click="TurnToCalender">日历管理</el-menu-item>
+          <el-menu-item index="1-3" >聚会管理</el-menu-item>
+          <el-menu-item index="1-4" @click="TurnToImageWall">照片墙</el-menu-item>
+          <el-menu-item index="1-5">随机轮盘</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
@@ -26,15 +27,18 @@
 
     <el-main>
 <!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
-      <iframe src="../Calender" v-if="this.$data.index==='Calender'"
+      <iframe src="/Calender" v-if="this.$data.index==='Calender'" frameborder=”no”
               style="height: 100%;width: 105%;position: relative;margin-top: -20px;margin-left: -20px;"></iframe>
-      <GroupList v-if="this.$data.index==='GroupList'"></GroupList>
+      <GroupList @groupPage='groupInfo' v-if="this.$data.index==='GroupList' "></GroupList>
+      <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
+      <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
     </el-main>
   </el-container>
 </el-container>
 
 <!--    <GroupList></GroupList>-->
 </div>
+
 </template>
 
 <script>
@@ -42,6 +46,8 @@ import axios from 'axios';
 import RegisterPage from './register.vue';
 import GroupList from './GroupList.vue';
 import Calender from './Calender.vue';
+import GroupPage from './GroupPage.vue';
+import ImageWall from './ImageWall.vue';
 
 export default {
   name: 'MainPage',
@@ -53,21 +59,35 @@ export default {
   //   },
   // },
   components: {
+    ImageWall,
     // eslint-disable-next-line vue/no-unused-components
     RegisterPage,
     // eslint-disable-next-line vue/no-unused-components
     Calender,
     // eslint-disable-next-line vue/no-unused-components
     GroupList,
+    GroupPage,
   },
   data() {
     return {
       // userid: '',
       msg: '',
-      index: 'Calender',
+      index: 'GroupList',
+      currentgroup: {},
     };
   },
   methods: {
+    groupInfo(ev) {
+      this.currentgroup = ev;
+      this.$data.index = 'GroupPage';
+      console.log(this.currentgroup);
+    },
+    BackToGroupList() {
+      this.$data.index = 'GroupList';
+    },
+    TurnToImageWall() {
+      this.index = 'ImageWall';
+    },
     getMessage() {
       const path = '/api/success';
       axios.get(path)
@@ -93,3 +113,8 @@ export default {
   },
 };
 </script>
+<style>
+#main-page{
+  background: #d5e8ff;
+}
+</style>

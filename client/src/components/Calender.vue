@@ -7,16 +7,16 @@
       @change="saveState">
 
       <template slot="title">
-        DaySpan
+        Calender
       </template>
 
-      <template slot="menuRight">
-        <v-btn icon large href="https://github.com/ClickerMonkey/dayspan-vuetify" target="_blank">
-          <v-avatar size="32px" tile>
-            <img src="https://simpleicons.org/icons/github.svg" alt="Github">
-          </v-avatar>
-        </v-btn>
-      </template>
+<!--      <template slot="menuRight">-->
+<!--        <v-btn icon large href="https://github.com/ClickerMonkey/dayspan-vuetify" target="_blank">-->
+<!--          <v-avatar size="32px" tile>-->
+<!--            <img src="https://simpleicons.org/icons/github.svg" alt="Github">-->
+<!--          </v-avatar>-->
+<!--        </v-btn>-->
+<!--      </template>-->
 
       <template slot="eventPopover" slot-scope="slotData">
          <ds-calendar-event-popover
@@ -150,6 +150,12 @@ body, html, #app, #dayspan {
   font-family: Roboto, sans-serif !important;
   width: 100%;
   height: 50%;
+}
+
+.v-btn--flat,
+.v-text-field--solo .v-input__slot {
+  background-color: #f5f5f5 !important;
+  margin-bottom: 8px !important;
 }
 
 </style>
