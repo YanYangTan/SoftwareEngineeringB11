@@ -3,6 +3,7 @@ import Vue from 'vue';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Vuetify from 'vuetify';
 import DaySpanVuetify from 'dayspan-vuetify';
+import Roller from 'vue-roller';
 import App from './App.vue';
 import router from './router';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -25,6 +26,7 @@ Vue.use(DaySpanVuetify, {
   },
 });
 Vue.config.productionTip = false;
+Vue.use(Roller);
 
 new Vue({
   router,

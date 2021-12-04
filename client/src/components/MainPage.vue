@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-<el-container style="height: 100%; border: 1px solid #eee"> <!-- fix here -->
+<el-container style="height: 100%; border: 10px solid #eee"> <!-- fix here -->
   <el-aside width="200x" style="background-color: rgb(238, 241, 246)">
     <el-menu :default-openeds="['1', '3']">
       <el-submenu index="2">
@@ -17,6 +17,7 @@
           <el-menu-item index="1-2">动态管理</el-menu-item>
           <el-menu-item index="1-3">家谱管理</el-menu-item>
           <el-menu-item index="1-4"><el-button type="text" style="color: black" @click="TurnToCalender">日历管理</el-button></el-menu-item>
+          <el-menu-item index="1-5"><elbutton type="text" style="color: black" @click="TurnToRoulette">Roulette</elbutton></el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
@@ -27,8 +28,9 @@
     <el-main>
 <!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
       <iframe src="/Calender" v-if="this.$data.index==='Calender'"
-              style="height: 100%;width: 105%;position: relative;margin-top: -20px;margin-left: -20px;"></iframe>
+              style="height: 100%;width: 100%;position: relative;margin-top: -20px;margin-left: -20px;"></iframe>
       <GroupList v-if="this.$data.index==='GroupList'"></GroupList>
+      <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
     </el-main>
   </el-container>
 </el-container>
@@ -42,6 +44,7 @@ import axios from 'axios';
 import RegisterPage from './register.vue';
 import GroupList from './GroupList.vue';
 import Calender from './Calender.vue';
+import Roulette from './roulette.vue';
 
 export default {
   name: 'MainPage',
@@ -59,6 +62,8 @@ export default {
     Calender,
     // eslint-disable-next-line vue/no-unused-components
     GroupList,
+    // eslint-disable-next-line vue/no-unused-components
+    Roulette,
   },
   data() {
     return {
@@ -86,6 +91,9 @@ export default {
     },
     TurnToCalender() {
       this.$data.index = 'Calender';
+    },
+    TurnToRoulette() {
+      this.$data.index = 'Roulette';
     },
   },
   created() {
