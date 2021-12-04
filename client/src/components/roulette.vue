@@ -12,13 +12,9 @@
 </template>
 
 <script>
-import Roller from 'vue-roller';
 
 export default {
   name: 'roulette',
-  components: {
-    Roller,
-  },
   data() {
     return {
       list: '',
