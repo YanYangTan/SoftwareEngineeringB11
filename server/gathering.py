@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from . import db
 from .models import *
-from .utils import query_username_by_id
+from .utils import query_username_by_id, update_suggestion, update_vote
 from datetime import datetime
 import random, json
 
@@ -197,40 +197,45 @@ def save_suggestion():
     if not gathering:
         response_object['message'] = "Error: Gathering not found!"
     else:
-        for rel in gathering.relation_gathering:
-            db.session.delete(rel)
-        for item in content:
-            suggestion = Suggestion()
-            rand_number = 0
-            while True:
-                rand_number = random.randint(1, 1000000)
-                res = Suggestion.query.filter_by(id=rand_number).first()
-                if not res:
-                    break
-            suggestion.id = rand_number
-            suggestion.user_id = user_id
-            suggestion.content = json.dumps(item)
+        if gathering.status:
+            for rel in gathering.relation_gathering:
+                suggest_tmp = Suggestion.query.filter_by(id=rel.suggestion_id).first()
+                db.session.delete(suggest_tmp)
+                db.session.delete(rel)
+            for item in content:
+                suggestion = Suggestion()
+                rand_number = 0
+                while True:
+                    rand_number = random.randint(1, 1000000)
+                    res = Suggestion.query.filter_by(id=rand_number).first()
+                    if not res:
+                        break
+                suggestion.id = rand_number
+                suggestion.user_id = user_id
+                suggestion.content = json.dumps(item)
 
-            rel = RelationGathering()
-            rand_number = 0
-            while True:
-                rand_number = random.randint(1, 1000000)
-                res2 = RelationGathering.query.filter_by(id=rand_number).first()
-                if not res2:
-                    break
-            rel.id = rand_number
-            rel.gathering_id = gathering.id
-            rel.suggestion_id = suggestion.id
-            rel.status = True
-            db.session.add(suggestion)
-            db.session.add(rel)
-        try:
-            db.session.commit()
-            response_object['status'] = True
-            response_object['message'] = "Suggestion successfully saved!"
-        except Exception as e:
-            print(e)
-            response_object['message'] = "Save suggestion failed!"
+                rel = RelationGathering()
+                rand_number = 0
+                while True:
+                    rand_number = random.randint(1, 1000000)
+                    res2 = RelationGathering.query.filter_by(id=rand_number).first()
+                    if not res2:
+                        break
+                rel.id = rand_number
+                rel.gathering_id = gathering.id
+                rel.suggestion_id = suggestion.id
+                rel.status = True
+                db.session.add(suggestion)
+                db.session.add(rel)
+            try:
+                db.session.commit()
+                response_object['status'] = True
+                response_object['message'] = "Suggestion successfully saved!"
+            except Exception as e:
+                print(e)
+                response_object['message'] = "Save suggestion failed!"
+        else:
+            response_object['message'] = "Error: Not a suggestion!"
     return jsonify(response_object)
 
 
@@ -258,4 +263,207 @@ def vote():
         except Exception as e:
             print(e)
             response_object['message'] = "Failed to vote"
+    return jsonify(response_object)
+
+
+@gathering.route('/refresh-suggest', methods=['GET', 'POST'])
+def refresh_suggest():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        gathering_id = post_data.get('gathering_id')
+    response_object = {}
+    response_object['status'] = False
+
+    gathering = Gathering.query.filter_by(id=gathering_id).first()
+    if not gathering:
+        response_object['message'] = "Error: Gathering not found!"
+    else:
+        if gathering.status:
+            now = datetime.now()
+            if now > gathering.enddate:
+                status, message = update_suggestion(gathering_id)
+                response_object['status'] = status
+                response_object['message'] = message
+            else:
+                response_object['status'] = True
+                response_object['message'] = "Not updated"
+        else:
+            response_object['message'] = "Error: Not a suggestion!"
+    return jsonify(response_object)
+
+
+@gathering.route('/change-enddate', methods=['GET', 'POST'])
+def change_enddate():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        gathering_id = post_data.get('gathering_id')
+        new_date = post_data.get('new_date')
+    response_object = {}
+    response_object['status'] = False
+    valid = True
+    try:
+        if new_date < datetime.now():
+            valid = False
+    except Exception as e:
+        print(e)
+        new_date = datetime.strptime(new_date, '%Y-%m-%d %H:%M:%S')
+        if new_date < datetime.now():
+            valid = False
+
+    if not valid:
+        response_object['message'] = "Error: Can't change to an earlier time than now!"
+    else:
+        gathering = Gathering.query.filter_by(id=gathering_id).first()
+        if not gathering:
+            response_object['message'] = "Error: Gathering not found!"
+        else:
+            gathering.enddate = new_date
+            try:
+                db.session.commit()
+                response_object['status'] = True
+                response_object['message'] = "End date successfully changed!"
+            except Exception as e:
+                print(e)
+                response_object['message'] = "Change date failed"
+    return jsonify(response_object)
+
+
+@gathering.route('/refresh-vote', methods=['GET', 'POST'])
+def refresh_vote():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        gathering_id = post_data.get('gathering_id')
+    response_object = {}
+    response_object['status'] = False
+
+    gathering = Gathering.query.filter_by(id=gathering_id).first()
+    if not gathering:
+        response_object['message'] = "Error: Gathering not found!"
+    else:
+        if not gathering.status:
+            now = datetime.now()
+            if now > gathering.enddate:
+                status, message = update_vote(gathering_id)
+                response_object['status'] = status
+                response_object['message'] = message
+            else:
+                response_object['message'] = "Not updated!"
+        else:
+            response_object['message'] = "Error: Not a vote!"
+    return jsonify(response_object)
+
+
+@gathering.route('/query-calendar', methods=['GET', 'POST'])
+def query_calendar():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        group_id = post_data.get('group_id')
+    response_object = {}
+    response_object['status'] = False
+
+    group = Group.query.filter_by(idgroups=group_id).first()
+    if not group:
+        response_object['message'] = "Error: Group not found!"
+    else:
+        calendar = Calendar.query.filter_by(group_id=group_id).first()
+        if calendar:
+            response_object['status'] = True
+            response_object['message'] = "Query success!"
+            response_object['calendar'] = json.loads(calendar.content)
+        else:
+            new_calendar = Calendar()
+            rand_number = 0
+            while True:
+                rand_number = random.randint(1, 1000000)
+                res = Calendar.query.filter_by(id=rand_number).first()
+                if not res:
+                    break
+            new_calendar.id = rand_number
+            new_calendar.group_id = group_id
+            content = []
+            new_calendar.content = json.dumps(content)
+            db.session.add(new_calendar)
+            try:
+                db.session.commit()
+                response_object['status'] = True
+                response_object['message'] = "Calendar not found! Created empty calendar"
+                response_object['calendar'] = content
+            except Exception as e:
+                print(e)
+                response_object['message'] = "Calendar not found! Add calendar failed"
+    return jsonify(response_object)
+
+
+@gathering.route('/save-calendar', methods=['GET', 'POST'])
+def save_calendar():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        group_id = post_data.get('group_id')
+        content = post_data.get('content')
+    response_object = {}
+    response_object['status'] = False
+
+    try:
+        content = json.loads(content)
+    except Exception as e:
+        print(e)
+
+    group = Group.query.filter_by(idgroups=group_id).first()
+    if not group:
+        response_object['message'] = "Error: Group not found!"
+    else:
+        calendar = Calendar.query.filter_by(group_id=group_id).first()
+        if calendar:
+            calendar.content = json.dumps(content)
+        else:
+            new_calendar = Calendar()
+            rand_number = 0
+            while True:
+                rand_number = random.randint(1, 1000000)
+                res = Calendar.query.filter_by(id=rand_number).first()
+                if not res:
+                    break
+            new_calendar.id = rand_number
+            new_calendar.group_id = group_id
+            new_calendar.content = json.dumps(content)
+            db.session.add(new_calendar)
+        try:
+            db.session.commit()
+            response_object['status'] = True
+            response_object['message'] = "Calendar saved!"
+        except Exception as e:
+            print(e)
+            response_object['message'] = "Save calendar failed!"
+    return jsonify(response_object)
+
+
+@gathering.route('/check-vote', methods=['GET', 'POST'])
+def check_vote():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        gathering_id = post_data.get('gathering_id')
+        user_id = post_data.get('user_id')
+    response_object = {}
+    response_object['status'] = False
+
+    gathering = Gathering.query.filter_by(id=gathering_id).first()
+    if not gathering:
+        response_object['message'] = "Error: Gathering not found!"
+    else:
+        if gathering.status:
+            response_object['message'] = "Error: Not a vote"
+        else:
+            voted = False
+            for rel in gathering.relation_gathering:
+                vote = VoteOptions.query.filter_by(id=rel.vote_id).first()
+                voters = json.loads(vote.voters)
+                for voter in voters:
+                    if user_id == voter:
+                        voted = True
+                        break
+                if voted == True:
+                    break
+            response_object['status'] = True
+            response_object['message'] = "Query success!"
+            response_object['voted'] = voted
     return jsonify(response_object)

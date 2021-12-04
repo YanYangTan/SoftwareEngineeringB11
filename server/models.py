@@ -69,3 +69,10 @@ class RelationGathering(db.Model):
     suggestion_id = db.Column(db.Integer, db.ForeignKey('suggestion.id'))
     vote_id = db.Column(db.Integer, db.ForeignKey('vote_options.id'))
     status = db.Column(db.Boolean)
+
+
+class Calendar(db.Model):
+    __tablename__ = 'calendar'
+    id = db.Column(db.Integer, primary_key=True)
+    group_id = db.Column(db.Integer, db.ForeignKey('groups.idgroups'))
+    content = db.Column(db.Text)
