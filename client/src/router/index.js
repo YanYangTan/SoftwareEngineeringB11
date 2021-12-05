@@ -31,5 +31,6 @@ export default new Router({
       name: 'Calender',
       component: Calender,
     },
+
   ],
 });

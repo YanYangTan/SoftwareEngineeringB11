@@ -11,13 +11,13 @@
         </el-menu-item-group>
       </el-submenu>
       <el-submenu index="1">
-        <template slot="title"><img src="../assets/logo.png" alt="归雁" width="30px">目录</template>
+        <template slot="title"><i class="el-icon-menu"></i>归雁</template>
         <el-menu-item-group>
           <el-menu-item index="1-1" @click="TurnToGroupList">群组管理</el-menu-item>
           <el-menu-item index="1-2" @click="TurnToCalender">日历管理</el-menu-item>
           <el-menu-item index="1-3" >聚会管理</el-menu-item>
           <el-menu-item index="1-4" @click="TurnToImageWall">照片墙</el-menu-item>
-          <el-menu-item index="1-5">随机轮盘</el-menu-item>
+          <el-menu-item index="1-5" @click="TurnToRoulette">随机轮盘</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
@@ -27,11 +27,12 @@
     <div class="mainapp">
 <!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
       <iframe id="calendar" src="/Calender" v-if="this.$data.index==='Calender'"></iframe>
-    <el-main>
-      <GroupList @groupPage='groupInfo' v-if="this.$data.index==='GroupList' "></GroupList>
-      <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
-      <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
-    </el-main>
+        <el-main>
+          <GroupList @groupPage='groupInfo' v-if="this.$data.index==='GroupList' "></GroupList>
+          <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
+          <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
+          <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
+        </el-main>
     </div>
   </el-container>
 </el-container>
@@ -48,6 +49,7 @@ import GroupList from './GroupList.vue';
 import Calender from './Calender.vue';
 import GroupPage from './GroupPage.vue';
 import ImageWall from './ImageWall.vue';
+import Roulette from './roulette.vue';
 
 export default {
   name: 'MainPage',
@@ -67,6 +69,8 @@ export default {
     // eslint-disable-next-line vue/no-unused-components
     GroupList,
     GroupPage,
+    // eslint-disable-next-line vue/no-unused-components
+    Roulette,
   },
   data() {
     return {
@@ -107,12 +111,11 @@ export default {
     TurnToCalender() {
       this.$data.index = 'Calender';
     },
+    TurnToRoulette() {
+      this.$data.index = 'Roulette';
+    },
   },
   created() {
-    this.$message({
-      type: 'success',
-      message: `${this.$route.params.username} ，欢迎来到归雁`,
-    });
     this.getMessage();
   },
 };
@@ -121,11 +124,9 @@ export default {
 #main-page{
   background: #d5e8ff;
 }
-
 .mainapp{
   width: 100%;
 }
-
 #calendar{
   height: 100%;
   width: 100%;
