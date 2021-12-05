@@ -5,27 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7df7dabb-e7a9-4331-9b04-a06772ef3017" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_24_11_2021_10_43__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_24_11_2021_10_43__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/assets/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/assets/css/main.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/Calender.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Calender.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/GenealogyPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/GenealogyPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/GroupList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/GroupList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/GroupPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/GroupPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/HelloWorld.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/HelloWorld.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Home.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/ImageWall.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/ImageWall.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Login.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/MainPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/MainPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/MemberList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/MemberList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/bus.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/bus.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/register.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/roulette.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/roulette.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/success.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/success.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/vue.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/vue.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

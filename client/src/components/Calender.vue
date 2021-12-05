@@ -7,7 +7,7 @@
       @change="saveState">
 
       <template slot="title">
-        Calender
+        Calendar
       </template>
 
 <!--      <template slot="menuRight">-->
@@ -149,7 +149,7 @@ export default {
 body, html, #app, #dayspan {
   font-family: Roboto, sans-serif !important;
   width: 100%;
-  height: 50%;
+  height: 100%;
 }
 
 .v-btn--flat,
@@ -158,4 +158,34 @@ body, html, #app, #dayspan {
   margin-bottom: 8px !important;
 }
 
+.ds-day-picker{
+  transition: all .2s ease-in-out;
+  box-shadow: 0 1px 3px grey;
+}
+.ds-day-picker:hover{
+  transform: scale(1.01);
+  box-shadow: 0 4px 8px grey;
+  background-color: #ffffff;
+}
+
+.ds-week-header{
+  background-color: #c5ccf2;
+}
+.mb-2{
+  box-shadow: 0 1px #3b3d48;
+}
+
+.subtitle{
+  color: white;
+}
+
+.ds-day{
+  background-color: #f1f3fc;
+  border: 1px solid #e0e0e0;
+}
+
+.ds-week-view-scrollable{
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 </style>
