@@ -1,7 +1,7 @@
 <template>
   <div id="main-page" style="height: 780px;">
 <el-container style="height: 100%; border: 1px solid #eee"> <!-- fix here -->
-  <el-aside width="200x" style="background-color: rgb(238, 241, 246)">
+    <el-aside width="200x" style="background-color: rgb(238, 241, 246)">
     <el-menu :default-openeds="['1', '3']">
       <el-submenu index="2">
         <template slot="title"><i class="el-icon-user"></i>{{this.$route.params.username}}</template>
@@ -11,7 +11,7 @@
         </el-menu-item-group>
       </el-submenu>
       <el-submenu index="1">
-        <template slot="title"><i class="el-icon-menu"></i>归雁</template>
+        <template slot="title"><img src="../assets/logo.png" alt="归雁" width="30px">目录</template>
         <el-menu-item-group>
           <el-menu-item index="1-1" @click="TurnToGroupList">群组管理</el-menu-item>
           <el-menu-item index="1-2" @click="TurnToCalender">日历管理</el-menu-item>
@@ -116,6 +116,10 @@ export default {
     },
   },
   created() {
+    this.$message({
+      type: 'success',
+      message: `${this.$route.params.username} ，欢迎来到归雁`,
+    });
     this.getMessage();
   },
 };
