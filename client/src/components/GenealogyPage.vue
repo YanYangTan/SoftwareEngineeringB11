@@ -1,6 +1,8 @@
 <template>
   <div>
+    <el-card>
 <TreeChart :json="treeData" />
+    </el-card>
   </div>
 </template>
 
