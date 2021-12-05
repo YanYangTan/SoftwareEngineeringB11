@@ -1,47 +1,38 @@
 <template>
-  <div id="main-page" style="height: 780px;">
+  <div id="main-page" style="height: 100%;">
 <el-container style="height: 100%; border: 1px solid #eee"> <!-- fix here -->
-    <el-aside width="200x" style="background-color: rgb(238, 241, 246)">
-    <el-menu :default-openeds="['2', '3']">
-      <el-submenu index="1">
+  <el-aside width="200x" style="background-color: rgb(238, 241, 246)">
+    <el-menu :default-openeds="['1', '3']">
+      <el-submenu index="2">
         <template slot="title"><i class="el-icon-user"></i>{{this.$route.params.username}}</template>
         <el-menu-item-group>
           <el-menu-item index="2-1">个人信息</el-menu-item>
           <el-menu-item index="2-2" @click="SignIn"><el-button type="text" style="color: crimson" @click="SignIn">退出登录</el-button></el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu index="2">
-        <template slot="title"><i class="el-icon-menu"></i>目录</template>
+      <el-submenu index="1">
+        <template slot="title"><img src="../assets/logo.png" alt="归雁" width="30px">目录</template>
         <el-menu-item-group>
-          <el-menu-item index="1-2" @click="TurnToGroupList">群组目录</el-menu-item>
-          <el-submenu index="3">
-          <template slot="title"><img src="../assets/logo.png" alt="归雁" width="30px" >{{currentgroup.group_name}}</template>
-            <el-menu-item index="1-2-1" @click="TurnToGroupPage">成员管理</el-menu-item>
-            <el-menu-item index="1-2-2" @click="TurnToCalender">日历管理</el-menu-item>
-            <el-menu-item index="1-2-3" >聚会管理</el-menu-item>
-            <el-menu-item index="1-2-4" @click="TurnToImageWall">照片墙</el-menu-item>
-            </el-submenu>
-
+          <el-menu-item index="1-1" @click="TurnToGroupList">群组管理</el-menu-item>
           <el-menu-item index="1-2" @click="TurnToCalender">日历管理</el-menu-item>
           <el-menu-item index="1-3" >聚会管理</el-menu-item>
           <el-menu-item index="1-4" @click="TurnToImageWall">照片墙</el-menu-item>
-          <el-menu-item index="1-5" @click="TurnToRoulette">随机轮盘</el-menu-item>
+          <el-menu-item index="1-5">随机轮盘</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
   </el-aside>
 
   <el-container>
-
-    <el-main>
+    <div class="mainapp">
 <!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
-      <iframe src="/Calender" v-if="this.$data.index==='Calender'" frameborder=”no”
-              style="height: 100%;width: 105%;position: relative;margin-top: -20px;margin-left: -20px;"></iframe>
-      <GroupList @groupPage='groupInfo' @defaultGroup="defaultedGroup" v-if="this.$data.index==='GroupList' "></GroupList>
+      <iframe id="calendar" src="/Calender" v-if="this.$data.index==='Calender'"></iframe>
+    <el-main>
+      <GroupList @groupPage='groupInfo' v-if="this.$data.index==='GroupList' "></GroupList>
       <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
       <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
-      <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
     </el-main>
+    </div>
   </el-container>
 </el-container>
 
@@ -57,7 +48,6 @@ import GroupList from './GroupList.vue';
 import Calender from './Calender.vue';
 import GroupPage from './GroupPage.vue';
 import ImageWall from './ImageWall.vue';
-import Roulette from './roulette.vue';
 
 export default {
   name: 'MainPage',
@@ -77,15 +67,12 @@ export default {
     // eslint-disable-next-line vue/no-unused-components
     GroupList,
     GroupPage,
-    // eslint-disable-next-line vue/no-unused-components
-    Roulette,
   },
   data() {
     return {
       // userid: '',
       msg: '',
       index: 'GroupList',
-      defaultgroup: false,
       currentgroup: {},
     };
   },
@@ -120,18 +107,6 @@ export default {
     TurnToCalender() {
       this.$data.index = 'Calender';
     },
-    TurnToRoulette() {
-      this.$data.index = 'Roulette';
-    },
-    TurnToGroupPage() {
-      this.$data.index = 'GroupPage';
-    },
-    defaultedGroup(ev) {
-      if (this.defaultgroup === false) {
-        this.currentgroup = ev;
-        this.defaultgroup = true;
-      }
-    },
   },
   created() {
     this.$message({
@@ -145,5 +120,16 @@ export default {
 <style>
 #main-page{
   background: #d5e8ff;
+}
+
+.mainapp{
+  width: 100%;
+}
+
+#calendar{
+  height: 100%;
+  width: 100%;
+  position: relative;
+  border: none;
 }
 </style>
