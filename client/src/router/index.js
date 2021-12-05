@@ -27,10 +27,9 @@ export default new Router({
       component: Register,
     },
     {
-      path: '/Calendar',
-      name: 'Calendar',
+      path: '/Calender',
+      name: 'Calender',
       component: Calender,
     },
-
   ],
 });
