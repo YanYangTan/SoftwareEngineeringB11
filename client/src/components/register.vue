@@ -1,6 +1,10 @@
 <template>
     <div class="vue-template">
-      <el-card class="carrd">
+      <div class="bg">
+      </div>
+      <div class="sidebar">
+        <div class="side-form">
+<!--      <el-card class="carrd">-->
         <form @submit.prevent="register">
             <h3>Register</h3>
             <div class="form-group">
@@ -31,7 +35,11 @@
 
             <button type="submit" class="btn btn-dark btn-lg btn-block">register</button>
         </form>
-        </el-card>
+        <span>Registered? </span>
+        <el-button type="text" @click="SignIn">Sign In</el-button>
+<!--        </el-card>-->
+           </div>
+         </div>
     </div>
 </template>
 
@@ -39,6 +47,7 @@
 import axios from 'axios';
 
 export default {
+  name: 'RegisterPage',
   data() {
     return {
       userForm: {
@@ -51,13 +60,39 @@ export default {
     };
   },
   methods: {
+    inputjudge(message) {
+      // eslint-disable-next-line no-unused-vars
+      let temp;
+      if (message === 'username') {
+        temp = '用户名非法（6~10位）';
+      } else if (message === 'Username occupied!') {
+        temp = '此用户名已存在！';
+      } else if (message === 'password') {
+        temp = '密码非法（至少包含大小写，数字的6~18位数字）';
+      } else if (message === 'email') {
+        temp = '邮箱非法';
+      } else if (message === 'Email occupied!') {
+        temp = '邮箱已注册！';
+      } else if (message === 'birthday') {
+        temp = '生日非法';
+      } else if (message === 'Registered!') {
+        temp = '成功注册！';
+      }
+      this.$alert(temp, '提示', {
+        confirmButtonText: '确定',
+      });
+    },
     register() {
       axios.post('/api/register', {
         username: this.userForm.username, password: this.userForm.password, email: this.userForm.email, phone: this.userForm.phone, birthday: this.userForm.birthday,
       })
+        // eslint-disable-next-line no-shadow
         .then((res) => {
           console.log(res.data.message);
-          if (res.data.status) {
+          // eslint-disable-next-line no-empty
+          if (!res.data.status) {
+            this.inputjudge(res.data.message);
+          } else {
             this.$router.push('/');
           }
         })
@@ -65,9 +100,21 @@ export default {
           console.log(err);
         });
     },
-    temp() {
+    SignIn() {
       this.$router.push('/');
+    },
+    created() {
     },
   },
 };
 </script>
+
+<style scoped>
+
+.side-form {
+  padding:20%;
+  padding-top:10%;
+  margin-top: 0%;
+}
+
+</style>

@@ -6,6 +6,5 @@
 
 <style>
 #app {
-
 }
 </style>

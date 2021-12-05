@@ -7,7 +7,7 @@
       @change="saveState">
 
       <template slot="title">
-        Calender
+        DaySpan
       </template>
 
 <!--      <template slot="menuRight">-->
@@ -149,7 +149,7 @@ export default {
 body, html, #app, #dayspan {
   font-family: Roboto, sans-serif !important;
   width: 100%;
-  height: 50%;
+  height: 100%;
 }
 
 .v-btn--flat,
