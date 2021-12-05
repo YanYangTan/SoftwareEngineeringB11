@@ -17,7 +17,7 @@ export default new Router({
       component: Login,
     },
     {
-      path: '/success/:userid',
+      path: '/success/:userid/:username',
       name: 'Success',
       component: MainPage,
     },

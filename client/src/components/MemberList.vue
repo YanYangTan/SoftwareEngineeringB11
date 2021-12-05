@@ -1,11 +1,14 @@
 <template>
   <div>
+     <el-card>
   <el-table
     :data="tableData.filter(data => !search || data.username.toLowerCase().includes(search.toLowerCase()))"
+    max-height="500px"
     style="width: 100%;margin-bottom: 20px;">
     <el-table-column
       label="成员"
-      prop="username">
+      prop="username"
+    width="110px">
     </el-table-column>
     <el-table-column
       align="right">
@@ -22,13 +25,14 @@
         <el-button
           size="mini"
           type="danger"
-          v-if="edit"
+          v-if="(edit)"
           @click="handleDelete(scope.$index,scope.row)">移除</el-button>
       </template>
     </el-table-column>
   </el-table>
     <el-button v-if="this.$props.info.admin" style="color: crimson" @click="EditClick">{{editbutton}}</el-button>
-    </div>
+   </el-card>
+  </div>
 </template>
 
 <script>
