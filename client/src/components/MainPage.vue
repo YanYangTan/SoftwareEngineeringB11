@@ -127,6 +127,9 @@ export default {
 .mainapp{
   width: 100%;
 }
+.el-main{
+  height:100%;
+}
 #calendar{
   height: 100%;
   width: 100%;

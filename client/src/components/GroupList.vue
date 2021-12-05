@@ -125,4 +125,11 @@ export default {
 .group-list{
   margin-top: 10px;
 }
+.el-col-3{
+  transition: all .2s ease-in-out;
+}
+.el-col-3:hover{
+  transform: scale(1.05);
+  z-index: 1;
+}
 </style>
