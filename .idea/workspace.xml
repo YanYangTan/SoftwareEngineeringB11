@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="22b59752-c4b2-4623-b2b9-c4a90ed5453f" name="Changes" comment="changed password">
-      <change afterPath="$PROJECT_DIR$/client/src/components/roulette.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/34ec9366-f2ec-4ff9-977c-3361d6b086de.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/34ec9366-f2ec-4ff9-977c-3361d6b086de.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_24_11_2021_10_43_[Changes]1/shelved.patch" beforeDir="false" />
+    <list default="true" id="7df7dabb-e7a9-4331-9b04-a06772ef3017" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_24_11_2021_10_43__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_24_11_2021_10_43__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_24_11_2021_10_43__Changes_1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/Calender.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Calender.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/GroupList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/GroupList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Home.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Login.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/MainPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/MainPage.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/register.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/roulette.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/roulette.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
