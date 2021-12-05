@@ -6,8 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="7df7dabb-e7a9-4331-9b04-a06772ef3017" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/assets/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/assets/css/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/Calender.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Calender.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,7 +124,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638668838829</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="calendar beautification and removal of scrollbar&#10;(scroll functionality kept)">
+      <created>1638676688977</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1638676688977</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -162,6 +167,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="changed password" />
     <MESSAGE value="local bug fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="local bug fix" />
+    <MESSAGE value="calendar beautification and removal of scrollbar&#10;(scroll functionality kept)" />
+    <option name="LAST_COMMIT_MESSAGE" value="calendar beautification and removal of scrollbar&#10;(scroll functionality kept)" />
   </component>
 </project>
