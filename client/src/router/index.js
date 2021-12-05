@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Success from '../components/MainPage.vue';
+import MainPage from '../components/MainPage.vue';
 import Login from '../components/Login.vue';
 import Register from '../components/register.vue';
+import Calender from '../components/Calender.vue';
 
 Vue.use(Router);
 
@@ -16,14 +17,19 @@ export default new Router({
       component: Login,
     },
     {
-      path: '/success/:userid',
+      path: '/success/:userid/:username',
       name: 'Success',
-      component: Success,
+      component: MainPage,
     },
     {
       path: '/register',
       name: 'Register',
       component: Register,
+    },
+    {
+      path: '/Calender',
+      name: 'Calender',
+      component: Calender,
     },
 
   ],
