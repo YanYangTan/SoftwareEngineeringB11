@@ -17,6 +17,7 @@ def create_gathering():
         name = post_data.get('name')
         description = post_data.get('description')
         enddate = post_data.get('enddate')
+        allow_multiple_vote = post_data.get('allow_multiple_vote')
         status = post_data.get('status')
         content = post_data.get('content')
     response_object = {}
@@ -26,6 +27,20 @@ def create_gathering():
         content = json.loads(content)
     except Exception as e:
         print(e)
+
+    valid = True
+    try:
+        if enddate < datetime.now():
+            valid = False
+    except Exception as e:
+        print(e)
+        enddate = datetime.strptime(enddate, '%Y-%m-%d %H:%M:%S')
+        if enddate < datetime.now():
+            valid = False
+
+    if not valid:
+        response_object["message"] = "Error: Cannot set end date earlier than current time!"
+        return jsonify(response_object)
 
     rel_user = RelationGroupUser.query.filter_by(user_id=user_id, group_id=group_id).first()
     if not rel_user:
@@ -45,6 +60,7 @@ def create_gathering():
         gathering.description = description
         gathering.enddate = enddate
         gathering.status = status
+        gathering.allow_multiple_vote = allow_multiple_vote
         db.session.add(gathering)
         if gathering.status:        # Is gathering suggest
             for item in content:
@@ -174,6 +190,7 @@ def query_gathering():
         response_object['status'] = True
         response_object['message'] = "Query success!"
         response_object['options'] = ret
+        response_object['allow_multiple_vote'] = gathering.allow_multiple_vote
     return jsonify(response_object)
 
 
@@ -243,19 +260,30 @@ def save_suggestion():
 def vote():
     if request.method == 'POST':
         post_data = request.get_json()
-        vote_id = post_data.get('vote_id')
+        vote_ids = post_data.get('vote_ids')
         user_id = post_data.get('user_id')
     response_object = {}
     response_object['status'] = False
 
-    vote = VoteOptions.query.filter_by(id=vote_id).first()
-    if not vote:
-        response_object['message'] = "Error: Vote option not found!"
-    else:
-        vote.vote_count += 1
-        voters = json.loads(vote.voters)
-        voters.append(user_id)
-        vote.voters = json.dumps(voters)
+    try:
+        vote_ids = json.loads(vote_ids)
+    except Exception as e:
+        print(e)
+
+    flag = True
+    for vote_id in vote_ids:
+        vote = VoteOptions.query.filter_by(id=vote_id).first()
+        if not vote:
+            response_object['message'] = "Error: Vote option not found!"
+            flag = False
+            break
+        else:
+            vote.vote_count += 1
+            voters = json.loads(vote.voters)
+            voters.append(user_id)
+            vote.voters = json.dumps(voters)
+
+    if flag:
         try:
             db.session.commit()
             response_object['status'] = True

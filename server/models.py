@@ -18,6 +18,7 @@ class Group(db.Model):
     idgroups = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(45))
     invite_key = db.Column(db.String(45))
+    key_expiry_date = db.Column(db.DateTime)
 
     relation_group_user = db.relationship("RelationGroupUser", backref="groups")
 
@@ -39,6 +40,7 @@ class Gathering(db.Model):
     description = db.Column(db.Text)
     enddate = db.Column(db.DateTime)
     status = db.Column(db.Boolean, default=False)
+    allow_multiple_vote = db.Column(db.Boolean, default=False)
 
     relation_gathering = db.relationship("RelationGathering", backref="gathering")
 

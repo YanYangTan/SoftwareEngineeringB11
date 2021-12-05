@@ -2,6 +2,7 @@ import scrypt, base64, configparser, random, json
 import re
 from datetime import datetime, timedelta
 from .models import *
+import random, string
 
 
 def encrypt_password(pw):
@@ -54,6 +55,17 @@ def check_groupname(name):
 def query_username_by_id(user_id):
     user = User.query.filter_by(idusers=user_id).first()
     return user.username
+
+
+def generate_new_key():
+    length = random.randint(5, 10)
+    rand_key = ''
+    while True:
+        rand_key = rand_key.join((random.choice(string.ascii_uppercase) for x in range(length)))
+        res = Group.query.filter_by(invite_key=rand_key).first()
+        if not res:
+            break
+    return rand_key
 
 
 def update_suggestion(gathering_id):
