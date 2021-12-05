@@ -5,25 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7df7dabb-e7a9-4331-9b04-a06772ef3017" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/client/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/gathering.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/group.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/Readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/client/Readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/assets/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/assets/css/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/Calender.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Calender.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/GroupList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/GroupList.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/components/MainPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/MainPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/server/Readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/server/run.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -149,7 +133,21 @@
       <option name="project" value="LOCAL" />
       <updated>1638676688977</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="merge with main, bugfixes">
+      <created>1638689127669</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1638689127669</updated>
+    </task>
+    <task id="LOCAL-00005" summary="lmao">
+      <created>1638689159332</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1638689159332</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -186,6 +184,8 @@
     <MESSAGE value="changed password" />
     <MESSAGE value="local bug fix" />
     <MESSAGE value="calendar beautification and removal of scrollbar&#10;(scroll functionality kept)" />
-    <option name="LAST_COMMIT_MESSAGE" value="calendar beautification and removal of scrollbar&#10;(scroll functionality kept)" />
+    <MESSAGE value="merge with main, bugfixes" />
+    <MESSAGE value="lmao" />
+    <option name="LAST_COMMIT_MESSAGE" value="lmao" />
   </component>
 </project>
