@@ -19,6 +19,7 @@
       <button v-on:click="SubmitFile()">Submit</button>
     </div>
     <button v-on:click="getPic()">Get Picture</button>
+    <input type="text" v-model="img_src"/>
     <img :src="picurl"/>
   </div>
 </template>
@@ -34,6 +35,7 @@ export default {
       user_id: '',
       group_id: '',
       caption: '',
+      img_src: '',
       picurl: '',
     };
   },
@@ -41,11 +43,17 @@ export default {
     getPic() {
       axios({
         method: 'get',
+        params: {
+          img_src: this.img_src,
+        },
         url: '/api/get-image',
         responseType: 'arraybuffer',
       }).then((res) => {
+        console.log(res);
         // eslint-disable-next-line prefer-template
         this.picurl = 'data:image/jpeg;base64,' + this.arrayBufferToBase64(res.data);
+      }).catch((err) => {
+        console.log(err);
       });
     },
     arrayBufferToBase64(buffer) {
