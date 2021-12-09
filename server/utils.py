@@ -1,8 +1,6 @@
-import scrypt, base64, configparser, random, json
+import scrypt, base64, configparser
 import re
-from datetime import datetime, timedelta
-from .models import *
-
+import datetime
 
 def encrypt_password(pw):
     config = configparser.RawConfigParser()
@@ -11,7 +9,6 @@ def encrypt_password(pw):
     salt = db_dict["salt"]
     key = scrypt.hash(pw, salt, 32768, 8, 1, 32)
     return base64.b64encode(key).decode("ascii")
-
 
 def checkregister(content):
     # username
@@ -37,113 +34,8 @@ def checkregister(content):
     birth=content['birthday']
     birth=birth.replace('-','')
     birth=int(birth)
-    nowtime = int(datetime.now().date().strftime('%Y%m%d'))
+    nowtime = int(datetime.datetime.now().date().strftime('%Y%m%d'))
     if birth > nowtime:
         return "birthday", False
 
     return "ok", True
-
-
-def check_groupname(name):
-    flag = True
-    if len(name) == 0 or len(name) > 45:
-        flag = False
-    return flag
-
-
-def query_username_by_id(user_id):
-    user = User.query.filter_by(idusers=user_id).first()
-    return user.username
-
-
-def update_suggestion(gathering_id):
-    gathering = Gathering.query.filter_by(id=gathering_id).first()
-    gathering.enddate = datetime.now() + timedelta(days=3)
-    gathering.status = False
-    for rel in gathering.relation_gathering:
-        suggest_tmp = Suggestion.query.filter_by(id=rel.suggestion_id).first()
-        vote = VoteOptions()
-        rand_number = 0
-        while True:
-            rand_number = random.randint(1, 1000000)
-            res = VoteOptions.query.filter_by(id=rand_number).first()
-            if not res:
-                break
-        vote.id = rand_number
-        vote.content = suggest_tmp.content
-        vote.vote_count = 0
-        voters = []
-        vote.voters = json.dumps(voters)
-
-        relation = RelationGathering()
-        rand_number = 0
-        while True:
-            rand_number = random.randint(1, 1000000)
-            res2 = RelationGathering.query.filter_by(id=rand_number).first()
-            if not res2:
-                break
-        relation.id = rand_number
-        relation.gathering_id = gathering_id
-        relation.vote_id = vote.id
-        relation.status = False
-        db.session.delete(suggest_tmp)
-        db.session.delete(rel)
-        db.session.add(vote)
-        db.session.add(relation)
-
-    try:
-        db.session.commit()
-        status = True
-        message = "Updated suggestion to vote"
-    except Exception as e:
-        print(e)
-        status = False
-        message = "Update failed"
-    return status, message
-
-
-def update_vote(gathering_id):
-    gathering = Gathering.query.filter_by(id=gathering_id).first()
-    max = 0
-    highest_option = {}
-    for rel in gathering.relation_gathering:
-        vote = VoteOptions.query.filter_by(id=rel.vote_id).first()
-        if vote.vote_count >= max:
-            highest_option = vote.content
-        db.session.delete(vote)
-        db.session.delete(rel)
-    group = Group.query.filter_by(idgroups=gathering.group_id).first()
-    if not group:
-        return False, "Error: Group does not exist!"
-    calendar = Calendar.query.filter_by(group_id=gathering.group_id).first()
-    if not calendar:
-        new_calendar = Calendar()
-        rand_number = 0
-        while True:
-            rand_number = random.randint(1, 1000000)
-            res = Calendar.query.filter_by(id=rand_number).first()
-            if not res:
-                break
-        new_calendar.id = rand_number
-        new_calendar.group_id = gathering.group_id
-        content = []
-        highest_option['name'] = gathering.name
-        highest_option['description'] = gathering.description
-        content.append(json.loads(highest_option))
-        new_calendar.content = json.dumps(content)
-        db.session.add(new_calendar)
-    else:
-        content = json.loads(calendar.content)
-        content.append(json.loads(highest_option))
-        calendar.content = json.dumps(content)
-    db.session.delete(gathering)
-
-    try:
-        db.session.commit()
-        status = True
-        message = "Updated vote to schedule"
-    except Exception as e:
-        print(e)
-        status = False
-        message = "Update failed"
-    return status, message
