@@ -18,7 +18,7 @@
           <template slot="title"><img src="../assets/logo.png" alt="归雁" width="30px" >{{currentgroup.group_name}}</template>
             <el-menu-item index="1-2-1" @click="TurnToGroupPage">成员管理</el-menu-item>
             <el-menu-item index="1-2-2" @click="TurnToCalender">日历管理</el-menu-item>
-            <el-menu-item index="1-2-3" @click="TurnToGather">聚会管理</el-menu-item>
+            <el-menu-item index="1-2-3" @click="TurnToGatherList">聚会管理</el-menu-item>
             <el-menu-item index="1-2-4" @click="TurnToImageWall">照片墙</el-menu-item>
             </el-submenu>
 
@@ -41,6 +41,7 @@
       <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
       <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
       <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
+      <GatherList :currentgroup="this.currentgroup" v-if="this.$data.index==='GatherList'"></GatherList>
     </el-main>
   </el-container>
 </el-container>
@@ -58,6 +59,7 @@ import Calender from './Calender.vue';
 import GroupPage from './GroupPage.vue';
 import ImageWall from './ImageWall.vue';
 import Roulette from './roulette.vue';
+import GatherList from './GatherList.vue';
 
 export default {
   name: 'MainPage',
@@ -79,6 +81,7 @@ export default {
     GroupPage,
     // eslint-disable-next-line vue/no-unused-components
     Roulette,
+    GatherList,
   },
   data() {
     return {
@@ -126,8 +129,8 @@ export default {
     TurnToGroupPage() {
       this.$data.index = 'GroupPage';
     },
-    TurnToGather() {
-      this.$data.index = 'GroupPage';
+    TurnToGatherList() {
+      this.$data.index = 'GatherList';
     },
     defaultedGroup(ev) {
       if (this.defaultgroup === false) {
