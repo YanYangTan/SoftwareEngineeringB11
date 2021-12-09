@@ -1,9 +1,11 @@
 <template>
+
   <div id="main-page" style="height: 780px;">
 <el-container style="height: 100%; border: 1px solid #eee"> <!-- fix here -->
     <el-aside width="200x" style="background-color: rgb(238, 241, 246)">
     <el-menu :default-openeds="['2', '3']">
       <el-submenu index="1">
+
         <template slot="title"><i class="el-icon-user"></i>{{this.$route.params.username}}</template>
         <el-menu-item-group>
           <el-menu-item index="2-1">个人信息</el-menu-item>
@@ -13,6 +15,7 @@
       <el-submenu index="2">
         <template slot="title"><i class="el-icon-menu"></i>目录</template>
         <el-menu-item-group>
+
           <el-menu-item index="1-2" @click="TurnToGroupList">群组目录</el-menu-item>
           <el-submenu index="3">
           <template slot="title"><img src="../assets/logo.png" alt="归雁" width="30px" >{{currentgroup.group_name}}</template>
@@ -26,6 +29,7 @@
           <el-menu-item index="1-3" >聚会管理</el-menu-item>
           <el-menu-item index="1-4" @click="TurnToImageWall">照片墙</el-menu-item>
           <el-menu-item index="1-5" @click="TurnToRoulette">随机轮盘</el-menu-item>
+
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
@@ -35,11 +39,13 @@
 
     <el-main>
 <!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
+
       <iframe src="/Calender" v-if="this.$data.index==='Calender'" frameborder=”no”
               style="height: 100%;width: 105%;position: relative;margin-top: -20px;margin-left: -20px;"></iframe>
       <GroupList @groupPage='groupInfo' @defaultGroup="defaultedGroup" v-if="this.$data.index==='GroupList' "></GroupList>
       <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
       <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
+
       <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
     </el-main>
   </el-container>
@@ -57,6 +63,7 @@ import GroupList from './GroupList.vue';
 import Calender from './Calender.vue';
 import GroupPage from './GroupPage.vue';
 import ImageWall from './ImageWall.vue';
+
 import Roulette from './roulette.vue';
 
 export default {
@@ -132,6 +139,7 @@ export default {
         this.defaultgroup = true;
       }
     },
+
   },
   created() {
     this.$message({
