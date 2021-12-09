@@ -78,3 +78,14 @@ class Calendar(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.idgroups'))
     content = db.Column(db.Text)
+
+
+class PhotoPost(db.Model):
+    __tablename__ = 'photo_post'
+    id = db.Column(db.String(45), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.idusers'))
+    group_id = db.Column(db.Integer, db.ForeignKey('groups.idgroups'))
+    caption = db.Column(db.Text)
+    media = db.Column(db.Text)
+    like = db.Column(db.Integer)
+    date_created = db.Column(db.DateTime)

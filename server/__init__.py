@@ -29,4 +29,7 @@ def create_app():
     from .gathering import gathering as gathering_blueprint
     app.register_blueprint(gathering_blueprint)
 
+    from .photowall import photowall as photowall_blueprint
+    app.register_blueprint(photowall_blueprint)
+
     return app
