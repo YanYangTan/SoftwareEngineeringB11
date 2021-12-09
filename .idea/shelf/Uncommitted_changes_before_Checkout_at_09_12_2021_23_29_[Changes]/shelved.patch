@@ -1,0 +1,145 @@
+Index: client/src/components/MainPage.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><template>\r\n  <div id=\"main-page\" style=\"height: 780px;\">\r\n<el-container style=\"height: 100%; border: 1px solid #eee\"> <!-- fix here -->\r\n  <el-aside width=\"200x\" style=\"background-color: rgb(238, 241, 246)\">\r\n    <el-menu :default-openeds=\"['1', '3']\">\r\n      <el-submenu index=\"2\">\r\n        <template slot=\"title\"><i class=\"el-icon-user\"></i>{{this.$route.params.username}}</template>\r\n        <el-menu-item-group>\r\n          <el-menu-item index=\"2-1\">个人信息</el-menu-item>\r\n          <el-menu-item index=\"2-2\"><el-button type=\"text\" style=\"color: crimson\" @click=\"SignIn\">退出登录</el-button></el-menu-item>\r\n        </el-menu-item-group>\r\n      </el-submenu>\r\n      <el-submenu index=\"1\">\r\n        <template slot=\"title\"><i class=\"el-icon-menu\"></i>导航</template>\r\n        <el-menu-item-group>\r\n          <el-menu-item index=\"1-1\"><el-button type=\"text\" style=\"color: black\" @click=\"TurnToGroupList\">群组管理</el-button></el-menu-item>\r\n          <el-menu-item index=\"1-2\">动态管理</el-menu-item>\r\n          <el-menu-item index=\"1-3\">家谱管理</el-menu-item>\r\n          <el-menu-item index=\"1-4\"><el-button type=\"text\" style=\"color: black\" @click=\"TurnToCalender\">日历管理</el-button></el-menu-item>\r\n          <el-menu-item index=\"1-5\"><elbutton type=\"text\" style=\"color: black\" @click=\"TurnToRoulette\">Roulette</elbutton></el-menu-item>\r\n        </el-menu-item-group>\r\n      </el-submenu>\r\n    </el-menu>\r\n  </el-aside>\r\n\r\n  <el-container>\r\n\r\n    <el-main>\r\n<!--      <Calender v-if=\"this.$data.index==='Calender'\"></Calender>-->\r\n      <iframe src=\"/Calender\" v-if=\"this.$data.index==='Calender'\"\r\n              style=\"height: 100%;width: 100%;position: relative;margin-top: -20px;margin-left: -20px;\"></iframe>\r\n      <GroupList v-if=\"this.$data.index==='GroupList'\"></GroupList>\r\n      <Roulette v-if=\"this.$data.index==='Roulette'\"></Roulette>\r\n      <iframe src=\"/Calender\" v-if=\"this.$data.index==='Calender'\" frameborder=”no”\r\n              style=\"height: 100%;width: 105%;position: relative;margin-top: -20px;margin-left: -20px;\"></iframe>\r\n      <GroupList @groupPage='groupInfo' v-if=\"this.$data.index==='GroupList' \"></GroupList>\r\n      <GroupPage v-if=\"this.$data.index==='GroupPage'\" :info=\"this.$data.currentgroup\"></GroupPage>\r\n    </el-main>\r\n  </el-container>\r\n</el-container>\r\n\r\n<!--    <GroupList></GroupList>-->\r\n</div>\r\n\r\n</template>\r\n\r\n<script>\r\nimport axios from 'axios';\r\nimport RegisterPage from './register.vue';\r\nimport GroupList from './GroupList.vue';\r\nimport Calender from './Calender.vue';\r\nimport GroupPage from './GroupPage.vue';\r\nimport Roulette from './roulette.vue';\r\n\r\nexport default {\r\n  name: 'MainPage',\r\n  // props: {\r\n  //   // eslint-disable-next-line vue/require-prop-type-constructor\r\n  //   userid: {\r\n  //     type: Number,\r\n  //     default: 1234,\r\n  //   },\r\n  // },\r\n  components: {\r\n    // eslint-disable-next-line vue/no-unused-components\r\n    RegisterPage,\r\n    // eslint-disable-next-line vue/no-unused-components\r\n    Calender,\r\n    // eslint-disable-next-line vue/no-unused-components\r\n    GroupList,\r\n    GroupPage,\r\n    // eslint-disable-next-line vue/no-unused-components\r\n    Roulette,\r\n  },\r\n  data() {\r\n    return {\r\n      // userid: '',\r\n      msg: '',\r\n      index: 'GroupList',\r\n      currentgroup: {},\r\n    };\r\n  },\r\n  methods: {\r\n    groupInfo(ev) {\r\n      this.currentgroup = ev;\r\n      this.$data.index = 'GroupPage';\r\n      console.log(this.currentgroup);\r\n    },\r\n    getMessage() {\r\n      const path = '/api/success';\r\n      axios.get(path)\r\n        .then((res) => {\r\n          this.msg = res.data;\r\n        })\r\n        .catch((error) => {\r\n          console.error(error);\r\n        });\r\n    },\r\n    SignIn() {\r\n      this.$router.push('/');\r\n    },\r\n    TurnToGroupList() {\r\n      this.$data.index = 'GroupList';\r\n    },\r\n    TurnToCalender() {\r\n      this.$data.index = 'Calender';\r\n    },\r\n    TurnToRoulette() {\r\n      this.$data.index = 'Roulette';\r\n    },\r\n  },\r\n  created() {\r\n    this.getMessage();\r\n  },\r\n};\r\n</script>\r\n<style>\r\n#main-page{\r\n  background: #fff6f9;\r\n}\r\n</style>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/client/src/components/MainPage.vue b/client/src/components/MainPage.vue
+--- a/client/src/components/MainPage.vue	
++++ b/client/src/components/MainPage.vue	
+@@ -29,7 +29,6 @@
+ <!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
+       <iframe src="/Calender" v-if="this.$data.index==='Calender'"
+               style="height: 100%;width: 100%;position: relative;margin-top: -20px;margin-left: -20px;"></iframe>
+-      <GroupList v-if="this.$data.index==='GroupList'"></GroupList>
+       <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
+       <iframe src="/Calender" v-if="this.$data.index==='Calender'" frameborder=”no”
+               style="height: 100%;width: 105%;position: relative;margin-top: -20px;margin-left: -20px;"></iframe>
+Index: client/src/components/roulette.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><template>\r\n  <div>\r\n    <el-card>\r\n      <el-header>\r\n        <p>{{chosenName}}</p>\r\n      </el-header>\r\n        <el-input placeholder=\"Please input\" v-model=\"list\"></el-input>\r\n      <el-button @click=\"locationPicker\">Choose</el-button>\r\n    </el-card>\r\n  </div>\r\n</template>\r\n\r\n<script>\r\n\r\nexport default {\r\n  name: 'roulette',\r\n  data() {\r\n    return {\r\n      list: '',\r\n      locationNames: '',\r\n      chosenName: '',\r\n    };\r\n  },\r\n  methods: {\r\n    locationPicker() {\r\n      this.locationNames = this.list.split(',');\r\n      this.locationNames = this.list.split('，');\r\n      const chosenNumber = Math.floor(Math.random() * this.locationNames.length);\r\n      this.chosenName = this.locationNames[chosenNumber];\r\n    },\r\n  },\r\n};\r\n</script>\r\n
+===================================================================
+diff --git a/client/src/components/roulette.vue b/client/src/components/roulette.vue
+--- a/client/src/components/roulette.vue	
++++ b/client/src/components/roulette.vue	
+@@ -4,7 +4,8 @@
+       <el-header>
+         <p>{{chosenName}}</p>
+       </el-header>
+-        <el-input placeholder="Please input" v-model="list"></el-input>
++      <el-input type="textarea" :autosize="{ minRows: 4}" placeholder="Please input" v-model="list">
++</el-input>
+       <el-button @click="locationPicker">Choose</el-button>
+     </el-card>
+   </div>
+@@ -23,8 +24,7 @@
+   },
+   methods: {
+     locationPicker() {
+-      this.locationNames = this.list.split(',');
+-      this.locationNames = this.list.split('，');
++      this.locationNames = this.list.split(/,|，| |\n/);
+       const chosenNumber = Math.floor(Math.random() * this.locationNames.length);
+       this.chosenName = this.locationNames[chosenNumber];
+     },
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"22b59752-c4b2-4623-b2b9-c4a90ed5453f\" name=\"Changes\" comment=\"somehow had to fix it again??\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_24_11_2021_10_43__Changes_.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_24_11_2021_10_43__Changes_.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"package.json\" />\r\n        <option value=\"Vue Single File Component\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <favorite-branches>\r\n      <branch-storage>\r\n        <map>\r\n          <entry type=\"LOCAL\">\r\n            <value>\r\n              <list>\r\n                <branch-info repo=\"$PROJECT_DIR$\" source=\"K\" />\r\n                <branch-info repo=\"$PROJECT_DIR$\" source=\"frontend\" />\r\n              </list>\r\n            </value>\r\n          </entry>\r\n        </map>\r\n      </branch-storage>\r\n    </favorite-branches>\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"K\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n    <option name=\"RESET_MODE\" value=\"HARD\" />\r\n    <option name=\"UPDATE_TYPE\" value=\"REBASE\" />\r\n  </component>\r\n  <component name=\"GitToolBoxStore\">\r\n    <option name=\"recentBranches\">\r\n      <RecentBranches>\r\n        <option name=\"branchesForRepo\">\r\n          <list>\r\n            <RecentBranchesForRepo>\r\n              <option name=\"branches\">\r\n                <list>\r\n                  <RecentBranch>\r\n                    <option name=\"branchName\" value=\"frontend\" />\r\n                    <option name=\"lastUsedInstant\" value=\"1638639897\" />\r\n                  </RecentBranch>\r\n                  <RecentBranch>\r\n                    <option name=\"branchName\" value=\"K\" />\r\n                    <option name=\"lastUsedInstant\" value=\"1636476154\" />\r\n                  </RecentBranch>\r\n                  <RecentBranch>\r\n                    <option name=\"branchName\" value=\"Yy\" />\r\n                    <option name=\"lastUsedInstant\" value=\"1636476062\" />\r\n                  </RecentBranch>\r\n                </list>\r\n              </option>\r\n              <option name=\"repositoryRootUrl\" value=\"file://$PROJECT_DIR$\" />\r\n            </RecentBranchesForRepo>\r\n          </list>\r\n        </option>\r\n      </RecentBranches>\r\n    </option>\r\n  </component>\r\n  <component name=\"HighlightingSettingsPerFile\">\r\n    <setting file=\"file://$PROJECT_DIR$/client/src/router/index.js\" root0=\"SKIP_INSPECTION\" />\r\n  </component>\r\n  <component name=\"ProblemsViewState\">\r\n    <option name=\"sortByName\" value=\"true\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"20gmyH2pbFfAtH2Zp4sj59qvg8h\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <OptionsSetting value=\"false\" id=\"Update\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"DatabaseDriversLRU\" value=\"mysql\" />\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n    <property name=\"WebServerToolWindowFactoryState\" value=\"false\" />\r\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$/server\" />\r\n    <property name=\"node.js.detected.package.eslint\" value=\"true\" />\r\n    <property name=\"node.js.selected.package.eslint\" value=\"(autodetect)\" />\r\n    <property name=\"nodejs_package_manager_path\" value=\"npm\" />\r\n    <property name=\"settings.editor.selected.configurable\" value=\"preferences.sourceCode.CSS\" />\r\n    <property name=\"vue.rearranger.settings.migration\" value=\"true\" />\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"22b59752-c4b2-4623-b2b9-c4a90ed5453f\" name=\"Changes\" comment=\"\" />\r\n      <created>1636474864464</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1636474864464</updated>\r\n      <workItem from=\"1636474869678\" duration=\"481000\" />\r\n      <workItem from=\"1636475362092\" duration=\"9314000\" />\r\n      <workItem from=\"1637243923379\" duration=\"10420000\" />\r\n      <workItem from=\"1637721771271\" duration=\"483000\" />\r\n      <workItem from=\"1638632602959\" duration=\"3496000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"changed password\">\r\n      <created>1636475865557</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1636475865557</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"somehow had to fix it again??\">\r\n      <created>1638640217579</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638640217579</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"somehow had to fix it again??\">\r\n      <created>1638640234753</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638640234753</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"4\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State>\r\n              <option name=\"FILTERS\">\r\n                <map>\r\n                  <entry key=\"user\">\r\n                    <value>\r\n                      <list>\r\n                        <option value=\"*\" />\r\n                      </list>\r\n                    </value>\r\n                  </entry>\r\n                </map>\r\n              </option>\r\n            </State>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_FILTERS\">\r\n      <map>\r\n        <entry key=\"User\">\r\n          <value>\r\n            <list>\r\n              <RecentGroup>\r\n                <option name=\"FILTER_VALUES\">\r\n                  <option value=\"*\" />\r\n                </option>\r\n              </RecentGroup>\r\n            </list>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n    <option name=\"oldMeFiltersMigrated\" value=\"true\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"changed password\" />\r\n    <MESSAGE value=\"somehow had to fix it again??\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"somehow had to fix it again??\" />\r\n    <option name=\"GROUP_MULTIFILE_MERGE_BY_DIRECTORY\" value=\"true\" />\r\n  </component>\r\n</project>
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	
++++ b/.idea/workspace.xml	
+@@ -1,9 +1,19 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ChangeListManager">
+-    <list default="true" id="22b59752-c4b2-4623-b2b9-c4a90ed5453f" name="Changes" comment="somehow had to fix it again??">
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_24_11_2021_10_43__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_24_11_2021_10_43__Changes_.xml" afterDir="false" />
++    <list default="true" id="22b59752-c4b2-4623-b2b9-c4a90ed5453f" name="Changes" comment="">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/client/src/components/Calender.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Calender.vue" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/client/src/components/GenealogyPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/GenealogyPage.vue" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/client/src/components/GroupPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/GroupPage.vue" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/client/src/components/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Home.vue" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/client/src/components/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Login.vue" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/client/src/components/MainPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/MainPage.vue" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/client/src/components/MemberList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/MemberList.vue" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/client/src/components/register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/register.vue" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/client/src/components/roulette.vue" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/roulette.vue" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/client/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/client/vue.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/vue.config.js" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -33,6 +43,11 @@
+         </map>
+       </branch-storage>
+     </favorite-branches>
++    <option name="PREVIOUS_COMMIT_AUTHORS">
++      <list>
++        <option value="zergrisk1 &lt;80167158+zergrisk1@users.noreply.github.com&gt;" />
++      </list>
++    </option>
+     <option name="RECENT_BRANCH_BY_REPOSITORY">
+       <map>
+         <entry key="$PROJECT_DIR$" value="K" />
+@@ -110,6 +125,8 @@
+       <workItem from="1637243923379" duration="10420000" />
+       <workItem from="1637721771271" duration="483000" />
+       <workItem from="1638632602959" duration="3496000" />
++      <workItem from="1638690159403" duration="2694000" />
++      <workItem from="1639062361714" duration="449000" />
+     </task>
+     <task id="LOCAL-00001" summary="changed password">
+       <created>1636475865557</created>
+@@ -132,7 +149,14 @@
+       <option name="project" value="LOCAL" />
+       <updated>1638640234753</updated>
+     </task>
+-    <option name="localTasksCounter" value="4" />
++    <task id="LOCAL-00004" summary="群组管理基本功能">
++      <created>1638691260599</created>
++      <option name="number" value="00004" />
++      <option name="presentableId" value="LOCAL-00004" />
++      <option name="project" value="LOCAL" />
++      <updated>1638691260599</updated>
++    </task>
++    <option name="localTasksCounter" value="5" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -143,19 +167,7 @@
+       <map>
+         <entry key="MAIN">
+           <value>
+-            <State>
+-              <option name="FILTERS">
+-                <map>
+-                  <entry key="user">
+-                    <value>
+-                      <list>
+-                        <option value="*" />
+-                      </list>
+-                    </value>
+-                  </entry>
+-                </map>
+-              </option>
+-            </State>
++            <State />
+           </value>
+         </entry>
+       </map>
+@@ -180,7 +192,8 @@
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="changed password" />
+     <MESSAGE value="somehow had to fix it again??" />
+-    <option name="LAST_COMMIT_MESSAGE" value="somehow had to fix it again??" />
++    <MESSAGE value="群组管理基本功能" />
++    <option name="LAST_COMMIT_MESSAGE" value="群组管理基本功能" />
+     <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
+   </component>
+ </project>
+\ No newline at end of file

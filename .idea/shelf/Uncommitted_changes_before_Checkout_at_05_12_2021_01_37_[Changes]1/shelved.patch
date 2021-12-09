@@ -1,0 +1,26 @@
+Index: client/src/main.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import BootstrapVue from 'bootstrap-vue';\r\nimport Vue from 'vue';\r\n// eslint-disable-next-line import/no-extraneous-dependencies\r\nimport Vuetify from 'vuetify';\r\nimport DaySpanVuetify from 'dayspan-vuetify';\r\nimport Roller from 'vue-roller';\r\nimport App from './App.vue';\r\nimport router from './router';\r\nimport 'bootstrap/dist/css/bootstrap.css';\r\nimport '@/assets/css/main.css';\r\n// eslint-disable-next-line import/order\r\nimport ElementUI from 'element-ui';\r\nimport 'element-ui/lib/theme-chalk/index.css';\r\n// eslint-disable-next-line import/no-extraneous-dependencies\r\nimport 'vuetify/dist/vuetify.min.css';\r\n// eslint-disable-next-line import/no-extraneous-dependencies\r\nimport 'material-design-icons-iconfont/dist/material-design-icons.css';\r\nimport 'dayspan-vuetify/dist/lib/dayspan-vuetify.min.css';\r\n\r\nVue.use(ElementUI);\r\nVue.use(BootstrapVue);\r\nVue.use(Vuetify);\r\nVue.use(DaySpanVuetify, {\r\n  methods: {\r\n    getDefaultEventColor: () => '#1976d2',\r\n  },\r\n});\r\nVue.config.productionTip = false;\r\nVue.use(Roller);\r\n\r\nnew Vue({\r\n  router,\r\n  render: (h) => h(App),\r\n}).$mount('#app');\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/client/src/main.js b/client/src/main.js
+--- a/client/src/main.js	
++++ b/client/src/main.js	
+@@ -3,7 +3,6 @@
+ // eslint-disable-next-line import/no-extraneous-dependencies
+ import Vuetify from 'vuetify';
+ import DaySpanVuetify from 'dayspan-vuetify';
+-import Roller from 'vue-roller';
+ import App from './App.vue';
+ import router from './router';
+ import 'bootstrap/dist/css/bootstrap.css';
+@@ -26,7 +25,6 @@
+   },
+ });
+ Vue.config.productionTip = false;
+-Vue.use(Roller);
+ 
+ new Vue({
+   router,

@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< Updated upstream
     <list default="true" id="22b59752-c4b2-4623-b2b9-c4a90ed5453f" name="Changes" comment="somehow had to fix it again??">
       <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_24_11_2021_10_43__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_24_11_2021_10_43__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
+=======
+    <list default="true" id="22b59752-c4b2-4623-b2b9-c4a90ed5453f" name="Changes" comment="群组管理基本功能" />
+>>>>>>> Stashed changes
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+<<<<<<< Updated upstream
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -42,6 +47,8 @@
     <option name="RESET_MODE" value="HARD" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
+=======
+>>>>>>> Stashed changes
   <component name="GitToolBoxStore">
     <option name="recentBranches">
       <RecentBranches>
@@ -52,6 +59,7 @@
                 <list>
                   <RecentBranch>
                     <option name="branchName" value="frontend" />
+<<<<<<< Updated upstream
                     <option name="lastUsedInstant" value="1638639897" />
                   </RecentBranch>
                   <RecentBranch>
@@ -61,6 +69,13 @@
                   <RecentBranch>
                     <option name="branchName" value="Yy" />
                     <option name="lastUsedInstant" value="1636476062" />
+=======
+                    <option name="lastUsedInstant" value="1639064438" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="experiment" />
+                    <option name="lastUsedInstant" value="1639064437" />
+>>>>>>> Stashed changes
                   </RecentBranch>
                 </list>
               </option>
@@ -74,10 +89,13 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/client/src/router/index.js" root0="SKIP_INSPECTION" />
   </component>
+<<<<<<< Updated upstream
   <component name="ProblemsViewState">
     <option name="sortByName" value="true" />
   </component>
   <component name="ProjectId" id="20gmyH2pbFfAtH2Zp4sj59qvg8h" />
+=======
+>>>>>>> Stashed changes
   <component name="ProjectLevelVcsManager">
     <OptionsSetting value="false" id="Update" />
   </component>
@@ -85,6 +103,7 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< Updated upstream
   <component name="PropertiesComponent">
     <property name="DatabaseDriversLRU" value="mysql" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
@@ -133,6 +152,10 @@
       <updated>1638640234753</updated>
     </task>
     <option name="localTasksCounter" value="4" />
+=======
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+>>>>>>> Stashed changes
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -146,10 +169,17 @@
             <State>
               <option name="FILTERS">
                 <map>
+<<<<<<< Updated upstream
                   <entry key="user">
                     <value>
                       <list>
                         <option value="*" />
+=======
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="baichenghuan" />
+>>>>>>> Stashed changes
                       </list>
                     </value>
                   </entry>
@@ -160,6 +190,7 @@
         </entry>
       </map>
     </option>
+<<<<<<< Updated upstream
     <option name="RECENT_FILTERS">
       <map>
         <entry key="User">
@@ -183,4 +214,8 @@
     <option name="LAST_COMMIT_MESSAGE" value="somehow had to fix it again??" />
     <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
   </component>
+=======
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+>>>>>>> Stashed changes
 </project>
