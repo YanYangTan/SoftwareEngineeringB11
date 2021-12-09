@@ -23,8 +23,7 @@ export default {
   },
   methods: {
     locationPicker() {
-      this.locationNames = this.list.split(',');
-      this.locationNames = this.list.split('，');
+      this.locationNames = this.list.split(/,| |，|\n/);
       const chosenNumber = Math.floor(Math.random() * this.locationNames.length);
       this.chosenName = this.locationNames[chosenNumber];
     },
