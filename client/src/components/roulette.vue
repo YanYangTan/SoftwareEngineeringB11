@@ -4,7 +4,7 @@
       <div id="chosen">
         <p>{{chosenName}}ᅠ</p>
       </div>
-        <el-input id="entries" placeholder="Please input" v-model="list"></el-input>
+        <el-input id="entries" type="textarea" :autosize="{minRows:2, maxRows:9}" placeholder="Please input" v-model="list"></el-input>
       <el-button id="choose-button" @click="locationPicker">Choose</el-button>
     </el-card>
   </div>
@@ -28,7 +28,7 @@
   padding: 100px 0 100px 0;
 }
 #entries{
-  height: 200px !important;
+  max-height: 200px;
   padding: 0 0 10px 0;
   text-align: center;
 }
