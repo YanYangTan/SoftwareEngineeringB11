@@ -16,7 +16,8 @@ html,
 .vertical-center {
   width: 100%;
   height: 100%;
-  overflow: hidden !important;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .bg {

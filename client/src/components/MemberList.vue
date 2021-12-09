@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     handleEdit(index, row) {
-      console.log(index, row);
+      console.log(row);
     },
     handleDelete(index, row) {
       axios.post('/api/remove-member', { group_id: this.$props.info.id, user_id: row.id })
