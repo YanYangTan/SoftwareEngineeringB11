@@ -1,22 +1,31 @@
 <template>
   <div id="main-page" style="height: 780px;">
 <el-container style="height: 100%; border: 1px solid #eee"> <!-- fix here -->
-  <el-aside width="200x" style="background-color: rgb(238, 241, 246)">
-    <el-menu :default-openeds="['1', '3']">
-      <el-submenu index="2">
+    <el-aside width="200x" style="background-color: rgb(238, 241, 246)">
+    <el-menu :default-openeds="['2', '3']">
+      <el-submenu index="1">
         <template slot="title"><i class="el-icon-user"></i>{{this.$route.params.username}}</template>
         <el-menu-item-group>
           <el-menu-item index="2-1">个人信息</el-menu-item>
-          <el-menu-item index="2-2"><el-button type="text" style="color: crimson" @click="SignIn">退出登录</el-button></el-menu-item>
+          <el-menu-item index="2-2" @click="SignIn"><el-button type="text" style="color: crimson" @click="SignIn">退出登录</el-button></el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu index="1">
-        <template slot="title"><i class="el-icon-menu"></i>导航</template>
+      <el-submenu index="2">
+        <template slot="title"><i class="el-icon-menu"></i>目录</template>
         <el-menu-item-group>
-          <el-menu-item index="1-1"><el-button type="text" style="color: black" @click="TurnToGroupList">群组管理</el-button></el-menu-item>
-          <el-menu-item index="1-2">动态管理</el-menu-item>
-          <el-menu-item index="1-3">家谱管理</el-menu-item>
-          <el-menu-item index="1-4"><el-button type="text" style="color: black" @click="TurnToCalender">日历管理</el-button></el-menu-item>
+          <el-menu-item index="1-2" @click="TurnToGroupList">群组目录</el-menu-item>
+          <el-submenu index="3">
+          <template slot="title"><img src="../assets/logo.png" alt="归雁" width="30px" >{{currentgroup.group_name}}</template>
+            <el-menu-item index="1-2-1" @click="TurnToGroupPage">成员管理</el-menu-item>
+            <el-menu-item index="1-2-2" @click="TurnToCalender">日历管理</el-menu-item>
+            <el-menu-item index="1-2-3" >聚会管理</el-menu-item>
+            <el-menu-item index="1-2-4" @click="TurnToImageWall">照片墙</el-menu-item>
+            </el-submenu>
+
+          <el-menu-item index="1-2" @click="TurnToCalender">日历管理</el-menu-item>
+          <el-menu-item index="1-3" >聚会管理</el-menu-item>
+          <el-menu-item index="1-4" @click="TurnToImageWall">照片墙</el-menu-item>
+          <el-menu-item index="1-5" @click="TurnToRoulette">随机轮盘</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
@@ -28,8 +37,10 @@
 <!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
       <iframe src="/Calender" v-if="this.$data.index==='Calender'" frameborder=”no”
               style="height: 100%;width: 105%;position: relative;margin-top: -20px;margin-left: -20px;"></iframe>
-      <GroupList @groupPage='groupInfo' v-if="this.$data.index==='GroupList' "></GroupList>
-      <GroupPage v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
+      <GroupList @groupPage='groupInfo' @defaultGroup="defaultedGroup" v-if="this.$data.index==='GroupList' "></GroupList>
+      <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
+      <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
+      <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
     </el-main>
   </el-container>
 </el-container>
@@ -45,6 +56,8 @@ import RegisterPage from './register.vue';
 import GroupList from './GroupList.vue';
 import Calender from './Calender.vue';
 import GroupPage from './GroupPage.vue';
+import ImageWall from './ImageWall.vue';
+import Roulette from './roulette.vue';
 
 export default {
   name: 'MainPage',
@@ -56,6 +69,7 @@ export default {
   //   },
   // },
   components: {
+    ImageWall,
     // eslint-disable-next-line vue/no-unused-components
     RegisterPage,
     // eslint-disable-next-line vue/no-unused-components
@@ -63,12 +77,15 @@ export default {
     // eslint-disable-next-line vue/no-unused-components
     GroupList,
     GroupPage,
+    // eslint-disable-next-line vue/no-unused-components
+    Roulette,
   },
   data() {
     return {
       // userid: '',
       msg: '',
       index: 'GroupList',
+      defaultgroup: false,
       currentgroup: {},
     };
   },
@@ -77,6 +94,12 @@ export default {
       this.currentgroup = ev;
       this.$data.index = 'GroupPage';
       console.log(this.currentgroup);
+    },
+    BackToGroupList() {
+      this.$data.index = 'GroupList';
+    },
+    TurnToImageWall() {
+      this.index = 'ImageWall';
     },
     getMessage() {
       const path = '/api/success';
@@ -97,14 +120,30 @@ export default {
     TurnToCalender() {
       this.$data.index = 'Calender';
     },
+    TurnToRoulette() {
+      this.$data.index = 'Roulette';
+    },
+    TurnToGroupPage() {
+      this.$data.index = 'GroupPage';
+    },
+    defaultedGroup(ev) {
+      if (this.defaultgroup === false) {
+        this.currentgroup = ev;
+        this.defaultgroup = true;
+      }
+    },
   },
   created() {
+    this.$message({
+      type: 'success',
+      message: `${this.$route.params.username} ，欢迎来到归雁`,
+    });
     this.getMessage();
   },
 };
 </script>
 <style>
 #main-page{
-  background: #fff6f9;
+  background: #d5e8ff;
 }
 </style>

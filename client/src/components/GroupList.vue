@@ -9,12 +9,12 @@
           <el-card :body-style="{ padding: '0px 0px' }" >
 
             <div slot="header">
-              <img src="../assets/logo.png" style="width:100px;height:100px;" class="head_audio" />
+              <img src="../assets/logo.png" style="width:100px;height:100px;" @click="groupPage(item)" class="head_audio" />
             </div>
             <!-- here to fix text -->
-            <span style="font-size: 15px;">{{item.group_name}}</span>
+<!--            <span style="font-size: 15px;">{{item.group_name}}</span>-->
             <el-button size="mini" icon="el-icon-edit-outline" style="padding: 1px 1px;" type="text"
-                       class="button" @click="groupPage(item)">访问</el-button>
+                       class="button" @click="groupPage(item)">{{item.group_name}}</el-button>
           </el-card>
         </el-col>
       </el-row>
@@ -49,6 +49,7 @@ export default {
               //               data { status, message, group_list }
               // group_list [{ “id：群组ID”, “group_name：群组名字”, “admin”：用户是否是群主},...]
               this.grouplist = res.data.group_list;
+              this.$emit('defaultGroup', this.grouplist[0]);
             }
           })
           .catch((err) => {
@@ -87,7 +88,33 @@ export default {
         });
       },
       joinGroup() {
-
+        this.$prompt('输入邀请码', '加入', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(({ value }) => {
+          axios.post('/api/join-group', { user_id: this.$route.params.userid, invite_key: value })
+            .then((res) => {
+              // eslint-disable-next-line no-unused-vars
+              let str;
+              if (res.data.status) {
+                this.getQuery();
+              } else {
+                str = '加入失败';
+              }
+              this.$message({
+                type: 'success',
+                message: str,
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入',
+          });
+        });
       },
     },
   created() {

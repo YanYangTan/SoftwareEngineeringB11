@@ -1,6 +1,14 @@
 <template>
   <el-container>
-  <el-header><h1>{{this.$props.info.group_name}}</h1></el-header>
+  <el-header>
+    <el-container>
+    <el-button
+      style="width: 50px;margin-right: 30px;"
+      icon="el-icon-back"
+      @click="BackToGroupList" circle></el-button>
+    <h1>{{this.$props.info.group_name}}</h1>
+    </el-container>
+  </el-header>
   <el-container>
     <el-aside width="300px">
       <MemberList :info="this.$props.info"></MemberList>
@@ -9,6 +17,9 @@
       <GenealogyPage></GenealogyPage>
     </el-main>
   </el-container>
+    <el-footer >
+       <el-button style="position: absolute; bottom: 10px; right: 10px;" v-if="this.$props.info.admin" type="danger" icon="el-icon-delete"  @click="DeleteGroup">删除群</el-button>
+    </el-footer>
 </el-container>
 </template>
 
@@ -44,6 +55,20 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+    DeleteGroup() {
+      axios.post('/api/delete-group', { group_id: this.$props.info.id })
+        .then((res) => {
+          if (res.data.status) {
+            this.$emit('BacktoGroupList');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    BackToGroupList() {
+      this.$emit('BacktoGroupList');
     },
   },
   created() {
