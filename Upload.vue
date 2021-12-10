@@ -41,20 +41,9 @@ export default {
   },
   methods: {
     getPic() {
-      axios({
-        method: 'get',
-        params: {
-          img_src: this.img_src,
-        },
-        url: '/api/get-image',
-        responseType: 'arraybuffer',
-      }).then((res) => {
-        console.log(res);
-        // eslint-disable-next-line prefer-template
-        this.picurl = 'data:image/jpeg;base64,' + this.arrayBufferToBase64(res.data);
-      }).catch((err) => {
-        console.log(err);
-      });
+      // eslint-disable-next-line prefer-template
+      this.picurl = '/api/show/' + this.group_id + '/' + this.img_src;
+      console.log(this.picurl);
     },
     arrayBufferToBase64(buffer) {
       let binary = '';
