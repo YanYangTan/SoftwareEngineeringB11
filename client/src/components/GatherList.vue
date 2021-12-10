@@ -13,6 +13,7 @@
     <el-form-item label="截止时间">
     <el-date-picker
       v-model="gathering.enddate"
+      value-format="yyyy-MM-dd HH:mm:ss"
       type="datetime"
       placeholder="选择日期时间">
     </el-date-picker>
@@ -39,6 +40,7 @@
       <el-date-picker
       v-model="domain.time"
       type="datetime"
+      value-format="yyyy-MM-dd HH:mm:ss"
       placeholder="选择日期时间">
     </el-date-picker>
     </el-col>
@@ -56,13 +58,102 @@
   </div>
 </el-dialog>
 <!--    -->
+    <el-dialog :title="this.gatheringdialogtitle" :visible.sync="voteFormVisible">
+      <el-table
+    :data="this.contents.options"
+    style="width: 100%"
+      v-loading="loading">
+        <el-table-column
+      label="截止日期"
+      prop="content.time">
+    </el-table-column>
+        <el-table-column
+      label="场所"
+      prop="content.location">
+    </el-table-column>
+        <el-table-column
+        prop="voted">
+<!-- ---------------------------- vote ------------------------------------------------------------>
+<!--       <div v-if="this.gatheringdialogtitle==='投票'">-->
+          <template slot="header" slot-scope={}>
+<el-checkbox :indeterminate="isIndeterminate">全选</el-checkbox>
+      </template>
+      <template slot-scope="scope">
+    <el-checkbox @change="changeIt()" v-model="scope.row.voted">投票</el-checkbox>
+      </template></el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+    <el-button @click="voteFormVisible = false">取 消</el-button>
+    <el-button type="primary" >{{this.gatheringdialogtitle}}</el-button>
+  </div>
+    </el-dialog>
+<!--                </div>-->
+<!-- ---------------------------- tiyi ------------------------------------------------------------>
+
+    <el-dialog :title="this.gatheringdialogtitle" :visible.sync="suggestionFormVisible">
+      <el-table
+    :data="this.contents.options"
+    style="width: 100%"
+      v-loading="loading">
+        <el-table-column
+      label="截止日期"
+      prop="content.time">
+    </el-table-column>
+        <el-table-column
+      label="场所"
+      prop="content.location">
+    </el-table-column>
+        <el-table-column
+      label="提议人"
+      prop="username">
+    </el-table-column>
+        <el-table-column
+        prop="voted">
+        </el-table-column>
+      </el-table>
+      <div v-if="this.gatheringdialogtitle==='提议'" >
+          <el-form :model="temp">
+        <el-form-item label="内容" :label-width="formLabelWidth">
+  <el-form-item
+    v-for="(domain, index) in  gathering.content"
+    :label="'方案 ' + index"
+    :key="domain.key"
+    :rules="{
+      required: true, message: '不能为空', trigger: 'blur'
+    }"
+  >
+    <el-col :span="11">
+      <el-date-picker
+      v-model="domain.time"
+      type="datetime"
+      value-format="yyyy-MM-dd HH:mm:ss"
+      placeholder="选择日期时间">
+    </el-date-picker>
+    </el-col>
+    <el-input v-model="domain.location"></el-input><el-button @click.prevent="removeDomain(domain)">删除</el-button>
+  </el-form-item>
+  <el-form-item>
+    <el-button @click="addDomain">新建内容</el-button>
+    <el-button @click="resetForm">重置</el-button>
+  </el-form-item>
+    </el-form-item>
+          </el-form>
+          </div>
+      <div slot="footer" class="dialog-footer">
+    <el-button @click="suggestionFormVisible = false">取 消</el-button>
+    <el-button type="primary" @click="confirmContent">{{this.gatheringdialogtitle}}</el-button>
+  </div>
+    </el-dialog>
+<!--    -->
     <el-input
           v-model="search"
           size="mini"
           placeholder="输入关键字搜索"/>
+    <el-card>
   <el-table
     :data="this.gatherlist.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
-    style="width: 100%">
+    style="width: 100%"
+  v-loading="loading">
     <el-table-column
       label="截止日期"
       prop="enddate">
@@ -92,15 +183,16 @@
       :filter-method="filterTag"
       filter-placement="bottom-end">
       <template slot-scope="scope">
-        <el-tag @click="clicktag()"
+        <el-tag @click="tagClickedSuggestion(scope.row)"
           type='primary'
           v-if="scope.row.status" disable-transitions>提议</el-tag>
-        <el-tag @click="clicktag()"
+        <el-tag @click="tagClickedVote(scope.row)"
           type='success'
           v-else-if="scope.row.status=== false" disable-transitions>投票</el-tag>
       </template>
     </el-table-column>
   </el-table>
+      </el-card>
     </div>
 </template>
 
@@ -110,9 +202,14 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      loading: true,
       gatherlist: [],
+      contents: {},
       addingcontent: false,
       dialogFormVisible: false,
+      voteFormVisible: false,
+      suggestionFormVisible: false,
+      check: true,
       gathering: {
         user_id: '',
         group_id: '',
@@ -133,28 +230,12 @@ export default {
         resource: '',
         desc: '',
       },
+      gatheringdialogtitle: '',
+      currentgathering: {},
+      isvoted: false,
       formLabelWidth: '120px',
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        tag: '加',
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄',
-        tag: '投票',
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄',
-        tag: '提议',
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄',
-      }],
       search: '',
+      submitsuggest: {},
     };
   },
   props: {
@@ -171,8 +252,10 @@ export default {
       return row.status === value;
     },
     queryAllGathering() {
+      this.loading = true;
       axios.post('/api/query-all-gathering', { group_id: this.$props.currentgroup.id })
         .then((res) => {
+          this.loading = false;
           if (res.data.status) {
             this.gatherlist = res.data.gathering_list;
             // appendTag();
@@ -207,11 +290,12 @@ export default {
       });
     },
     confirmGathering() {
+      this.dialogFormVisible = false;
       this.gathering.group_id = this.$props.currentgroup.id;
       this.gathering.user_id = this.$route.params.userid;
-      // this.dateFormatting(this.gathering.enddate);
-      this.gathering.enddate = '2021-12-15 20:00:00';
       this.gathering.status = this.gathering.status === '提议';
+      // this.gathering.status = '1';
+      console.log(this.gathering);
       axios.post('/api/create-gathering', {
         user_id: this.gathering.user_id,
         group_id: this.gathering.group_id,
@@ -234,12 +318,85 @@ export default {
         .catch((err) => {
           console.log(err);
         });
-      this.gathering.status = '提议';
     },
-    dateFormatting() {
-      // eslint-disable-next-line no-unused-expressions,no-param-reassign
-      // date.substr(4, 6);
-      // console.log(date);
+    confirmContent() {
+      this.gathering.user_id = this.$route.params.userid;
+      // this.contents.options.push(this.gathering.content);
+      // eslint-disable-next-line no-restricted-syntax
+      for (const item of this.contents.options) {
+        this.gathering.content.push(item.content);
+      }
+      axios.post('/api/save-suggestion', {
+        gathering_id: this.currentgathering.id,
+        user_id: this.gathering.user_id,
+        content: this.gathering.content,
+      })
+        .then((res) => {
+          if (res.data.status) {
+            console.log(res.data.message);
+            // this.tagClickedSuggestion(this.currentgathering);
+            this.suggestionFormVisible = false;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      this.gathering.content = [];
+    },
+    changeIt() {
+      console.log(this.contents);
+    },
+    tagClickedVote(row) {
+      console.log(row);
+      axios.post('/api/check-vote', { user_id: this.$route.params.userid, gathering_id: row.id })
+        // eslint-disable-next-line consistent-return
+        .then((res) => {
+          if (res.data.status) {
+            this.isvoted = res.data.voted;
+            if (this.isvoted === true) {
+              this.$message({
+                type: 'warning',
+                message: '你已投票',
+              });
+            } else {
+              this.loading = true;
+              axios.post('/api/query-gathering', { gathering_id: row.id })
+                .then((res1) => {
+                  this.loading = false;
+                  if (res1.data.status) {
+                    this.contents = res1.data;
+                    console.log(this.contents);
+                    this.currentgathering = row;
+                    this.voteFormVisible = true;
+                    this.gatheringdialogtitle = '投票';
+                  }
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    tagClickedSuggestion(row) {
+      this.loading = true;
+      axios.post('/api/query-gathering', { gathering_id: row.id })
+        .then((res) => {
+          this.loading = false;
+          if (res.data.status) {
+            this.contents = res.data;
+            console.log(this.contents);
+            this.currentgathering = row;
+            this.suggestionFormVisible = true;
+            this.gatheringdialogtitle = '提议';
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
   created() {
