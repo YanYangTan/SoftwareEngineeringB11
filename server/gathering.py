@@ -497,3 +497,42 @@ def check_vote():
             response_object['message'] = "Query success!"
             response_object['voted'] = voted
     return jsonify(response_object)
+
+
+@gathering.route('/delete-gathering', methods=['GET', 'POST'])
+def delete_gathering():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        gathering_id = post_data.get('gathering_id')
+        user_id = post_data.get('user_id')
+    response_object = {}
+    response_object['status'] = False
+
+    gathering = Gathering.query.filter_by(id=gathering_id).first()
+    user = User.query.filter_by(idusers=user_id).first()
+    if not gathering:
+        response_object['message'] = "Error: Gathering does not exist!"
+    elif not user:
+        response_object['message'] = "Error: User does not exist!"
+    elif user_id != gathering.user_id:
+        response_object['message'] = "Error: User not creator of gathering!"
+    else:
+        for rel in gathering.relation_gathering:
+            if gathering.status:
+                tmp = Suggestion.query.filter_by(id=rel.suggestion_id).first()
+                if tmp:
+                    db.session.delete(tmp)
+            else:
+                tmp = VoteOptions.query.filter_by(id=rel.vote_id).first()
+                if tmp:
+                    db.session.delete(tmp)
+            db.session.delete(rel)
+        db.session.delete(gathering)
+        try:
+            db.session.commit()
+            response_object['status'] = True
+            response_object['message'] = "Successfully deleted!"
+        except Exception as e:
+            print(e)
+            response_object['messgae'] = "Failed to delete"
+    return jsonify(response_object)
