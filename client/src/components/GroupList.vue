@@ -47,6 +47,7 @@ export default {
               //               data { status, message, group_list }
               // group_list [{ “id：群组ID”, “group_name：群组名字”, “admin”：用户是否是群主},...]
               this.grouplist = res.data.group_list;
+              this.$emit('defaultGroup', this.grouplist[0]);
             }
           })
           .catch((err) => {
