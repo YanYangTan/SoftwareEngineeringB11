@@ -1,5 +1,5 @@
 <template>
-  <div id="main-page" style="height: 780px;">
+  <div id="main-page" style="height: 100%;">
 <el-container style="height: 100%; border: 1px solid #eee"> <!-- fix here -->
     <el-aside width="200x" style="background-color: rgb(238, 241, 246)">
     <el-menu :default-openeds="['2', '3']">
@@ -32,17 +32,17 @@
   </el-aside>
 
   <el-container>
-
-    <el-main>
-<!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
-      <iframe src="/Calender" v-if="this.$data.index==='Calender'" frameborder=”no”
-              style="height: 100%;width: 105%;position: relative;margin-top: -20px;margin-left: -20px;"></iframe>
-      <GroupList @groupPage='groupInfo' @defaultGroup="defaultedGroup" v-if="this.$data.index==='GroupList' "></GroupList>
-      <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
-      <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
-      <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
-      <GatherList :currentgroup="this.currentgroup" v-if="this.$data.index==='GatherList'"></GatherList>
-    </el-main>
+    <div class="mainapp">
+  <!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
+        <iframe id="calendar" src="/Calender" v-if="this.$data.index==='Calender'"></iframe>
+        <el-main>
+          <GroupList @groupPage='groupInfo' @defaultGroup="defaultedGroup" v-if="this.$data.index==='GroupList' "></GroupList>
+          <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
+          <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
+          <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
+          <GatherList :currentgroup="this.currentgroup" v-if="this.$data.index==='GatherList'"></GatherList>
+        </el-main>
+    </div>
   </el-container>
 </el-container>
 
@@ -151,5 +151,17 @@ export default {
 <style>
 #main-page{
   background: #d5e8ff;
+}
+.mainapp{
+  width: 100%;
+}
+.el-main{
+  height:100%;
+}
+#calendar{
+  height: 100%;
+  width: 100%;
+  position: relative;
+  border: none;
 }
 </style>

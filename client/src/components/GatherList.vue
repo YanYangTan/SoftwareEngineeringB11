@@ -209,8 +209,8 @@ export default {
     confirmGathering() {
       this.gathering.group_id = this.$props.currentgroup.id;
       this.gathering.user_id = this.$route.params.userid;
+      // this.dateFormatting(this.gathering.enddate);
       this.gathering.enddate = '2021-12-15 20:00:00';
-      console.log(this.gathering);
       this.gathering.status = this.gathering.status === '提议';
       axios.post('/api/create-gathering', {
         user_id: this.gathering.user_id,
@@ -227,7 +227,6 @@ export default {
             this.gatherlist = res.data.gathering_list;
             // appendTag();
             this.queryAllGathering();
-            console.log(res.data.status);
           } else {
             console.log(res.data.status);
           }
@@ -236,6 +235,11 @@ export default {
           console.log(err);
         });
       this.gathering.status = '提议';
+    },
+    dateFormatting() {
+      // eslint-disable-next-line no-unused-expressions,no-param-reassign
+      // date.substr(4, 6);
+      // console.log(date);
     },
   },
   created() {
