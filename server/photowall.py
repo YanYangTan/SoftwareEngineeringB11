@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, send_file
+from flask import Blueprint, jsonify, request, make_response
 from . import db
 from .models import *
 from datetime import datetime
@@ -22,6 +22,7 @@ def upload_post():
     config.read('config.cfg')
     photo_dict = dict(config.items('PHOTO'))
     upload_folder = photo_dict["upload_folder"]
+
     dir = os.path.join(upload_folder, group_id)
     if not os.path.exists(dir):
         os.makedirs(dir)
@@ -37,9 +38,10 @@ def upload_post():
     if files:
         for file in files:
             file_ext = pathlib.Path(file.filename).suffix
-            path = os.path.join(dir, uuid.uuid4().hex + file_ext)
+            filename = uuid.uuid4().hex + file_ext
+            path = os.path.join(dir, filename)
             file.save(path)
-            locations.append(path)
+            locations.append(filename)
     photo_post.media = json.dumps(locations)
     db.session.add(photo_post)
 
@@ -84,18 +86,27 @@ def query_all_post():
     return jsonify(response_object)
 
 
-@photowall.route('/get-image', methods=['GET', 'POST'])
-def get_image():
-    img_url = request.args.get("img_src")
-    img_url = pathlib.Path(img_url)
-    if os.path.isfile(img_url):
-        with open(img_url, 'rb') as f:
-            a = f.read()
-        img_stream = io.BytesIO(a)
-        img = Image.open(img_stream)
-        imgByteArr = io.BytesIO()
-        img.save(imgByteArr, format='PNG')
-        imgByteArr = imgByteArr.getvalue()
-        return imgByteArr
-    else:
-        return jsonify("Error: File does not exist!")
+@photowall.route('/show/<int:group_id>/<string:filename>', methods=['GET'])
+def show_photo(group_id, filename):
+    if request.method == 'GET':
+        response_object = {}
+        response_object["status"] = False
+        if not filename:
+            response_object["message"] = "Error: Too few arguments!"
+            return jsonify(response_object)
+        else:
+            config = configparser.RawConfigParser()
+            config.read('config.cfg')
+            photo_dict = dict(config.items('PHOTO'))
+            upload_folder = photo_dict["upload_folder"]
+
+            file_dir = os.path.join(upload_folder, str(group_id))
+            file = os.path.join(file_dir, filename)
+            if not os.path.isfile(file):
+                response_object["message"] = "Error: File does not exist!"
+                return jsonify(response_object)
+            else:
+                image_data = open(file, "rb").read()
+                response = make_response(image_data)
+                response.headers['Content-Type'] = 'image/png'
+                return response
