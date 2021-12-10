@@ -144,6 +144,7 @@ def query_all_gathering():
             item = {}
             item['id'] = gathering.id
             item['user_id'] = gathering.user_id
+            item['username'] = query_username_by_id(gathering.user_id)
             item['name'] = gathering.name
             item['description'] = gathering.description
             item['enddate'] = gathering.enddate
@@ -176,6 +177,7 @@ def query_gathering():
                 suggestion = Suggestion.query.filter_by(id=suggest_id).first()
                 option['id'] = suggest_id
                 option['user_id'] = suggestion.user_id
+                option['username'] = query_username_by_id(suggestion.user_id)
                 option['content'] = json.loads(suggestion.content)
             else:  # Is gathering vote
                 vote_id = rel.vote_id

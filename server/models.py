@@ -82,10 +82,30 @@ class Calendar(db.Model):
 
 class PhotoPost(db.Model):
     __tablename__ = 'photo_post'
-    id = db.Column(db.String(45), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.idusers'))
     group_id = db.Column(db.Integer, db.ForeignKey('groups.idgroups'))
     caption = db.Column(db.Text)
     media = db.Column(db.Text)
     like = db.Column(db.Integer)
+    like_users = db.Column(db.Text)
     date_created = db.Column(db.DateTime)
+
+    relation_post_comment = db.relationship("RelationPostComment", backref="photo_post")
+
+
+class Comments(db.Model):
+    __tablename__ = 'comments'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.idusers'))
+    content = db.Column(db.Text)
+    date_created = db.Column(db.DateTime)
+
+    relation_post_comment = db.relationship("RelationPostComment", backref="comments")
+
+
+class RelationPostComment(db.Model):
+    __tablename__ = 'relation_post_comment'
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('photo_post.id'))
+    comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
