@@ -1,6 +1,7 @@
 import scrypt, base64, configparser, random, json
 import re
 from datetime import datetime, timedelta
+from . import scheduler
 from .models import *
 import random, string
 
@@ -68,94 +69,98 @@ def generate_new_key():
     return rand_key
 
 
-def update_suggestion(gathering_id):
-    gathering = Gathering.query.filter_by(id=gathering_id).first()
-    gathering.enddate = datetime.now() + timedelta(days=3)
-    gathering.status = False
-    for rel in gathering.relation_gathering:
-        suggest_tmp = Suggestion.query.filter_by(id=rel.suggestion_id).first()
-        vote = VoteOptions()
-        rand_number = 0
-        while True:
-            rand_number = random.randint(1, 1000000)
-            res = VoteOptions.query.filter_by(id=rand_number).first()
-            if not res:
-                break
-        vote.id = rand_number
-        vote.content = suggest_tmp.content
-        vote.vote_count = 0
-        voters = []
-        vote.voters = json.dumps(voters)
+def update_suggestion():
+    with scheduler.app.app_context():
+        triggered = False
+        gatherings = Gathering.query.filter_by(status=True).all()
+        for gathering in gatherings:
+            if datetime.now() > gathering.enddate:
+                triggered = True
+                gathering.enddate = gathering.enddate + timedelta(days=3)
+                gathering.status = False
+                for rel in gathering.relation_gathering:
+                    suggest_tmp = Suggestion.query.filter_by(id=rel.suggestion_id).first()
+                    vote = VoteOptions()
+                    rand_number = 0
+                    while True:
+                        rand_number = random.randint(1, 10000000)
+                        res = VoteOptions.query.filter_by(id=rand_number).first()
+                        if not res:
+                            break
+                    vote.id = rand_number
+                    vote.content = suggest_tmp.content
+                    vote.vote_count = 0
+                    voters = []
+                    vote.voters = json.dumps(voters)
 
-        relation = RelationGathering()
-        rand_number = 0
-        while True:
-            rand_number = random.randint(1, 1000000)
-            res2 = RelationGathering.query.filter_by(id=rand_number).first()
-            if not res2:
-                break
-        relation.id = rand_number
-        relation.gathering_id = gathering_id
-        relation.vote_id = vote.id
-        relation.status = False
-        db.session.delete(suggest_tmp)
-        db.session.delete(rel)
-        db.session.add(vote)
-        db.session.add(relation)
-
-    try:
-        db.session.commit()
-        status = True
-        message = "Updated suggestion to vote"
-    except Exception as e:
-        print(e)
-        status = False
-        message = "Update failed"
-    return status, message
+                    relation = RelationGathering()
+                    rand_number = 0
+                    while True:
+                        rand_number = random.randint(1, 10000000)
+                        res2 = RelationGathering.query.filter_by(id=rand_number).first()
+                        if not res2:
+                            break
+                    relation.id = rand_number
+                    relation.gathering_id = gathering.id
+                    relation.vote_id = vote.id
+                    relation.status = False
+                    db.session.delete(suggest_tmp)
+                    db.session.delete(rel)
+                    db.session.add(vote)
+                    db.session.add(relation)
+        if triggered:
+            try:
+                db.session.commit()
+                print("Suggestion updated to vote!")
+            except Exception as e:
+                print(e)
 
 
-def update_vote(gathering_id):
-    gathering = Gathering.query.filter_by(id=gathering_id).first()
-    max = 0
-    highest_option = {}
-    for rel in gathering.relation_gathering:
-        vote = VoteOptions.query.filter_by(id=rel.vote_id).first()
-        if vote.vote_count >= max:
-            highest_option = vote.content
-        db.session.delete(vote)
-        db.session.delete(rel)
-    group = Group.query.filter_by(idgroups=gathering.group_id).first()
-    if not group:
-        return False, "Error: Group does not exist!"
-    calendar = Calendar.query.filter_by(group_id=gathering.group_id).first()
-    if not calendar:
-        new_calendar = Calendar()
-        rand_number = 0
-        while True:
-            rand_number = random.randint(1, 1000000)
-            res = Calendar.query.filter_by(id=rand_number).first()
-            if not res:
-                break
-        new_calendar.id = rand_number
-        new_calendar.group_id = gathering.group_id
-        content = []
-        highest_option['name'] = gathering.name
-        highest_option['description'] = gathering.description
-        content.append(json.loads(highest_option))
-        new_calendar.content = json.dumps(content)
-        db.session.add(new_calendar)
-    else:
-        content = json.loads(calendar.content)
-        content.append(json.loads(highest_option))
-        calendar.content = json.dumps(content)
-    db.session.delete(gathering)
+def update_vote():
+    with scheduler.app.app_context():
+        triggered = False
+        gatherings = Gathering.query.filter_by(status=False).all()
+        for gathering in gatherings:
+            if datetime.now() > gathering.enddate:
+                triggered = True
+                max = 0
+                highest_option = {}
+                for rel in gathering.relation_gathering:
+                    vote = VoteOptions.query.filter_by(id=rel.vote_id).first()
+                    if vote.vote_count >= max:
+                        max = vote.vote_count
+                        highest_option = json.loads(vote.content)
+                    db.session.delete(vote)
+                    db.session.delete(rel)
+                group = Group.query.filter_by(idgroups=gathering.group_id).first()
+                if not group:
+                    continue
+                calendar = Calendar.query.filter_by(group_id=gathering.group_id).first()
+                highest_option['name'] = gathering.name
+                highest_option['description'] = gathering.description
+                if not calendar:
+                    new_calendar = Calendar()
+                    rand_number = 0
+                    while True:
+                        rand_number = random.randint(1, 1000000)
+                        res = Calendar.query.filter_by(id=rand_number).first()
+                        if not res:
+                            break
+                    new_calendar.id = rand_number
+                    new_calendar.group_id = gathering.group_id
+                    content = []
+                    content.append(highest_option)
+                    new_calendar.content = json.dumps(content)
+                    db.session.add(new_calendar)
+                else:
+                    content = json.loads(calendar.content)
+                    content.append(highest_option)
+                    calendar.content = json.dumps(content)
+                db.session.delete(gathering)
+        if triggered:
+            try:
+                db.session.commit()
+                print("Highest vote added to calendar")
+            except Exception as e:
+                print(e)
 
-    try:
-        db.session.commit()
-        status = True
-        message = "Updated vote to schedule"
-    except Exception as e:
-        print(e)
-        status = False
-        message = "Update failed"
-    return status, message

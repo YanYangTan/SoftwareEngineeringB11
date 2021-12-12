@@ -1,11 +1,17 @@
 from flask import Blueprint, jsonify, request
-from . import db
+from . import db, scheduler
 from .models import *
 from .utils import query_username_by_id, update_suggestion, update_vote
 from datetime import datetime
 import random, json
 
 gathering = Blueprint('gathering', __name__)
+
+
+@scheduler.task('interval', id='do_job_1', hours=1)
+def job1():
+    update_suggestion()
+    update_vote()
 
 
 @gathering.route('/create-gathering', methods=['GET', 'POST'])
@@ -296,32 +302,6 @@ def vote():
     return jsonify(response_object)
 
 
-@gathering.route('/refresh-suggest', methods=['GET', 'POST'])
-def refresh_suggest():
-    if request.method == 'POST':
-        post_data = request.get_json()
-        gathering_id = post_data.get('gathering_id')
-    response_object = {}
-    response_object['status'] = False
-
-    gathering = Gathering.query.filter_by(id=gathering_id).first()
-    if not gathering:
-        response_object['message'] = "Error: Gathering not found!"
-    else:
-        if gathering.status:
-            now = datetime.now()
-            if now > gathering.enddate:
-                status, message = update_suggestion(gathering_id)
-                response_object['status'] = status
-                response_object['message'] = message
-            else:
-                response_object['status'] = True
-                response_object['message'] = "Not updated"
-        else:
-            response_object['message'] = "Error: Not a suggestion!"
-    return jsonify(response_object)
-
-
 @gathering.route('/change-enddate', methods=['GET', 'POST'])
 def change_enddate():
     if request.method == 'POST':
@@ -355,31 +335,6 @@ def change_enddate():
             except Exception as e:
                 print(e)
                 response_object['message'] = "Change date failed"
-    return jsonify(response_object)
-
-
-@gathering.route('/refresh-vote', methods=['GET', 'POST'])
-def refresh_vote():
-    if request.method == 'POST':
-        post_data = request.get_json()
-        gathering_id = post_data.get('gathering_id')
-    response_object = {}
-    response_object['status'] = False
-
-    gathering = Gathering.query.filter_by(id=gathering_id).first()
-    if not gathering:
-        response_object['message'] = "Error: Gathering not found!"
-    else:
-        if not gathering.status:
-            now = datetime.now()
-            if now > gathering.enddate:
-                status, message = update_vote(gathering_id)
-                response_object['status'] = status
-                response_object['message'] = message
-            else:
-                response_object['message'] = "Not updated!"
-        else:
-            response_object['message'] = "Error: Not a vote!"
     return jsonify(response_object)
 
 
