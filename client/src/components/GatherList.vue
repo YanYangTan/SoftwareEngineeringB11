@@ -72,6 +72,10 @@
       prop="content.location">
     </el-table-column>
         <el-table-column
+      label="投票数"
+      prop="vote_count">
+    </el-table-column>
+        <el-table-column
         prop="voted">
 <!-- ---------------------------- vote ------------------------------------------------------------>
 <!--       <div v-if="this.gatheringdialogtitle==='投票'">-->
@@ -84,7 +88,7 @@
       </el-table>
       <div slot="footer" class="dialog-footer">
     <el-button @click="voteFormVisible = false">取 消</el-button>
-    <el-button type="primary" >{{this.gatheringdialogtitle}}</el-button>
+    <el-button type="primary" @click="confirmVote">{{this.gatheringdialogtitle}}</el-button>
   </div>
     </el-dialog>
 <!--                </div>-->
@@ -185,10 +189,13 @@
       <template slot-scope="scope">
         <el-tag @click="tagClickedSuggestion(scope.row)"
           type='primary'
-          v-if="scope.row.status" disable-transitions>提议</el-tag>
+          v-if="scope.row.status " >提议</el-tag>
+        <el-tag @click="tagClickedVote(scope.row)"
+          type='warning'
+          v-else-if="scope.row.status === false && scope.row.voted" >已投票</el-tag>
         <el-tag @click="tagClickedVote(scope.row)"
           type='success'
-          v-else-if="scope.row.status=== false" disable-transitions>投票</el-tag>
+          v-else-if="scope.row.status === false && scope.row.voted===false" >投票</el-tag>
       </template>
     </el-table-column>
   </el-table>
@@ -255,19 +262,30 @@ export default {
       this.loading = true;
       axios.post('/api/query-all-gathering', { group_id: this.$props.currentgroup.id })
         .then((res) => {
-          this.loading = false;
           if (res.data.status) {
             this.gatherlist = res.data.gathering_list;
-            // appendTag();
+            // eslint-disable-next-line no-restricted-syntax
+            for (const item of this.gatherlist) {
+              axios.post('/api/check-vote', { user_id: this.$route.params.userid, gathering_id: item.id })
+              // eslint-disable-next-line consistent-return
+                .then((res2) => {
+                  if (res2.data.status) {
+                    item.voted = res2.data.voted;
+                  } else {
+                    item.voted = false;
+                  }
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }
+            this.loading = false;
             console.log(this.gatherlist);
           }
         })
         .catch((err) => {
           console.log(err);
         });
-    },
-    createGathering() {
-
     },
     addContent() {
       this.addingcontent = true;
@@ -343,6 +361,34 @@ export default {
         });
       this.gathering.content = [];
     },
+    confirmVote() {
+      const votecontent = { vote_ids: [], user_id: 0 };
+      votecontent.user_id = this.$route.params.userid;
+      // eslint-disable-next-line no-restricted-syntax
+      for (const item of this.contents.options) {
+        if (item.voted === true) {
+          votecontent.vote_ids.push(item.id);
+        }
+      }
+      if (votecontent.vote_ids.length !== 0) {
+        axios.post('/api/vote', { vote_ids: votecontent.vote_ids, user_id: votecontent.user_id })
+          .then((res) => {
+            if (res.data.status) {
+              console.log(res.data.message);
+              this.currentgathering.voted = true;
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        console.log(votecontent);
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '未选择选项',
+        });
+      }
+    },
     changeIt() {
       console.log(this.contents);
     },
@@ -398,6 +444,21 @@ export default {
           console.log(err);
         });
     },
+    checkVoted(gathering) {
+      axios.post('/api/check-vote', { user_id: this.$route.params.userid, gathering_id: gathering.id })
+        // eslint-disable-next-line consistent-return
+        .then((res) => {
+          if (res.data.status) {
+            this.isvoted = res.data.voted;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+  },
+  mounted() {
+    this.queryAllGathering();
   },
   created() {
     this.queryAllGathering();
