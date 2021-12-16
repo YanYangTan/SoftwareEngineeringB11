@@ -106,6 +106,8 @@ body, html, #app, #dayspan {
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Calendar } from 'dayspan';
 import Vue from 'vue';
+// eslint-disable-next-line
+import axios from 'axios';
 
 export default {
   name: 'Calender',
@@ -113,8 +115,7 @@ export default {
     // storeKey: 'dayspanState',
     calendar: Calendar.months(),
     readOnly: false,
-    defaultEvents: [
-    ],
+    defaultEvents: [],
   }),
   mounted() {
     window.app = this.$refs.app;
@@ -137,21 +138,25 @@ export default {
     },
     saveState() {
       const state = this.calendar.toInput(true);
-      const json = JSON.stringify(state);
-      localStorage.setItem(this.storeKey, json);
+      const json = JSON.stringify(state.events);
+      // Send json to backend
+      console.log('Save');
+      console.log(json);
+      axios.post('/api/save-calendar', {
+        group_id: this.$route.params.groupid,
+        content: json,
+      })
+        .then((res) => {
+          if (res.data.status) {
+            console.log('Success');
+          } else {
+            console.log('Failed');
+          }
+        });
     },
     loadState() {
-      let state = {};
-      try {
-        const savedState = JSON.parse(localStorage.getItem(this.storeKey));
-        if (savedState) {
-          state = savedState;
-          state.preferToday = false;
-        }
-      } catch (e) {
-        // eslint-disable-next-line
-        console.log( e );
-      }
+      console.log(this.$route.params.groupid);
+      const state = {};
       if (!state.events || !state.events.length) {
         state.events = this.defaultEvents;
       }
@@ -160,7 +165,24 @@ export default {
         // eslint-disable-next-line no-param-reassign
         ev.data = Vue.util.extend(defaults, ev.data);
       });
-      this.$refs.app.setState(state);
+      console.log('Show');
+      // Load from backend
+      let events = [];
+      axios.post('/api/query-calendar', {
+        group_id: this.$route.params.groupid,
+      })
+        .then((res) => {
+          if (res.data.status) {
+            console.log('Query success!');
+            events = res.data.calendar;
+            console.log(events);
+            state.events = events;
+            this.$refs.app.setState(state);
+            console.log(state.events);
+          } else {
+            console.log(res.data.message);
+          }
+        });
     },
   },
 };

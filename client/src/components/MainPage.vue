@@ -26,6 +26,7 @@
           <el-menu-item index="1-3" >聚会管理</el-menu-item>
           <el-menu-item index="1-4" @click="TurnToImageWall">照片墙</el-menu-item>
           <el-menu-item index="1-5" @click="TurnToRoulette">随机轮盘</el-menu-item>
+          <el-menu-item index="1-6" @click="TurnToUpload">Upload</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
@@ -34,13 +35,14 @@
   <el-container>
     <div class="mainapp">
   <!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
-        <iframe id="calendar" src="/Calender" v-if="this.$data.index==='Calender'"></iframe>
+        <iframe id="calendar" :src=this.$data.calenderURL v-if="this.$data.index==='Calender'"></iframe>
         <el-main>
           <GroupList @groupPage='groupInfo' @defaultGroup="defaultedGroup" v-if="this.$data.index==='GroupList' "></GroupList>
           <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
           <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
           <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
           <GatherList :currentgroup="this.currentgroup" v-if="this.$data.index==='GatherList'"></GatherList>
+          <Upload :currentgroup="this.currentgroup" v-if="this.$data.index==='Upload'"></Upload>
         </el-main>
     </div>
   </el-container>
@@ -60,6 +62,7 @@ import GroupPage from './GroupPage.vue';
 import ImageWall from './ImageWall.vue';
 import Roulette from './roulette.vue';
 import GatherList from './GatherList.vue';
+import Upload from './Upload.vue';
 
 export default {
   name: 'MainPage',
@@ -81,11 +84,14 @@ export default {
     GroupPage,
     // eslint-disable-next-line vue/no-unused-components
     Roulette,
+    // eslint-disable-next-line vue/no-unused-components
+    Upload,
     GatherList,
   },
   data() {
     return {
       // userid: '',
+      calenderURL: '',
       msg: '',
       index: 'GroupList',
       defaultgroup: false,
@@ -121,6 +127,9 @@ export default {
       this.$data.index = 'GroupList';
     },
     TurnToCalender() {
+      console.log('Calender');
+      // eslint-disable-next-line
+      this.$data.calenderURL = '/Calender/' + this.$data.currentgroup.id;
       this.$data.index = 'Calender';
     },
     TurnToRoulette() {
@@ -131,6 +140,9 @@ export default {
     },
     TurnToGatherList() {
       this.$data.index = 'GatherList';
+    },
+    TurnToUpload() {
+      this.$data.index = 'Upload';
     },
     defaultedGroup(ev) {
       if (this.defaultgroup === false) {
