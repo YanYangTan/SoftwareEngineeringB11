@@ -491,3 +491,10 @@ def delete_gathering():
             print(e)
             response_object['messgae'] = "Failed to delete"
     return jsonify(response_object)
+
+
+@gathering.route('/force-refresh', methods=['GET', 'POST'])
+def force_refresh():
+    update_suggestion()
+    update_vote()
+    return jsonify("Done")

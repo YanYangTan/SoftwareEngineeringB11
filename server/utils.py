@@ -136,8 +136,52 @@ def update_vote():
                 if not group:
                     continue
                 calendar = Calendar.query.filter_by(group_id=gathering.group_id).first()
-                highest_option['name'] = gathering.name
-                highest_option['description'] = gathering.description
+
+                calendar_content = {}
+                calendar_data = {}
+                calendar_schedule = {}
+
+                calendar_data['busy'] = False
+                calendar_data['calendar'] = ""
+                calendar_data['color'] = "#%06x" % random.randint(0, 0xFFFFFF)
+                calendar_data['description'] = gathering.description
+                calendar_data['forecolor'] = "#ffffff"
+                calendar_data['icon'] = "favorite"
+                calendar_data['location'] = highest_option['location']
+                calendar_data['title'] = gathering.name
+
+                try:
+                    date = highest_option['time'].year
+                    month_tmp = highest_option['time'].month - 1
+                    day_tmp = highest_option['time'].day
+                    hour_tmp = highest_option['time'].hour
+                    minute_tmp = "{:02d}".format(highest_option['time'].minute)
+                except Exception as e:
+                    print(e)
+                    date = datetime.strptime(highest_option['time'], "%Y-%m-%d %H:%M:%S")
+                    year_tmp = date.year
+                    month_tmp = date.month - 1
+                    day_tmp = date.day
+                    hour_tmp = date.hour
+                    minute_tmp = "{:02d}".format(date.minute)
+
+                day = []
+                day.append(day_tmp)
+                month = []
+                month.append(month_tmp)
+                times = []
+                times.append(str(hour_tmp) + ":" + str(minute_tmp))
+                year = []
+                year.append(year_tmp)
+
+                calendar_schedule['dayOfMonth'] = day
+                calendar_schedule['month'] = month
+                calendar_schedule['times'] = times
+                calendar_schedule['year'] = year
+
+                calendar_content['data'] = calendar_data
+                calendar_content['schedule'] = calendar_schedule
+
                 if not calendar:
                     new_calendar = Calendar()
                     rand_number = 0
@@ -149,12 +193,12 @@ def update_vote():
                     new_calendar.id = rand_number
                     new_calendar.group_id = gathering.group_id
                     content = []
-                    content.append(highest_option)
+                    content.append(calendar_content)
                     new_calendar.content = json.dumps(content)
                     db.session.add(new_calendar)
                 else:
                     content = json.loads(calendar.content)
-                    content.append(highest_option)
+                    content.append(calendar_content)
                     calendar.content = json.dumps(content)
                 db.session.delete(gathering)
         if triggered:
