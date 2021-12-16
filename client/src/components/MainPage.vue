@@ -1,5 +1,5 @@
 <template>
-  <div id="main-page" style="height: 780px;">
+  <div id="main-page" style="height: 100%;">
 <el-container style="height: 100%; border: 1px solid #eee"> <!-- fix here -->
     <el-aside width="200x" style="background-color: rgb(238, 241, 246)">
     <el-menu :default-openeds="['2', '3']">
@@ -18,7 +18,7 @@
           <template slot="title"><img src="../assets/logo.png" alt="归雁" width="30px" >{{currentgroup.group_name}}</template>
             <el-menu-item index="1-2-1" @click="TurnToGroupPage">成员管理</el-menu-item>
             <el-menu-item index="1-2-2" @click="TurnToCalender">日历管理</el-menu-item>
-            <el-menu-item index="1-2-3" @click="TurnToGather">聚会管理</el-menu-item>
+            <el-menu-item index="1-2-3" @click="TurnToGatherList">聚会管理</el-menu-item>
             <el-menu-item index="1-2-4" @click="TurnToImageWall">照片墙</el-menu-item>
             </el-submenu>
 
@@ -26,22 +26,25 @@
           <el-menu-item index="1-3" >聚会管理</el-menu-item>
           <el-menu-item index="1-4" @click="TurnToImageWall">照片墙</el-menu-item>
           <el-menu-item index="1-5" @click="TurnToRoulette">随机轮盘</el-menu-item>
+          <el-menu-item index="1-6" @click="TurnToUpload">Upload</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
   </el-aside>
 
   <el-container>
-
-    <el-main>
-<!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
-      <iframe src="/Calender" v-if="this.$data.index==='Calender'" frameborder=”no”
-              style="height: 100%;width: 105%;position: relative;margin-top: -20px;margin-left: -20px;"></iframe>
-      <GroupList @groupPage='groupInfo' @defaultGroup="defaultedGroup" v-if="this.$data.index==='GroupList' "></GroupList>
-      <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
-      <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
-      <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
-    </el-main>
+    <div class="mainapp">
+  <!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
+        <iframe id="calendar" :src=this.$data.calenderURL v-if="this.$data.index==='Calender'"></iframe>
+        <el-main>
+          <GroupList @groupPage='groupInfo' @defaultGroup="defaultedGroup" v-if="this.$data.index==='GroupList' "></GroupList>
+          <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
+          <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
+          <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
+          <GatherList :currentgroup="this.currentgroup" v-if="this.$data.index==='GatherList'"></GatherList>
+          <Upload :currentgroup="this.currentgroup" v-if="this.$data.index==='Upload'"></Upload>
+        </el-main>
+    </div>
   </el-container>
 </el-container>
 
@@ -58,6 +61,8 @@ import Calender from './Calender.vue';
 import GroupPage from './GroupPage.vue';
 import ImageWall from './ImageWall.vue';
 import Roulette from './roulette.vue';
+import GatherList from './GatherList.vue';
+import Upload from './Upload.vue';
 
 export default {
   name: 'MainPage',
@@ -79,10 +84,14 @@ export default {
     GroupPage,
     // eslint-disable-next-line vue/no-unused-components
     Roulette,
+    // eslint-disable-next-line vue/no-unused-components
+    Upload,
+    GatherList,
   },
   data() {
     return {
       // userid: '',
+      calenderURL: '',
       msg: '',
       index: 'GroupList',
       defaultgroup: false,
@@ -118,6 +127,9 @@ export default {
       this.$data.index = 'GroupList';
     },
     TurnToCalender() {
+      console.log('Calender');
+      // eslint-disable-next-line
+      this.$data.calenderURL = '/Calender/' + this.$data.currentgroup.id;
       this.$data.index = 'Calender';
     },
     TurnToRoulette() {
@@ -126,8 +138,11 @@ export default {
     TurnToGroupPage() {
       this.$data.index = 'GroupPage';
     },
-    TurnToGather() {
-      this.$data.index = 'GroupPage';
+    TurnToGatherList() {
+      this.$data.index = 'GatherList';
+    },
+    TurnToUpload() {
+      this.$data.index = 'Upload';
     },
     defaultedGroup(ev) {
       if (this.defaultgroup === false) {
@@ -148,5 +163,17 @@ export default {
 <style>
 #main-page{
   background: #d5e8ff;
+}
+.mainapp{
+  width: 100%;
+}
+.el-main{
+  height:100%;
+}
+#calendar{
+  height: 100%;
+  width: 100%;
+  position: relative;
+  border: none;
 }
 </style>

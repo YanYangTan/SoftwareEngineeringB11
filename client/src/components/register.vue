@@ -42,7 +42,7 @@
          </div>
     </div>
 </template>
-<!--lmaoooooo-->
+
 <script>
 import axios from 'axios';
 

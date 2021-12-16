@@ -15,12 +15,6 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-#roulettecard{
-  height: 90%;
-}
-.el-card{
-  height:100%;
-}
 #chosen{
   height: 100% !important;
   font-size: 100px;
@@ -38,7 +32,6 @@
 </style>
 
 <script>
-
 export default {
   name: 'roulette',
   data() {

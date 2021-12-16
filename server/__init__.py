@@ -1,8 +1,10 @@
 from flask import Flask, current_app
 from flask_sqlalchemy import SQLAlchemy
+from flask_apscheduler import APScheduler
 import configparser
 
 db = SQLAlchemy()
+scheduler = APScheduler()
 
 
 def create_app():
@@ -22,5 +24,17 @@ def create_app():
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
+
+    from .group import group as group_blueprint
+    app.register_blueprint(group_blueprint)
+
+    from .gathering import gathering as gathering_blueprint
+    app.register_blueprint(gathering_blueprint)
+
+    from .photowall import photowall as photowall_blueprint
+    app.register_blueprint(photowall_blueprint)
+
+    scheduler.init_app(app)
+    scheduler.start()
 
     return app

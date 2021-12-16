@@ -4,7 +4,8 @@
   <el-table
     :data="tableData.filter(data => !search || data.username.toLowerCase().includes(search.toLowerCase()))"
     max-height="500px"
-    style="width: 100%;margin-bottom: 20px;">
+    style="width: 100%;margin-bottom: 20px;"
+  v-loading="loading">
     <el-table-column
       label="成员"
       prop="username"
@@ -41,6 +42,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      loading: true,
       tableData: [],
       search: '',
       edit: false,
@@ -77,8 +79,10 @@ export default {
       }
     },
     getUser() {
+      this.loading = true;
       axios.post('/api/query-user', { group_id: this.$props.info.id })
         .then((res) => {
+          this.loading = false;
           if (res.data.status) {
             this.$data.tableData = res.data.user_list;
           }

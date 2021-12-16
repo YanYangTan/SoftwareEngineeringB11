@@ -17,6 +17,7 @@
     "dayspan-vuetify": "0.2.3",
     "element-ui": "^2.15.6",
     "moment": "^2.29.1",
+    "moment-timezone": "^0.5.34",
     "vue": "^2.6.11",
     "vue-chart-tree": "^0.1.3",
     "vue-router": "^3.2.0",
