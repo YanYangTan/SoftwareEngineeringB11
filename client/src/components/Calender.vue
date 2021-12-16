@@ -3,7 +3,8 @@
 
     <ds-calendar-app ref="app"
       :calendar="calendar"
-      :read-only="readOnly">
+      :read-only="readOnly"
+      @change="saveState">
 
       <template slot="title">
         Calendar
