@@ -43,6 +43,7 @@
           <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
           <GatherList :currentgroup="this.currentgroup" v-if="this.$data.index==='GatherList'"></GatherList>
           <Upload :currentgroup="this.currentgroup" v-if="this.$data.index==='Upload'"></Upload>
+          <Profile :v-if="this.$data.index==='Profile'"></Profile>
         </el-main>
     </div>
   </el-container>
@@ -63,6 +64,7 @@ import ImageWall from './ImageWall.vue';
 import Roulette from './roulette.vue';
 import GatherList from './GatherList.vue';
 import Upload from './Upload.vue';
+import Profile from './ProfilePage.vue'
 
 export default {
   name: 'MainPage',
@@ -87,6 +89,7 @@ export default {
     // eslint-disable-next-line vue/no-unused-components
     Upload,
     GatherList,
+    Profile,
   },
   data() {
     return {
@@ -143,6 +146,9 @@ export default {
     },
     TurnToUpload() {
       this.$data.index = 'Upload';
+    },
+    TurnToProfile() {
+      this.$data.index = 'Profile';
     },
     defaultedGroup(ev) {
       if (this.defaultgroup === false) {
