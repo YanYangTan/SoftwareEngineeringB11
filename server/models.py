@@ -109,3 +109,10 @@ class RelationPostComment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     post_id = db.Column(db.Integer, db.ForeignKey('photo_post.id'))
     comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
+
+
+class Genealogy(db.Model):
+    __tablename__ = 'genealogy'
+    id = db.Column(db.Integer, primary_key=True)
+    group_id = db.Column(db.Integer, db.ForeignKey('groups.idgroups'))
+    content = db.Column(db.Text)

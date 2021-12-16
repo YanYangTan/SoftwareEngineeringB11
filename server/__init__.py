@@ -34,6 +34,9 @@ def create_app():
     from .photowall import photowall as photowall_blueprint
     app.register_blueprint(photowall_blueprint)
 
+    from .genealogy import genealogy as genealogy_blueprint
+    app.register_blueprint(genealogy_blueprint)
+
     scheduler.init_app(app)
     scheduler.start()
 

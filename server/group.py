@@ -1,9 +1,9 @@
 from flask import Blueprint, jsonify, request
 from . import db
 from .models import *
-from .utils import check_groupname, generate_new_key
+from .utils import check_groupname, generate_new_key, update_birthday
 from datetime import datetime, timedelta
-import random
+import random, configparser, os
 
 group = Blueprint('group', __name__)
 
@@ -56,6 +56,10 @@ def create_group():
         except Exception as e:
             print(e)
             response_object["message"] = "Failed to create group"
+        try:
+            update_birthday(user_id, group.idgroups)
+        except Exception as e:
+            print(e)
     return jsonify(response_object)
 
 
@@ -128,6 +132,10 @@ def join_group():
                 except Exception as e:
                     print(e)
                     response_object["message"] = "Failed to join group"
+                try:
+                    update_birthday(user_id, group.idgroups)
+                except Exception as e:
+                    print(e)
     return jsonify(response_object)
 
 
@@ -309,10 +317,52 @@ def delete_group():
     if not group:
         response_object['message'] = "Error: Group does not exist!"
     else:
+        gatherings = Gathering.query.filter_by(group_id=group_id).all()
+        for gathering in gatherings:
+            for rel in gathering.relation_gathering:
+                if gathering.status:
+                    tmp = Suggestion.query.filter_by(id=rel.suggestion_id).first()
+                    if tmp:
+                        db.session.delete(tmp)
+                else:
+                    tmp = VoteOptions.query.filter_by(id=rel.vote_id).first()
+                    if tmp:
+                        db.session.delete(tmp)
+                db.session.delete(rel)
+            db.session.delete(gathering)
+
+        calendar = Calendar.query.filter_by(group_id=group_id).first()
+        if calendar:
+            db.session.delete(calendar)
+
+        genealogy = Genealogy.query.filter_by(group_id=group_id).first()
+        if genealogy:
+            db.session.delete(genealogy)
+
+        posts = PhotoPost.query.filter_by(group_id=group_id).all()
+        for post in posts:
+            config = configparser.RawConfigParser()
+            config.read('config.cfg')
+            photo_dict = dict(config.items('PHOTO'))
+            upload_folder = photo_dict["upload_folder"]
+            # upload_folder = "\\Downloads\\temp\\upload"
+
+            for filename in post.media:
+                photo = os.path.join(upload_folder, str(post.group_id), filename)
+                if os.path.isfile(photo):
+                    os.remove(photo)
+
+            for rel in post.relation_post_comment:
+                tmp = Comments.query.filter_by(id=rel.comment_id).first()
+                db.session.delete(tmp)
+                db.session.delete(rel)
+            db.session.delete(post)
+
         groups = group.relation_group_user
         for item in groups:
             db.session.delete(item)
         db.session.delete(group)
+
         try:
             db.session.commit()
             response_object['status'] = True
@@ -381,3 +431,4 @@ def leave_group():
             print(e)
             response_object['message'] = "Failed to leave group"
     return jsonify(response_object)
+

@@ -208,3 +208,63 @@ def update_vote():
             except Exception as e:
                 print(e)
 
+
+def update_birthday(user_id, group_id):
+    user = User.query.filter_by(idusers=user_id).first()
+    group = Group.query.filter_by(idgroups=group_id).first()
+    rel = RelationGroupUser.query.filter_by(user_id=user_id, group_id=group_id).first()
+    if not user or not group or not rel:
+        return
+    birthday = user.birthday
+    month_tmp = birthday.month - 1
+    day_tmp = birthday.day
+
+    calendar_content = {}
+    calendar_data = {}
+    calendar_schedule = {}
+
+    calendar_data['busy'] = False
+    calendar_data['calendar'] = ""
+    calendar_data['color'] = "#%06x" % random.randint(0, 0xFFFFFF)
+    calendar_data['description'] = user.username + "'s Birthday"
+    calendar_data['forecolor'] = "#ffffff"
+    calendar_data['icon'] = "favorite"
+    calendar_data['location'] = ""
+    calendar_data['title'] = user.username + "'s Birthday"
+
+    day = []
+    day.append(day_tmp)
+    month = []
+    month.append(month_tmp)
+
+    calendar_schedule['dayOfMonth'] = day
+    calendar_schedule['month'] = month
+
+    calendar_content['data'] = calendar_data
+    calendar_content['schedule'] = calendar_schedule
+
+    calendar = Calendar.query.filter_by(group_id=group_id).first()
+    if not calendar:
+        new_calendar = Calendar()
+        rand_number = 0
+        while True:
+            rand_number = random.randint(1, 1000000)
+            res = Calendar.query.filter_by(id=rand_number).first()
+            if not res:
+                break
+        new_calendar.id = rand_number
+        new_calendar.group_id = group_id
+        content = []
+        content.append(calendar_content)
+        new_calendar.content = json.dumps(content)
+        db.session.add(new_calendar)
+    else:
+        content = json.loads(calendar.content)
+        content.append(calendar_content)
+        calendar.content = json.dumps(content)
+    try:
+        db.session.commit()
+        print("Birthday updated to all groups!")
+    except Exception as e:
+        print(e)
+
