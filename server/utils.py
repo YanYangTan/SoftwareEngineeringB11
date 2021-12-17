@@ -312,3 +312,36 @@ def update_birthday(user_id, group_id):
     except Exception as e:
         print(e)
 
+
+def update_calendar(user_id, group_id):
+    user = User.query.filter_by(idusers=user_id).first()
+    group = Group.query.filter_by(idgroups=group_id).first()
+    rel = RelationGroupUser.query.filter_by(user_id=user_id, group_id=group_id).first()
+    if not user or not group or not rel:
+        return
+    calendar = Calendar.query.filter_by(group_id=group_id).first()
+    if calendar:
+        content = json.loads(calendar.content)
+        user_calendar = UserCalendar.query.filter_by(user_id=user_id).first()
+        if user_calendar:
+            user_content = json.loads(user_calendar.content)
+            for item in content:
+                user_content.append(item)
+            user_calendar.content = json.dumps(user_content)
+        else:
+            new_user_calendar = UserCalendar()
+            rand_num = 0
+            while True:
+                rand_num = random.randint(1, 1000000)
+                res = UserCalendar.query.filter_by(id=rand_num).first()
+                if not res:
+                    break
+            new_user_calendar.id = rand_num
+            new_user_calendar.user_id = user_id
+            new_user_calendar.content = json.dumps(content)
+            db.session.add(new_user_calendar)
+    try:
+        db.session.commit()
+        print("User calendar updated!")
+    except Exception as e:
+        print(e)

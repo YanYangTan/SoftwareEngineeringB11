@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from . import db
 from .models import *
-from .utils import check_groupname, generate_new_key, update_birthday
+from .utils import check_groupname, generate_new_key, update_birthday, update_calendar
 from datetime import datetime, timedelta
 import random, configparser, os
 
@@ -134,6 +134,7 @@ def join_group():
                     response_object["message"] = "Failed to join group"
                 try:
                     update_birthday(user_id, group.idgroups)
+                    update_calendar(user_id, group.idgroups)
                 except Exception as e:
                     print(e)
     return jsonify(response_object)
