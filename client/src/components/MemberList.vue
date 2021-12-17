@@ -20,9 +20,23 @@
           placeholder="输入关键字搜索"/>
       </template>
       <template slot-scope="scope">
-        <el-button
-          size="mini"
-          @click="handleEdit(scope.$index, scope.row)">详情</el-button>
+        <el-button size="mini" @click="openProfileBubble(scope.$index,scope.row)">Profile 详情</el-button>
+        <el-dialog
+  title=" "
+  :visible.sync="dialogVisible"
+  width="50%">
+          <span>
+  <el-descriptions title="User Info">
+    <el-descriptions-item label="Username">{{ username }}</el-descriptions-item>
+    <el-descriptions-item label="Telephone">{{phone}}</el-descriptions-item>
+    <el-descriptions-item label="Birthday">{{ birthday }}</el-descriptions-item>
+    <el-descriptions-item label="Wise Words from ">{{quote}}</el-descriptions-item>
+</el-descriptions></span>
+  <span slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
+  </span>
+</el-dialog>
+
         <el-button
           size="mini"
           type="danger"
@@ -47,6 +61,14 @@ export default {
       search: '',
       edit: false,
       editbutton: '编辑',
+      dialogVisible: false,
+      id: '',
+      birthday: '',
+      email: '',
+      message: '',
+      phone: '',
+      username: '',
+      quote: '',
     };
   },
   props: {
@@ -56,6 +78,28 @@ export default {
   methods: {
     handleEdit(index, row) {
       console.log(row);
+      // row.id
+    },
+    openProfileBubble(index, row) {
+      // this.handleEdit(this.scope.$index, this.scope.row);
+      this.dialogVisible = true;
+      this.id = row.id;
+      console.log(row.id);
+      console.log(this.id);
+      axios.post('/api/query-userinfo', { user_id: this.id })
+        .then((res) => {
+          if (res.data.status) {
+            console.log('Query success!');
+            this.birthday = res.data.birthday;
+            this.email = res.data.email;
+            this.phone = res.data.phone;
+            this.username = res.data.username;
+            this.quote = res.data.quote;
+            // console.log(this.birthday);
+          } else {
+            console.log(res.data.message);
+          }
+        });
     },
     handleDelete(index, row) {
       axios.post('/api/remove-member', { group_id: this.$props.info.id, user_id: row.id })

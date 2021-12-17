@@ -6,7 +6,7 @@
       <el-submenu index="1">
         <template slot="title"><i class="el-icon-user"></i>{{this.$route.params.username}}</template>
         <el-menu-item-group>
-          <el-menu-item index="2-1">个人信息</el-menu-item>
+          <el-menu-item index="2-1" @click="TurnToProfile">个人信息</el-menu-item>
           <el-menu-item index="2-2" @click="SignIn"><el-button type="text" style="color: crimson" @click="SignIn">退出登录</el-button></el-menu-item>
         </el-menu-item-group>
       </el-submenu>
@@ -37,13 +37,13 @@
   <!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
         <iframe id="calendar" :src=this.$data.calenderURL v-if="this.$data.index==='Calender'"></iframe>
         <el-main>
+          <Profile v-if="this.$data.index==='ProfilePage'"></Profile>
           <GroupList @groupPage='groupInfo' @defaultGroup="defaultedGroup" v-if="this.$data.index==='GroupList' "></GroupList>
           <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
           <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
           <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
           <GatherList :currentgroup="this.currentgroup" v-if="this.$data.index==='GatherList'"></GatherList>
           <Upload :currentgroup="this.currentgroup" v-if="this.$data.index==='Upload'"></Upload>
-          <Profile :v-if="this.$data.index==='Profile'"></Profile>
         </el-main>
     </div>
   </el-container>
@@ -64,7 +64,7 @@ import ImageWall from './ImageWall.vue';
 import Roulette from './roulette.vue';
 import GatherList from './GatherList.vue';
 import Upload from './Upload.vue';
-import Profile from './ProfilePage.vue'
+import Profile from './ProfilePage.vue';
 
 export default {
   name: 'MainPage',
@@ -93,7 +93,7 @@ export default {
   },
   data() {
     return {
-      // userid: '',
+      userid: '',
       calenderURL: '',
       msg: '',
       index: 'GroupList',
@@ -148,7 +148,7 @@ export default {
       this.$data.index = 'Upload';
     },
     TurnToProfile() {
-      this.$data.index = 'Profile';
+      this.$data.index = 'ProfilePage';
     },
     defaultedGroup(ev) {
       if (this.defaultgroup === false) {
