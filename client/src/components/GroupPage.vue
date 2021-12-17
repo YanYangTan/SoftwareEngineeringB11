@@ -18,7 +18,7 @@
       <MemberList :info="this.$props.info"></MemberList>
     </el-aside>
     <el-main>
-      <GenealogyPage></GenealogyPage>
+      <GenealogyPage :info="this.$props.info"></GenealogyPage>
     </el-main>
   </el-container>
     <el-footer >
@@ -54,7 +54,6 @@ export default {
         .then((res) => {
           if (res.data.status) {
             this.$props.info.admin = res.data.admin;
-            console.log(this.$props.info.admin);
           }
         })
         .catch((err) => {
