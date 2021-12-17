@@ -49,15 +49,6 @@
         <div class="ds-ev-description">{{ getCalendarTime( calendarEvent ) }}</div>
       </template>
 
-      <template slot="drawerBottom">
-        <div class="pa-3">
-          <v-checkbox
-            label="Read Only?"
-            v-model="readOnly"
-          ></v-checkbox>
-        </div>
-      </template>
-
     </ds-calendar-app>
 
   </v-app>
@@ -143,7 +134,8 @@ export default {
       console.log('Save');
       console.log(json);
       axios.post('/api/save-calendar', {
-        group_id: this.$route.params.groupid,
+        isGroup: this.$route.params.isGroup === '1',
+        id: this.$route.params.id,
         content: json,
       })
         .then((res) => {
@@ -169,7 +161,8 @@ export default {
       // Load from backend
       let events = [];
       axios.post('/api/query-calendar', {
-        group_id: this.$route.params.groupid,
+        isGroup: this.$route.params.isGroup === '1',
+        id: this.$route.params.id,
       })
         .then((res) => {
           if (res.data.status) {

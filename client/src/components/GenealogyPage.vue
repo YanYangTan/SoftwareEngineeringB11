@@ -1,63 +1,114 @@
 <template>
-  <div>
+  <div id="app">
     <el-card>
-<TreeChart :json="treeData" />
-    </el-card>
+    <VueFamilyTree
+      :tree="tree"
+      @card-click="cardClick"
+      @dblclick="ff"
+    ></VueFamilyTree>
+      </el-card>
   </div>
 </template>
 
 <script>
-import TreeChart from 'vue-tree-chart';
+import VueFamilyTree from 'vue-family-tree';
 
 export default {
-  name: 'GenealogyPage',
+  name: 'App',
   components: {
-    TreeChart,
+    VueFamilyTree,
   },
   data() {
     return {
-      treeData: {
-        name: 'root',
-        image_url: 'http://p7.itc.cn/images01/20201127/6f9bc0f1cdfa425eaed5f09b9a714fa0.png',
-        children: [
-          {
-            name: 'children1',
-            image_url: 'http://p7.itc.cn/images01/20201127/6f9bc0f1cdfa425eaed5f09b9a714fa0.png',
+      tree: [{
+        firstPerson: {
+          name: 'John Walker',
+          image: 'https://picsum.photos/300/300?random=1',
+          id: '1',
+        },
+        secondPerson: {
+          name: 'Jannet Grem',
+          image: 'https://picsum.photos/300/300?random=2',
+        },
+        children: [{
+          firstPerson: {
+            name: 'Katia',
           },
-          {
-            name: 'children2',
-            image_url: 'http://p7.itc.cn/images01/20201127/6f9bc0f1cdfa425eaed5f09b9a714fa0.png',
-            mate: {
-              name: 'mate',
-              image_url: 'http://p7.itc.cn/images01/20201127/6f9bc0f1cdfa425eaed5f09b9a714fa0.png',
+          secondPerson: {
+            name: 'Oleg',
+          },
+          children: [{
+            firstPerson: {
+              name: 'Gleb',
             },
-            children: [
-              {
-                name: 'grandchild',
-                image_url: 'http://p7.itc.cn/images01/20201127/6f9bc0f1cdfa425eaed5f09b9a714fa0.png',
+            secondPerson: {
+              name: 'Viktoriya',
+            },
+            children: [{
+              firstPerson: {
+                name: 'Rim',
               },
-              {
-                name: 'grandchild2',
-                image_url: 'http://p7.itc.cn/images01/20201127/6f9bc0f1cdfa425eaed5f09b9a714fa0.png',
+              secondPerson: {
+                name: 'Natasha',
               },
-              {
-                name: 'grandchild3',
-                image_url: 'http://p7.itc.cn/images01/20201127/6f9bc0f1cdfa425eaed5f09b9a714fa0.png',
+            },
+            {
+              firstPerson: {
+                name: 'Leonid',
               },
-            ],
+            }],
           },
           {
-            name: 'children3',
-            image_url: 'http://p7.itc.cn/images01/20201127/6f9bc0f1cdfa425eaed5f09b9a714fa0.png',
+            firstPerson: {
+              name: 'Olga',
+            },
+            secondPerson: {
+              name: 'Nikita',
+            },
+          }],
+        },
+        {
+          firstPerson: {
+            name: 'Vitia',
           },
-        ],
-      },
-
+          secondPerson: {
+            name: 'Dasha',
+          },
+        },
+        {
+          firstPerson: {
+            name: 'Antonio Wild',
+            image: 'https://picsum.photos/300/300?random=3',
+          },
+          secondPerson: {
+            name: 'Olivia Olson',
+          },
+          children: [{
+            firstPerson: {
+              name: 'Kristina Wild',
+            },
+          },
+          {
+            firstPerson: {
+              name: 'Alexey Wild',
+            },
+          },
+          {
+            firstPerson: {
+              name: 'Viktor Wild',
+            },
+          }],
+        }],
+      }],
     };
+  },
+  methods: {
+    cardClick(item) {
+      console.log(item);
+    },
+    ff() {
+      console.log('dbclick！');
+    },
   },
 };
 </script>
-
-<style scoped>
-
-</style>

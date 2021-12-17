@@ -17,15 +17,12 @@
           <el-submenu index="3">
           <template slot="title"><img src="../assets/logo.png" alt="归雁" width="30px" >{{currentgroup.group_name}}</template>
             <el-menu-item index="1-2-1" @click="TurnToGroupPage">成员管理</el-menu-item>
-            <el-menu-item index="1-2-2" @click="TurnToCalender">日历管理</el-menu-item>
+            <el-menu-item index="1-2-2" @click="TurnToGroupCalendar">日历管理</el-menu-item>
             <el-menu-item index="1-2-3" @click="TurnToGatherList">聚会管理</el-menu-item>
             <el-menu-item index="1-2-4" @click="TurnToImageWall">照片墙</el-menu-item>
             </el-submenu>
 
-          <el-menu-item index="1-2" @click="TurnToCalender">日历管理</el-menu-item>
-          <el-menu-item index="1-3" >聚会管理</el-menu-item>
-          <el-menu-item index="1-4" @click="TurnToImageWall">照片墙</el-menu-item>
-          <el-menu-item index="1-5" @click="TurnToRoulette">随机轮盘</el-menu-item>
+          <el-menu-item index="1-2" @click="TurnToUserCalendar">个人日历</el-menu-item>
           <el-menu-item index="1-6" @click="TurnToUpload">Upload</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
@@ -35,7 +32,7 @@
   <el-container>
     <div class="mainapp">
   <!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
-        <iframe id="calendar" :src=this.$data.calenderURL v-if="this.$data.index==='Calender'"></iframe>
+        <iframe id="calendar" :src=this.$data.calendarURL v-if="this.$data.index==='Calendar'"></iframe>
         <el-main>
           <GroupList @groupPage='groupInfo' @defaultGroup="defaultedGroup" v-if="this.$data.index==='GroupList' "></GroupList>
           <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
@@ -91,7 +88,7 @@ export default {
   data() {
     return {
       // userid: '',
-      calenderURL: '',
+      calendarURL: '',
       msg: '',
       index: 'GroupList',
       defaultgroup: false,
@@ -126,11 +123,17 @@ export default {
     TurnToGroupList() {
       this.$data.index = 'GroupList';
     },
-    TurnToCalender() {
-      console.log('Calender');
+    TurnToGroupCalendar() {
+      console.log('Group Calendar');
       // eslint-disable-next-line
-      this.$data.calenderURL = '/Calender/' + this.$data.currentgroup.id;
-      this.$data.index = 'Calender';
+      this.$data.calendarURL = '/Calender/1/' + this.$data.currentgroup.id;
+      this.$data.index = 'Calendar';
+    },
+    TurnToUserCalendar() {
+      console.log('User Calendar');
+      // eslint-disable-next-line
+      this.$data.calendarURL = '/Calender/0/' + this.$route.params.userid;
+      this.$data.index = 'Calendar';
     },
     TurnToRoulette() {
       this.$data.index = 'Roulette';
