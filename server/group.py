@@ -432,3 +432,14 @@ def leave_group():
             response_object['message'] = "Failed to leave group"
     return jsonify(response_object)
 
+
+@group.route('/sync-birthday', methods=['GET', 'POST'])
+def sync_birthday():
+    users = User.query.all()
+    for user in users:
+        if user.relation_group_user:
+            for rel in user.relation_group_user:
+                update_birthday(user.idusers, rel.group_id)
+    return jsonify("Done")
+
+

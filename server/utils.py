@@ -135,7 +135,6 @@ def update_vote():
                 group = Group.query.filter_by(idgroups=gathering.group_id).first()
                 if not group:
                     continue
-                calendar = Calendar.query.filter_by(group_id=gathering.group_id).first()
 
                 calendar_content = {}
                 calendar_data = {}
@@ -182,6 +181,7 @@ def update_vote():
                 calendar_content['data'] = calendar_data
                 calendar_content['schedule'] = calendar_schedule
 
+                calendar = Calendar.query.filter_by(group_id=gathering.group_id).first()
                 if not calendar:
                     new_calendar = Calendar()
                     rand_number = 0
@@ -200,6 +200,28 @@ def update_vote():
                     content = json.loads(calendar.content)
                     content.append(calendar_content)
                     calendar.content = json.dumps(content)
+
+                for rel in group.relation_group_user:
+                    user_id = rel.user_id
+                    user_calendar = UserCalendar.query.filter_by(user_id=user_id).first()
+                    if not user_calendar:
+                        new_user_calendar = UserCalendar()
+                        rand_num = 0
+                        while True:
+                            rand_num = random.randint(1, 1000000)
+                            res2 = UserCalendar.query.filter_by(id=rand_num).first()
+                            if not res2:
+                                break
+                        new_user_calendar.id = rand_num
+                        new_user_calendar.user_id = user_id
+                        content = []
+                        content.append(calendar_content)
+                        new_user_calendar.content = json.dumps(content)
+                        db.session.add(new_user_calendar)
+                    else:
+                        content = json.loads(user_calendar.content)
+                        content.append(calendar_content)
+                        user_calendar.content = json.dumps(content)
                 db.session.delete(gathering)
         if triggered:
             try:
@@ -262,6 +284,28 @@ def update_birthday(user_id, group_id):
         content = json.loads(calendar.content)
         content.append(calendar_content)
         calendar.content = json.dumps(content)
+
+    for rel in group.relation_group_user:
+        user_calendar = UserCalendar.query.filter_by(user_id=rel.user_id).first()
+        if not user_calendar:
+            new_user_calendar = UserCalendar()
+            rand_num = 0
+            while True:
+                rand_num = random.randint(1, 1000000)
+                res2 = UserCalendar.query.filter_by(id=rand_num).first()
+                if not res2:
+                    break
+            new_user_calendar.id = rand_num
+            new_user_calendar.user_id = rel.user_id
+            content = []
+            content.append(calendar_content)
+            new_user_calendar.content = json.dumps(content)
+            db.session.add(new_user_calendar)
+        else:
+            content = json.loads(user_calendar.content)
+            content.append(calendar_content)
+            user_calendar.content = json.dumps(content)
+
     try:
         db.session.commit()
         print("Birthday updated to all groups!")

@@ -9,6 +9,7 @@ class User(db.Model):
     email = db.Column(db.String(45), unique=True)
     phone = db.Column(db.String(45))
     birthday = db.Column(db.Date)
+    quote = db.Column(db.Text)
 
     relation_group_user = db.relationship("RelationGroupUser", backref="users")
 
@@ -77,6 +78,13 @@ class Calendar(db.Model):
     __tablename__ = 'calendar'
     id = db.Column(db.Integer, primary_key=True)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.idgroups'))
+    content = db.Column(db.Text)
+
+
+class UserCalendar(db.Model):
+    __tablename__ = 'calendar_user'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.idusers'))
     content = db.Column(db.Text)
 
 

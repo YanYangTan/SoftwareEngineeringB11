@@ -342,40 +342,73 @@ def change_enddate():
 def query_calendar():
     if request.method == 'POST':
         post_data = request.get_json()
-        group_id = post_data.get('group_id')
+        isGroup = post_data.get('isGroup')
+        id = post_data.get('id')
     response_object = {}
     response_object['status'] = False
 
-    group = Group.query.filter_by(idgroups=group_id).first()
-    if not group:
-        response_object['message'] = "Error: Group not found!"
-    else:
-        calendar = Calendar.query.filter_by(group_id=group_id).first()
-        if calendar:
-            response_object['status'] = True
-            response_object['message'] = "Query success!"
-            response_object['calendar'] = json.loads(calendar.content)
+    if isGroup:
+        group = Group.query.filter_by(idgroups=id).first()
+        if not group:
+            response_object['message'] = "Error: Group not found!"
         else:
-            new_calendar = Calendar()
-            rand_number = 0
-            while True:
-                rand_number = random.randint(1, 1000000)
-                res = Calendar.query.filter_by(id=rand_number).first()
-                if not res:
-                    break
-            new_calendar.id = rand_number
-            new_calendar.group_id = group_id
-            content = []
-            new_calendar.content = json.dumps(content)
-            db.session.add(new_calendar)
-            try:
-                db.session.commit()
+            calendar = Calendar.query.filter_by(group_id=id).first()
+            if calendar:
                 response_object['status'] = True
-                response_object['message'] = "Calendar not found! Created empty calendar"
-                response_object['calendar'] = content
-            except Exception as e:
-                print(e)
-                response_object['message'] = "Calendar not found! Add calendar failed"
+                response_object['message'] = "Query success!"
+                response_object['calendar'] = json.loads(calendar.content)
+            else:
+                new_calendar = Calendar()
+                rand_number = 0
+                while True:
+                    rand_number = random.randint(1, 1000000)
+                    res = Calendar.query.filter_by(id=rand_number).first()
+                    if not res:
+                        break
+                new_calendar.id = rand_number
+                new_calendar.group_id = id
+                content = []
+                new_calendar.content = json.dumps(content)
+                db.session.add(new_calendar)
+                try:
+                    db.session.commit()
+                    response_object['status'] = True
+                    response_object['message'] = "Calendar not found! Created empty calendar"
+                    response_object['calendar'] = content
+                except Exception as e:
+                    print(e)
+                    response_object['message'] = "Calendar not found! Add calendar failed"
+    else:
+        user = User.query.filter_by(idusers=id).first()
+        if not user:
+            response_object['message'] = "Error: User does not exist!"
+        else:
+            calendar = UserCalendar.query.filter_by(user_id=id).first()
+            if calendar:
+                response_object['status'] = True
+                response_object['message'] = "Query success!"
+                response_object['calendar'] = json.loads(calendar.content)
+            else:
+                new_calendar = UserCalendar()
+                rand_num = 0
+                while True:
+                    rand_num = random.randint(1, 1000000)
+                    res = UserCalendar.query.filter_by(id=rand_num).first()
+                    if not res:
+                        break
+                new_calendar.id = rand_num
+                new_calendar.user_id = id
+                content = []
+                new_calendar.content = json.dumps(content)
+                db.session.add(new_calendar)
+                try:
+                    db.session.commit()
+                    response_object['status'] = True
+                    response_object['message'] = "Calendar not found! Created empty calendar"
+                    response_object['content'] = content
+                except Exception as e:
+                    print(e)
+                    response_object['message'] = "Calendar not found! Failed tp create empty calendar!"
     return jsonify(response_object)
 
 
@@ -383,7 +416,8 @@ def query_calendar():
 def save_calendar():
     if request.method == 'POST':
         post_data = request.get_json()
-        group_id = post_data.get('group_id')
+        isGroup = post_data.get('isGroup')
+        id = post_data.get('id')
         content = post_data.get('content')
     response_object = {}
     response_object['status'] = False
@@ -393,32 +427,60 @@ def save_calendar():
     except Exception as e:
         print(e)
 
-    group = Group.query.filter_by(idgroups=group_id).first()
-    if not group:
-        response_object['message'] = "Error: Group not found!"
-    else:
-        calendar = Calendar.query.filter_by(group_id=group_id).first()
-        if calendar:
-            calendar.content = json.dumps(content)
+    if isGroup:
+        group = Group.query.filter_by(idgroups=id).first()
+        if not group:
+            response_object['message'] = "Error: Group not found!"
         else:
-            new_calendar = Calendar()
-            rand_number = 0
-            while True:
-                rand_number = random.randint(1, 1000000)
-                res = Calendar.query.filter_by(id=rand_number).first()
-                if not res:
-                    break
-            new_calendar.id = rand_number
-            new_calendar.group_id = group_id
-            new_calendar.content = json.dumps(content)
-            db.session.add(new_calendar)
-        try:
-            db.session.commit()
-            response_object['status'] = True
-            response_object['message'] = "Calendar saved!"
-        except Exception as e:
-            print(e)
-            response_object['message'] = "Save calendar failed!"
+            calendar = Calendar.query.filter_by(group_id=id).first()
+            if calendar:
+                calendar.content = json.dumps(content)
+            else:
+                new_calendar = Calendar()
+                rand_number = 0
+                while True:
+                    rand_number = random.randint(1, 1000000)
+                    res = Calendar.query.filter_by(id=rand_number).first()
+                    if not res:
+                        break
+                new_calendar.id = rand_number
+                new_calendar.group_id = id
+                new_calendar.content = json.dumps(content)
+                db.session.add(new_calendar)
+            try:
+                db.session.commit()
+                response_object['status'] = True
+                response_object['message'] = "Calendar saved!"
+            except Exception as e:
+                print(e)
+                response_object['message'] = "Save calendar failed!"
+    else:
+        user = User.query.filter_by(idusers=id).first()
+        if not user:
+            response_object['message'] = "Error: User does not exist!"
+        else:
+            calendar = UserCalendar.query.filter_by(user_id=id).first()
+            if calendar:
+                calendar.content = json.dumps(content)
+            else:
+                new_calendar = Calendar()
+                rand_number = 0
+                while True:
+                    rand_number = random.randint(1, 1000000)
+                    res = Calendar.query.filter_by(id=rand_number).first()
+                    if not res:
+                        break
+                new_calendar.id = rand_number
+                new_calendar.user_id = id
+                new_calendar.content = json.dumps(content)
+                db.session.add(new_calendar)
+            try:
+                db.session.commit()
+                response_object['status'] = True
+                response_object['message'] = "Calendar saved!"
+            except Exception as e:
+                print(e)
+                response_object['message'] = "Save calendar failed!"
     return jsonify(response_object)
 
 

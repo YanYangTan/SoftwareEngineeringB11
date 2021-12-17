@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, make_response
 from . import db
 from .models import *
-import datetime, random, configparser
+import datetime, random, configparser, re
 from .utils import *
 
 auth = Blueprint('auth', __name__)
@@ -75,7 +75,8 @@ def register():
             res = User.query.filter_by(idusers=rand_number).first()
             if not res:
                 break
-        new_user = User(idusers=rand_number, username=username, password=pw, email=email, phone=phone, birthday=birthday)
+        new_user = User(idusers=rand_number, username=username, password=pw, email=email, phone=phone, birthday=birthday,
+                        quote="")
         try:
             db.session.add(new_user)
             db.session.commit()
@@ -107,4 +108,34 @@ def query_userinfo():
         response_object['email'] = user.email
         response_object['phone'] = user.phone
         response_object['birthday'] = user.birthday
+        response_object['quote'] = user.quote
+    return jsonify(response_object)
+
+
+@auth.route('/save-userinfo', methods=['GET', 'POST'])
+def save_userinfo():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        user_id = post_data.get('user_id')
+        phone = post_data.get('phone')
+        quote = post_data.get('quote')
+    response_object = {}
+    response_object['status'] = False
+
+    user = User.query.filter_by(idusers=user_id).first()
+    if not user:
+        response_object['message'] = "Error: User does not exist!"
+    else:
+        if not re.match("[0-9]{11}$", str(phone)):
+            response_object['message'] = "Error: Invalid phone number!"
+        else:
+            user.phone = phone
+            user.quote = quote
+            try:
+                db.session.commit()
+                response_object['status'] = True
+                response_object['message'] = "Info saved!"
+            except Exception as e:
+                print(e)
+                response_object['message'] = "Failed to save!"
     return jsonify(response_object)
