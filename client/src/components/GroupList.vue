@@ -5,7 +5,7 @@
     <div class="group-list">
 
       <el-row :gutter="20">
-        <el-col :span="3" v-for="item in grouplist" :key="item.id" style="height:100px">
+        <el-col :span="3" v-for="item in grouplist" :key="item.id" style="height:200px">
           <el-card :body-style="{ padding: '0px 0px' }" >
 
             <div slot="header">
@@ -24,11 +24,9 @@
 </template>
 
 <script>
-
 import axios from 'axios';
 
 export default {
-
   name: 'app',
   data() {
     return {
@@ -49,6 +47,7 @@ export default {
               //               data { status, message, group_list }
               // group_list [{ “id：群组ID”, “group_name：群组名字”, “admin”：用户是否是群主},...]
               this.grouplist = res.data.group_list;
+              this.$emit('defaultGroup', this.grouplist[0]);
             }
           })
           .catch((err) => {
@@ -124,5 +123,12 @@ export default {
 <style>
 .group-list{
   margin-top: 10px;
+}
+.el-col-3{
+  transition: all .2s ease-in-out;
+}
+.el-col-3:hover{
+  transform: scale(1.05);
+  z-index: 1;
 }
 </style>

@@ -48,6 +48,7 @@ export default {
       axios.post('/api/login', { username: this.userForm.username, password: this.userForm.password })
         .then((res) => {
           if (res.data.status) {
+            this.loginpath = '/success/';
             this.loginpath += String(res.data.userid);
             this.loginpath += '/';
             this.loginpath += String(this.$data.userForm.username);

@@ -3,7 +3,6 @@ import Vue from 'vue';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Vuetify from 'vuetify';
 import DaySpanVuetify from 'dayspan-vuetify';
-import VueChartTree from 'vue-chart-tree';
 import App from './App.vue';
 import router from './router';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -20,7 +19,6 @@ import 'dayspan-vuetify/dist/lib/dayspan-vuetify.min.css';
 Vue.use(ElementUI);
 Vue.use(BootstrapVue);
 Vue.use(Vuetify);
-Vue.use(VueChartTree);
 Vue.use(DaySpanVuetify, {
   methods: {
     getDefaultEventColor: () => '#1976d2',
@@ -31,4 +29,7 @@ Vue.config.productionTip = false;
 new Vue({
   router,
   render: (h) => h(App),
+  el: '#app',
+  components: { App },
+  template: '<App/>',
 }).$mount('#app');
