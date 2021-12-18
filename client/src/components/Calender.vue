@@ -1,22 +1,14 @@
 <template>
   <v-app id="dayspan" v-cloak>
-
     <ds-calendar-app ref="app"
       :calendar="calendar"
       :read-only="readOnly"
+      v-loading.fullscreen.lock="fullscreenLoading"
       @change="saveState">
 
       <template slot="title">
         Calendar
       </template>
-
-<!--      <template slot="menuRight">-->
-<!--        <v-btn icon large href="https://github.com/ClickerMonkey/dayspan-vuetify" target="_blank">-->
-<!--          <v-avatar size="32px" tile>-->
-<!--            <img src="https://simpleicons.org/icons/github.svg" alt="Github">-->
-<!--          </v-avatar>-->
-<!--        </v-btn>-->
-<!--      </template>-->
 
       <template slot="eventPopover" slot-scope="slotData">
          <ds-calendar-event-popover
@@ -49,17 +41,7 @@
         <div class="ds-ev-description">{{ getCalendarTime( calendarEvent ) }}</div>
       </template>
 
-      <template slot="drawerBottom">
-        <div class="pa-3">
-          <v-checkbox
-            label="Read Only?"
-            v-model="readOnly"
-          ></v-checkbox>
-        </div>
-      </template>
-
     </ds-calendar-app>
-
   </v-app>
 </template>
 
@@ -106,20 +88,18 @@ body, html, #app, #dayspan {
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Calendar } from 'dayspan';
 import Vue from 'vue';
+// eslint-disable-next-line
+import axios from 'axios';
 
 export default {
   name: 'Calender',
   data: () => ({
     // storeKey: 'dayspanState',
+    fullscreenLoading: true,
     calendar: Calendar.months(),
     readOnly: false,
-    defaultEvents: [
-    ],
+    defaultEvents: [],
   }),
-  mounted() {
-    window.app = this.$refs.app;
-    this.loadState();
-  },
   methods:
   {
     getCalendarTime(calendarEvent) {
@@ -137,21 +117,24 @@ export default {
     },
     saveState() {
       const state = this.calendar.toInput(true);
-      const json = JSON.stringify(state);
-      localStorage.setItem(this.storeKey, json);
+      const json = JSON.stringify(state.events);
+      // Send json to backend
+      axios.post('/api/save-calendar', {
+        isGroup: this.$route.params.isGroup === '1',
+        id: this.$route.params.id,
+        content: json,
+      })
+        .then((res) => {
+          if (res.data.status) {
+            console.log('Saved');
+          } else {
+            console.log('Save Failed');
+          }
+        });
     },
     loadState() {
-      let state = {};
-      try {
-        const savedState = JSON.parse(localStorage.getItem(this.storeKey));
-        if (savedState) {
-          state = savedState;
-          state.preferToday = false;
-        }
-      } catch (e) {
-        // eslint-disable-next-line
-        console.log( e );
-      }
+      this.fullscreenLoading = true;
+      const state = {};
       if (!state.events || !state.events.length) {
         state.events = this.defaultEvents;
       }
@@ -160,8 +143,29 @@ export default {
         // eslint-disable-next-line no-param-reassign
         ev.data = Vue.util.extend(defaults, ev.data);
       });
-      this.$refs.app.setState(state);
+      // Load from backend
+      let events = [];
+      axios.post('/api/query-calendar', {
+        isGroup: this.$route.params.isGroup === '1',
+        id: this.$route.params.id,
+      })
+        .then((res) => {
+          if (res.data.status) {
+            console.log('Query success!');
+            events = res.data.calendar;
+            state.events = events;
+            this.$refs.app.setState(state);
+            console.log(state.events);
+            this.fullscreenLoading = false;
+          } else {
+            console.log(res.data.message);
+          }
+        });
     },
+  },
+  mounted() {
+    window.app = this.$refs.app;
+    this.loadState();
   },
 };
 </script>

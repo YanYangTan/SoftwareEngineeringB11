@@ -2,7 +2,7 @@
   <div>
     <el-button class="el-icon-circle-plus" @click="createGroup"> 创建群组</el-button>
     <el-button class="el-icon-connection" @click="joinGroup"> 加入群组</el-button>
-    <div class="group-list">
+    <div class="group-list" v-loading.fullscreen.lock="fullscreenLoading">
 
       <el-row :gutter="20">
         <el-col :span="3" v-for="item in grouplist" :key="item.id" style="height:200px">
@@ -30,6 +30,7 @@ export default {
   name: 'app',
   data() {
     return {
+      fullscreenLoading: true,
       grouplist: [],
       userid: '',
     };
@@ -41,6 +42,7 @@ export default {
         this.$emit('groupPage', item);
       },
       getQuery() {
+        this.fullscreenLoading = true;
         axios.post('/api/query-group', { user_id: this.$route.params.userid })
           .then((res) => {
             if (res.data.status) {
@@ -48,6 +50,7 @@ export default {
               // group_list [{ “id：群组ID”, “group_name：群组名字”, “admin”：用户是否是群主},...]
               this.grouplist = res.data.group_list;
               this.$emit('defaultGroup', this.grouplist[0]);
+              this.fullscreenLoading = false;
             }
           })
           .catch((err) => {
@@ -59,19 +62,26 @@ export default {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
         }).then(({ value }) => {
+          if (value === null) {
+            // eslint-disable-next-line
+            value = '';
+          }
           axios.post('/api/create-group', { user_id: this.$route.params.userid, group_name: value })
             .then((res) => {
               // eslint-disable-next-line no-unused-vars
               let str;
+              let messagetype;
               if (res.data.status) {
                 this.grouplist.push({ id: res.data.group_id, group_name: value, admin: true });
+                messagetype = 'success';
                 str = `成功创建群组，名为：${value} 邀请码为 ${res.data.invite_key}`;
                 // eslint-disable-next-line no-empty
               } else {
                 str = '创建失败';
+                messagetype = 'warning';
               }
               this.$message({
-                type: 'success',
+                type: messagetype,
                 message: str,
               });
             })
@@ -94,13 +104,17 @@ export default {
             .then((res) => {
               // eslint-disable-next-line no-unused-vars
               let str;
+              let messagetype;
               if (res.data.status) {
+                str = '成功加入';
+                messagetype = 'success';
                 this.getQuery();
               } else {
                 str = '加入失败';
+                messagetype = 'warning';
               }
               this.$message({
-                type: 'success',
+                type: messagetype,
                 message: str,
               });
             })

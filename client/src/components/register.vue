@@ -24,7 +24,7 @@
 
           <div class="form-group">
                 <label>Phone</label>
-                <input type="number" min="10000000000" max="99999999999" required class="form-control form-control-lg" v-model="userForm.phone"/>
+                <input type="text" required pattern="[0-9]{11}" class="form-control form-control-lg" v-model="userForm.phone"/>
             </div>
 
           <div class="form-group">

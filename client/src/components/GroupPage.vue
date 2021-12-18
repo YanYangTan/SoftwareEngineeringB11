@@ -7,8 +7,6 @@
       icon="el-icon-back"
       @click="BackToGroupList" circle></el-button>
     <h1>{{this.$props.info.group_name}}
-    <el-button  @click="getInviteKey">获取邀请码</el-button>
-      <el-button  @click="leaveGroup">退出群</el-button>
     </h1>
 
     </el-container>
@@ -18,11 +16,13 @@
       <MemberList :info="this.$props.info"></MemberList>
     </el-aside>
     <el-main>
-      <GenealogyPage></GenealogyPage>
+      <GenealogyPage :info="this.$props.info"></GenealogyPage>
     </el-main>
   </el-container>
-    <el-footer >
-       <el-button style="position: absolute; bottom: 10px; right: 10px;" v-if="this.$props.info.admin" type="danger" icon="el-icon-delete"  @click="DeleteGroup">删除群</el-button>
+    <el-footer height="0px">
+      <el-button  style="position: absolute; bottom: 10px; right: 250px;" v-if="this.$props.info.admin" type="primary" icon="el-icon-share" @click="getInviteKey">获取邀请码</el-button>
+      <el-button style="position: absolute; bottom: 10px; right: 130px;" v-if="this.$props.info.admin" type="danger" icon="el-icon-delete"  @click="DeleteGroup">删除群</el-button>
+      <el-button  style="position: absolute; bottom: 10px; right: 10px;" type="danger" icon="el-icon-warning" @click="leaveGroup">退出群</el-button>
     </el-footer>
 </el-container>
 </template>
@@ -54,7 +54,6 @@ export default {
         .then((res) => {
           if (res.data.status) {
             this.$props.info.admin = res.data.admin;
-            console.log(this.$props.info.admin);
           }
         })
         .catch((err) => {
@@ -62,26 +61,47 @@ export default {
         });
     },
     DeleteGroup() {
-      axios.post('/api/delete-group', { group_id: this.$props.info.id })
-        .then((res) => {
-          if (res.data.status) {
-            this.$emit('BacktoGroupList');
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      // eslint-disable-next-line
+      if (confirm('确定删除群？')) {
+        axios.post('/api/delete-group', { group_id: this.$props.info.id })
+          .then((res) => {
+            let str;
+            let messagetype;
+            if (res.data.status) {
+              str = '成功删除群';
+              messagetype = 'success';
+              this.$emit('BacktoGroupList');
+            } else {
+              str = '删除群失败';
+              messagetype = 'warning';
+            }
+            this.$message({
+              type: messagetype,
+              message: str,
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     },
     BackToGroupList() {
       this.$emit('BacktoGroupList');
     },
     getInviteKey() {
+      let str;
       axios.post('/api/generate-key', { group_id: this.$props.info.id })
         .then((res) => {
           if (res.data.status) {
             this.invitekey.num = res.data.invite_key;
             this.invitekey.ex_date = res.data.key_expiry_date;
             console.log(this.invitekey);
+            // eslint-disable-next-line
+            str = '新的邀请码是' + this.invitekey.num + '，将于' + this.invitekey.ex_date + '过期';
+            this.$message({
+              type: 'success',
+              message: str,
+            });
           }
         })
         .catch((err) => {
@@ -89,28 +109,31 @@ export default {
         });
     },
     leaveGroup() {
-      axios.post('/api/leave-group', {
-        group_id: this.$props.info.id,
-        user_id: this.$route.params.userid,
-      })
-        .then((res) => {
-          // eslint-disable-next-line no-empty
-          if (res.data.status) {
-            this.BackToGroupList();
-            this.$message({
-              type: 'success',
-              message: '成功退出群组',
-            });
-          } else {
-            this.$message({
-              type: 'warning',
-              message: '无法退群',
-            });
-          }
+      // eslint-disable-next-line
+      if (confirm('确定退群？')) {
+        axios.post('/api/leave-group', {
+          group_id: this.$props.info.id,
+          user_id: this.$route.params.userid,
         })
-        .catch((err) => {
-          console.log(err);
-        });
+          .then((res) => {
+            // eslint-disable-next-line no-empty
+            if (res.data.status) {
+              this.BackToGroupList();
+              this.$message({
+                type: 'success',
+                message: '成功退出群组',
+              });
+            } else {
+              this.$message({
+                type: 'warning',
+                message: '无法退群',
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     },
   },
   created() {
