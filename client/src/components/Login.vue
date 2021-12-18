@@ -45,6 +45,7 @@ export default {
   },
   methods: {
     login() {
+      let str;
       axios.post('/api/login', { username: this.userForm.username, password: this.userForm.password })
         .then((res) => {
           if (res.data.status) {
@@ -52,6 +53,12 @@ export default {
             this.loginpath += '/';
             this.loginpath += String(this.$data.userForm.username);
             this.$router.push(this.loginpath);
+          } else {
+            str = res.data.message;
+            this.$message({
+              type: 'warning',
+              message: str,
+            });
           }
         })
         .catch((err) => {

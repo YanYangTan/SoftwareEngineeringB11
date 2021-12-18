@@ -6,7 +6,7 @@
       <el-submenu index="1">
         <template slot="title"><i class="el-icon-user"></i>{{this.$route.params.username}}</template>
         <el-menu-item-group>
-          <el-menu-item index="2-1">个人信息</el-menu-item>
+          <el-menu-item index="2-1" @click="TurnToProfile">个人信息</el-menu-item>
           <el-menu-item index="2-2" @click="SignIn"><el-button type="text" style="color: crimson" @click="SignIn">退出登录</el-button></el-menu-item>
         </el-menu-item-group>
       </el-submenu>
@@ -23,7 +23,8 @@
             </el-submenu>
 
           <el-menu-item index="1-2" @click="TurnToUserCalendar">个人日历</el-menu-item>
-          <el-menu-item index="1-6" @click="TurnToUpload">Upload</el-menu-item>
+          <el-menu-item index="1-3" @click="TurnToRoulette">随机转盘</el-menu-item>
+          <el-menu-item index="1-4" @click="TurnToUpload">Upload</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
@@ -34,6 +35,7 @@
   <!--      <Calender v-if="this.$data.index==='Calender'"></Calender>-->
         <iframe id="calendar" :src=this.$data.calendarURL v-if="this.$data.index==='Calendar'"></iframe>
         <el-main>
+          <Profile v-if="this.$data.index==='ProfilePage'"></Profile>
           <GroupList @groupPage='groupInfo' @defaultGroup="defaultedGroup" v-if="this.$data.index==='GroupList' "></GroupList>
           <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
           <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
@@ -60,6 +62,7 @@ import ImageWall from './ImageWall.vue';
 import Roulette from './roulette.vue';
 import GatherList from './GatherList.vue';
 import Upload from './Upload.vue';
+import Profile from './ProfilePage.vue';
 
 export default {
   name: 'MainPage',
@@ -76,14 +79,12 @@ export default {
     RegisterPage,
     // eslint-disable-next-line vue/no-unused-components
     Calender,
-    // eslint-disable-next-line vue/no-unused-components
     GroupList,
     GroupPage,
-    // eslint-disable-next-line vue/no-unused-components
     Roulette,
-    // eslint-disable-next-line vue/no-unused-components
     Upload,
     GatherList,
+    Profile,
   },
   data() {
     return {
@@ -105,7 +106,14 @@ export default {
       this.$data.index = 'GroupList';
     },
     TurnToImageWall() {
-      this.index = 'ImageWall';
+      if (this.$data.currentgroup.id === undefined) {
+        this.$message({
+          type: 'warning',
+          message: 'Not in any group!',
+        });
+      } else {
+        this.index = 'ImageWall';
+      }
     },
     getMessage() {
       const path = '/api/success';
@@ -124,13 +132,18 @@ export default {
       this.$data.index = 'GroupList';
     },
     TurnToGroupCalendar() {
-      console.log('Group Calendar');
-      // eslint-disable-next-line
-      this.$data.calendarURL = '/Calender/1/' + this.$data.currentgroup.id;
-      this.$data.index = 'Calendar';
+      if (this.$data.currentgroup.id === undefined) {
+        this.$message({
+          type: 'warning',
+          message: 'Not in any group!',
+        });
+      } else {
+        // eslint-disable-next-line
+        this.$data.calendarURL = '/Calender/1/' + this.$data.currentgroup.id;
+        this.$data.index = 'Calendar';
+      }
     },
     TurnToUserCalendar() {
-      console.log('User Calendar');
       // eslint-disable-next-line
       this.$data.calendarURL = '/Calender/0/' + this.$route.params.userid;
       this.$data.index = 'Calendar';
@@ -139,16 +152,35 @@ export default {
       this.$data.index = 'Roulette';
     },
     TurnToGroupPage() {
-      this.$data.index = 'GroupPage';
+      if (this.$data.currentgroup.id === undefined) {
+        this.$message({
+          type: 'warning',
+          message: 'Not in any group!',
+        });
+      } else {
+        this.$data.index = 'GroupPage';
+      }
     },
     TurnToGatherList() {
-      this.$data.index = 'GatherList';
+      if (this.$data.currentgroup.id === undefined) {
+        this.$message({
+          type: 'warning',
+          message: 'Not in any group!',
+        });
+      } else {
+        this.$data.index = 'GatherList';
+      }
     },
     TurnToUpload() {
       this.$data.index = 'Upload';
     },
+    TurnToProfile() {
+      this.$data.index = 'ProfilePage';
+    },
     defaultedGroup(ev) {
-      if (this.defaultgroup === false) {
+      if (ev === undefined) {
+        console.log('No group');
+      } else if (this.defaultgroup === false) {
         this.currentgroup = ev;
         this.defaultgroup = true;
       }
