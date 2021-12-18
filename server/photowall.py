@@ -286,7 +286,8 @@ def delete_post():
         upload_folder = photo_dict["upload_folder"]
         # upload_folder = "\\Downloads\\temp\\upload"
 
-        for filename in post.media:
+        for filename in json.loads(post.media):
+            print(filename)
             photo = os.path.join(upload_folder, str(post.group_id), filename)
             if os.path.isfile(photo):
                 os.remove(photo)

@@ -3,7 +3,7 @@ from . import db
 from .models import *
 from .utils import check_groupname, generate_new_key, update_birthday, update_calendar
 from datetime import datetime, timedelta
-import random, configparser, os
+import random, configparser, os, json
 
 group = Blueprint('group', __name__)
 
@@ -348,7 +348,7 @@ def delete_group():
             upload_folder = photo_dict["upload_folder"]
             # upload_folder = "\\Downloads\\temp\\upload"
 
-            for filename in post.media:
+            for filename in json.loads(post.media):
                 photo = os.path.join(upload_folder, str(post.group_id), filename)
                 if os.path.isfile(photo):
                     os.remove(photo)
@@ -443,4 +443,13 @@ def sync_birthday():
                 update_birthday(user.idusers, rel.group_id)
     return jsonify("Done")
 
+
+@group.route('/sync-calendar', methods=['GET', 'POST'])
+def sync_calendar():
+    groups = Group.query.all()
+    for group in groups:
+        if group.relation_group_user:
+            for rel in group.relation_group_user:
+                update_calendar(rel.user_id, group.idgroups)
+    return jsonify("Done")
 

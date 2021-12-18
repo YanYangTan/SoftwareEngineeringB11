@@ -107,7 +107,7 @@ def query_userinfo():
         response_object['username'] = query_username_by_id(user_id)
         response_object['email'] = user.email
         response_object['phone'] = user.phone
-        response_object['birthday'] = user.birthday
+        response_object['birthday'] = user.birthday.strftime('%Y-%m-%d')
         response_object['quote'] = user.quote
     return jsonify(response_object)
 
