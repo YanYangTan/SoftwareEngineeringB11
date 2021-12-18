@@ -40,7 +40,7 @@
           <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
           <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
           <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
-          <GatherList :currentgroup="this.currentgroup" v-if="this.$data.index==='GatherList'"></GatherList>
+          <GatherList id="GatherList" :currentgroup="this.currentgroup" v-if="this.$data.index==='GatherList'"></GatherList>
           <Upload :currentgroup="this.currentgroup" v-if="this.$data.index==='Upload'"></Upload>
         </el-main>
     </div>
@@ -210,5 +210,9 @@ export default {
   width: 100%;
   position: relative;
   border: none;
+}
+
+#GatherList{
+  height: 100%;
 }
 </style>

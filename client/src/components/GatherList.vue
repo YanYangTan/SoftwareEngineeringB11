@@ -64,11 +64,11 @@
     style="width: 100%"
       v-loading="loading">
         <el-table-column
-      label="截止日期"
+      label="日期"
       prop="content.time">
     </el-table-column>
         <el-table-column
-      label="场所"
+      label="地点"
       prop="content.location">
     </el-table-column>
         <el-table-column
@@ -100,11 +100,11 @@
     style="width: 100%"
       v-loading="loading">
         <el-table-column
-      label="截止日期"
+      label="日期"
       prop="content.time">
     </el-table-column>
         <el-table-column
-      label="场所"
+      label="地点"
       prop="content.location">
     </el-table-column>
         <el-table-column

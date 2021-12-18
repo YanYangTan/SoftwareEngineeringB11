@@ -1,8 +1,9 @@
 <template>
   <div id="app">
-    <div class="text-center">
-<!--      <h1 class="title">家谱</h1>-->
-    </div>
+    <el-card>
+<!--    <div class="text-center">-->
+<!--&lt;!&ndash;      <h1 class="title">家谱</h1>&ndash;&gt;-->
+<!--    </div>-->
     <VueFamilyTree
       :tree="tree"
       @card-click="cardClick"
@@ -49,6 +50,7 @@
         </el-popover>
       </template>
     </VueFamilyTree>
+      </el-card>
   </div>
 </template>
 
