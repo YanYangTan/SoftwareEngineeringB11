@@ -4,6 +4,7 @@
   <el-table
     :data="tableData.filter(data => !search || data.username.toLowerCase().includes(search.toLowerCase()))"
     max-height="500px"
+    :row-class-name="tableRowClassName">
     style="width: 100%;margin-bottom: 20px;"
   v-loading="loading">
     <el-table-column
@@ -41,12 +42,23 @@
         <el-button
           size="mini"
           type="danger"
-          v-if="(edit)"
+          v-if="matchStateDelete(scope.row)"
           @click="handleDelete(scope.$index,scope.row)">移除</el-button>
+        <el-button
+          size="mini"
+          type="primary"
+          v-if="matchState(scope.row)"
+          @click="handleSetAdmin(scope.$index,scope.row)">设置</el-button>
+        <el-button
+          size="mini"
+          type="warning"
+          v-if="matchStateA(scope.row)"
+          @click="handleRemoveAdmin(scope.$index,scope.row)">回收</el-button>
       </template>
     </el-table-column>
   </el-table>
-    <el-button v-if="this.$props.info.admin" style="color: crimson" @click="EditClick">{{editbutton}}</el-button>
+       <el-button v-if="this.$props.info.admin" style="color: crimson;margin-top: 10px" @click="EditAdminClick">{{adminbutton}}</el-button>
+    <el-button v-if="this.$props.info.admin" style="color: crimson;margin-top: 10px" @click="EditClick">{{editbutton}}</el-button>
    </el-card>
   </div>
 </template>
@@ -57,6 +69,8 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      editA: false,
+      adminbutton: '设置群主',
       loading: true,
       tableData: [],
       search: '',
@@ -77,6 +91,45 @@ export default {
     info: {},
   },
   methods: {
+    handleSetAdmin(index, row) {
+      axios.post('/api/set-admin', { group_id: this.$props.info.id, user_id: row.id })
+        .then((res) => {
+          if (res.data.status) {
+            // this.$data.tableData = res.data.user_list;
+            this.$data.tableData[index].admin = true;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    handleRemoveAdmin(index, row) {
+      axios.post('/api/remove-admin', { group_id: this.$props.info.id, user_id: row.id })
+        .then((res) => {
+          if (res.data.status) {
+            // this.$data.tableData = res.data.user_list;
+            this.$data.tableData[index].admin = false;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    matchStateDelete(row) {
+      return this.edit && (Number(row.id) !== Number(this.$route.params.userid));
+    },
+    matchState(row) {
+      return this.editA && (!row.admin);
+    },
+    matchStateA(row) {
+      return this.editA && (row.admin) && (Number(row.id) !== Number(this.$route.params.userid));
+    },
+    tableRowClassName({ row }) {
+      if (row.admin) {
+        return 'admin-row';
+      }
+      return 'else-row';
+    },
     handleEdit(index, row) {
       console.log(row);
       // row.id
@@ -115,6 +168,15 @@ export default {
           console.log(err);
         });
     },
+    EditAdminClick() {
+      if (this.editA) {
+        this.editA = false;
+        this.adminbutton = '设置群主';
+      } else {
+        this.editA = true;
+        this.adminbutton = '设置完毕';
+      }
+    },
     EditClick() {
       if (this.edit) {
         this.edit = false;
@@ -145,6 +207,9 @@ export default {
 };
 </script>
 <style>
+.el-table .admin-row {
+    background: #f0f9eb;
+  }
 /*.el-table__body-wrapper::-webkit-scrollbar{*/
 /*     !*width: 0;宽度为0隐藏*!*/
 /*    width: 2px;*/

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <el-button  @click="dialogFormVisible = true">打开嵌套表单的 Dialog</el-button>
+    <el-button  @click="dialogFormVisible = true" type="primary" icon="el-icon-circle-plus-outline
+">发起新聚会</el-button>
 
 <el-dialog title="发起聚会" :visible.sync="dialogFormVisible">
   <el-form :model="temp">
@@ -58,12 +59,14 @@
   </div>
 </el-dialog>
 <!--    -->
+    <!-- ---------------------------- vote ------------------------------------------------------------>
     <el-dialog :title="this.gatheringdialogtitle" :visible.sync="voteFormVisible">
       <el-table
     :data="this.contents.options"
     style="width: 100%"
       v-loading="loading">
         <el-table-column
+      width="150px"
       label="日期"
       prop="content.time">
     </el-table-column>
@@ -76,14 +79,14 @@
       prop="vote_count">
     </el-table-column>
         <el-table-column
+          label="投票"
         prop="voted">
-<!-- ---------------------------- vote ------------------------------------------------------------>
 <!--       <div v-if="this.gatheringdialogtitle==='投票'">-->
-          <template slot="header" slot-scope={}>
-<el-checkbox :indeterminate="isIndeterminate">全选</el-checkbox>
-      </template>
+<!--          <template slot="header" slot-scope={}>-->
+<!--<el-checkbox :indeterminate="isIndeterminate" @change="handleCheckAllChange">全选</el-checkbox>-->
+<!--      </template>-->
       <template slot-scope="scope">
-    <el-checkbox @change="changeIt()" v-model="scope.row.voted">投票</el-checkbox>
+    <el-checkbox @change="changeIt(scope.$index)" v-model="scope.row.voted">投票</el-checkbox>
       </template></el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
@@ -92,12 +95,49 @@
   </div>
     </el-dialog>
 <!--                </div>-->
+        <!-- ---------------------------- One vote ------------------------------------------------------------>
+    <el-dialog :title="this.gatheringdialogtitle" :visible.sync="voteOneFormVisible">
+      <el-table
+    :data="this.contents.options"
+    style="width: 100%"
+      v-loading="loading">
+        <el-table-column
+      width="150px"
+      label="日期"
+      prop="content.time">
+    </el-table-column>
+        <el-table-column
+      label="地点"
+      prop="content.location">
+    </el-table-column>
+        <el-table-column
+      label="投票数"
+      prop="vote_count">
+    </el-table-column>
+        <el-table-column
+          label="投票"
+        prop="voted">
+<!--       <div v-if="this.gatheringdialogtitle==='投票'">-->
+<!--          <template slot="header" slot-scope={}>-->
+<!--<el-checkbox :indeterminate="isIndeterminate" @change="handleCheckAllChange">全选</el-checkbox>-->
+<!--      </template>-->
+      <template slot-scope="scope">
+        <el-button type="primary" @click="VoteOne(scope.row)">投票</el-button>
+<!--    <el-checkbox @change="changeIt(scope.$index)" v-model="scope.row.voted">投票</el-checkbox>-->
+      </template></el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+    <el-button @click="voteFormVisible = false">取 消</el-button>
+<!--    <el-button type="primary" @click="confirmVote">{{this.gatheringdialogtitle}}</el-button>-->
+  </div>
+    </el-dialog>
 <!-- ---------------------------- tiyi ------------------------------------------------------------>
 
     <el-dialog :title="this.gatheringdialogtitle" :visible.sync="suggestionFormVisible">
       <el-table
     :data="this.contents.options"
     style="width: 100%"
+    ref="multipleTable"
       v-loading="loading">
         <el-table-column
       label="日期"
@@ -148,13 +188,17 @@
     <el-button type="primary" @click="confirmContent">{{this.gatheringdialogtitle}}</el-button>
   </div>
     </el-dialog>
+    <!-- ---------------------------- table ------------------------------------------------------------>
 <!--    -->
+    <el-container style="margin-top: 10px;margin-bottom: 10px">
+    <label style="width: 75px">搜索聚会:</label>
     <el-input
           v-model="search"
           size="mini"
-          placeholder="输入关键字搜索"/>
+          placeholder="输入关键字搜索"/></el-container>
     <el-card>
   <el-table
+    ref="TableGather"
     :data="this.gatherlist.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
     style="width: 100%"
   v-loading="loading">
@@ -192,10 +236,10 @@
           v-if="scope.row.status " >提议</el-tag>
         <el-tag @click="tagClickedVote(scope.row)"
           type='warning'
-          v-else-if="scope.row.status === false && scope.row.voted" >已投票</el-tag>
+          v-else-if="matchStateVoted(scope.row)" >已投票</el-tag>
         <el-tag @click="tagClickedVote(scope.row)"
           type='success'
-          v-else-if="scope.row.status === false && scope.row.voted===false" >投票</el-tag>
+          v-else-if="matchState(scope.row)" >投票</el-tag>
       </template>
     </el-table-column>
   </el-table>
@@ -209,12 +253,14 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      isIndeterminate: true,
       loading: true,
       gatherlist: [],
       contents: {},
       addingcontent: false,
       dialogFormVisible: false,
       voteFormVisible: false,
+      voteOneFormVisible: false,
       suggestionFormVisible: false,
       check: true,
       gathering: {
@@ -249,6 +295,12 @@ export default {
     currentgroup: {},
   },
   methods: {
+    matchStateVoted(row) {
+      return row.status === false && row.voted;
+    },
+    matchState(row) {
+      return row.status === false && row.voted === false;
+    },
     handleEdit(index, row) {
       console.log(index, row);
     },
@@ -266,26 +318,52 @@ export default {
             this.gatherlist = res.data.gathering_list;
             // eslint-disable-next-line no-restricted-syntax
             for (const item of this.gatherlist) {
-              axios.post('/api/check-vote', { user_id: this.$route.params.userid, gathering_id: item.id })
-              // eslint-disable-next-line consistent-return
-                .then((res2) => {
-                  if (res2.data.status) {
-                    item.voted = res2.data.voted;
-                  } else {
-                    item.voted = false;
-                  }
-                })
-                .catch((err) => {
-                  console.log(err);
-                });
+              if (item.status === false) {
+                axios.post('/api/check-vote', { user_id: this.$route.params.userid, gathering_id: item.id })
+                // eslint-disable-next-line consistent-return
+                  .then((res2) => {
+                    if (res2.data.status) {
+                      item.voted = res2.data.voted;
+                    } else {
+                      item.voted = false;
+                    }
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              }
             }
+            // this.$refs.TableGather.doLayout();
             this.loading = false;
             console.log(this.gatherlist);
           }
+          //   this.gatherlist = res.data.gathering_list;
+          //   // eslint-disable-next-line no-restricted-syntax,guard-for-in
+          //   for (const item of this.gatherlist) {
+          //     console.log(item);
+          //     axios.post('/api/check-vote', { user_id: this.$route.params.userid, gathering_id: item.id })
+          //       // eslint-disable-next-line consistent-return
+          //       .then((res2) => {
+          //         if (res2.data.status) {
+          //           this.item.voted = res2.data.voted;
+          //           console.log(this.item);
+          //         } else {
+          //           this.item.voted = false;
+          //         }
+          //       })
+          //       .catch((err) => {
+          //         console.log(err);
+          //       });
+          //   }
+          //   // this.gatherlist = res.data.gathering_list;
+          //   this.loading = false;
+          //   console.log(this.gatherlist);
+          // }
         })
         .catch((err) => {
           console.log(err);
         });
+      // this.$refs.TableGather.doLayout();
     },
     addContent() {
       this.addingcontent = true;
@@ -361,6 +439,19 @@ export default {
         });
       this.gathering.content = [];
     },
+    VoteOne(row) {
+      axios.post('/api/vote', { vote_ids: [row.id], user_id: this.$route.params.userid })
+        .then((res) => {
+          if (res.data.status) {
+            console.log(res.data.message);
+            this.currentgathering.voted = true;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      this.voteOneFormVisible = false;
+    },
     confirmVote() {
       const votecontent = { vote_ids: [], user_id: 0 };
       votecontent.user_id = this.$route.params.userid;
@@ -390,9 +481,20 @@ export default {
       }
     },
     changeIt() {
-      console.log(this.contents);
+      // if (!this.contents.allow_multiple_vote) {
+      //   console.log(this.contents.options[index].voted);
+      //   if (this.contents.options[index].voted === true) {
+      //     console.log('asdasd');
+      //     // eslint-disable-next-line guard-for-in,no-restricted-syntax
+      //     for (const x in this.contents.options) {
+      //       this.contents.options[x].voted = false;
+      //     }
+      //     this.contents.options[index].voted = true;
+      //   }
+      // }
     },
     tagClickedVote(row) {
+      this.contents = {};
       console.log(row);
       axios.post('/api/check-vote', { user_id: this.$route.params.userid, gathering_id: row.id })
         // eslint-disable-next-line consistent-return
@@ -413,7 +515,11 @@ export default {
                     this.contents = res1.data;
                     console.log(this.contents);
                     this.currentgathering = row;
-                    this.voteFormVisible = true;
+                    if (res1.data.allow_multiple_vote) {
+                      this.voteFormVisible = true;
+                    } else {
+                      this.voteOneFormVisible = true;
+                    }
                     this.gatheringdialogtitle = '投票';
                   }
                 })
@@ -456,9 +562,26 @@ export default {
           console.log(err);
         });
     },
+    // handleCheckAllChange(val) {
+    //   if (val) {
+    //     // eslint-disable-next-line no-restricted-syntax
+    //     for (const item of this.contents.options) {
+    //       item.voted = true;
+    //     }
+    //     console.log(this.contents.options);
+    //     this.isIndeterminate = false;
+    //   } else {
+    //     // eslint-disable-next-line no-restricted-syntax
+    //     for (const item of this.contents.options) {
+    //       item.voted = false;
+    //     }
+    //     this.isIndeterminate = true;
+    //   }
+    // },
   },
   mounted() {
     this.queryAllGathering();
+    // this.$refs.TableGather.doLayout();
   },
   created() {
     this.queryAllGathering();
