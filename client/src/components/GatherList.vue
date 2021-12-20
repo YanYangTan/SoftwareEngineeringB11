@@ -2,6 +2,8 @@
   <div>
     <el-button  @click="dialogFormVisible = true" type="primary" icon="el-icon-circle-plus-outline
 ">发起新聚会</el-button>
+     <el-button  @click="changeDateClick" type="primary" icon="el-icon-edit
+">{{ChangeDateButton}}</el-button>
 <el-button  @click="deleteClick" type="danger" icon="el-icon-delete
 ">{{DeleteButton}}</el-button>
 <el-dialog title="发起聚会" :visible.sync="dialogFormVisible">
@@ -191,6 +193,23 @@
     <el-button type="primary" @click="confirmContent">{{this.gatheringdialogtitle}}</el-button>
   </div>
     </el-dialog>
+    <!-- ---------------------------- changedate------------------------------------------------------------>
+     <el-dialog title="更改截止日期" :visible.sync="ChangeDateDialogVisible">
+       <el-form>
+  <el-form-item label="选择新的截至日期">
+      <el-date-picker
+      v-model="changedatetime"
+      type="datetime"
+      value-format="yyyy-MM-dd HH:mm:ss"
+      placeholder="选择日期时间">
+    </el-date-picker>
+    </el-form-item>
+       </el-form>
+      <div slot="footer" >
+    <el-button @click="ChangeDateDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="confirmChangeDate">设置</el-button>
+  </div>
+    </el-dialog>
     <!-- ---------------------------- table ------------------------------------------------------------>
 <!--    -->
     <el-container style="margin-top: 10px;margin-bottom: 10px">
@@ -206,9 +225,18 @@
     style="width: 100%"
   v-loading="loading">
     <el-table-column
-      width="290px"
+      width="400px"
       label="截止日期"
       prop="enddate">
+      <template slot-scope="scope">
+        <span>{{scope.row.enddate}}</span>
+      <el-button @click="ChangeDateClick(scope.row)"
+                 style="margin-left: 10px"
+                   size="mini"
+                 icon="el-icon-edit"
+          type='warning'
+          v-if="matchStateDate(scope.row)" ></el-button>
+      </template>
     </el-table-column>
     <el-table-column
       label="名字"
@@ -218,6 +246,10 @@
           <p>描述: {{ scope.row.description }}</p>
           <div slot="reference" class="name-wrapper">
             <el-tag type='info' size="medium">{{ scope.row.name }}</el-tag>
+            <el-button @click="DeleteClick(scope.$index,scope.row)"
+                   size="mini"
+          type='danger'
+          v-if="matchStateDeleted(scope.row)" >删除</el-button>
           </div>
         </el-popover>
       </template>
@@ -230,7 +262,7 @@
     <el-table-column
       prop="status"
       label="标签"
-      width="130px"
+      width="170px"
       :filters="[{ text: '投票', value: false }, { text: '提议', value: true }]"
       :filter-method="filterTag"
       filter-placement="bottom-end">
@@ -244,9 +276,6 @@
         <el-tag @click="tagClickedVote(scope.row)"
           type='success'
           v-else-if="matchState(scope.row)" >投票</el-tag>
-        <el-tag @click="tagDelete(scope.$index,scope.row)"
-          type='danger'
-          v-if="matchStateDeleted(scope.row)" >删除</el-tag>
       </template>
     </el-table-column>
   </el-table>
@@ -260,6 +289,11 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      changedatetimeRow: {},
+      changedatetime: '2021-12-31 00:00:00',
+      ChangeDateVisible: false,
+      ChangeDateDialogVisible: false,
+      ChangeDateButton: '更改截止日期',
       DeleteButton: '删除聚会',
       DeleteVisible: false,
       isIndeterminate: true,
@@ -304,7 +338,45 @@ export default {
     currentgroup: {},
   },
   methods: {
-    tagDelete(index, row) {
+    matchStateDate(row) {
+      return this.ChangeDateVisible && (Number(row.user_id) === Number(this.$route.params.userid));
+    },
+    changeDateClick() {
+      if (this.ChangeDateVisible === true) {
+        this.ChangeDateVisible = false;
+        this.ChangeDateButton = '更改截止日期';
+      } else {
+        this.ChangeDateVisible = true;
+        this.ChangeDateButton = '更改完毕';
+      }
+    },
+    confirmChangeDate() {
+      this.ChangeDateDialogVisible = false;
+      axios.post('/api/change-enddate', { gathering_id: this.changedatetimeRow.id, new_date: this.changedatetime })
+      // eslint-disable-next-line consistent-return
+        .then((res) => {
+          if (res.data.status) {
+            this.$message({
+              type: 'success',
+              message: '更改日期成功',
+            });
+            this.queryAllGathering();
+          } else {
+            this.$message({
+              type: 'warning',
+              message: `更改失败 ${res.data.message}`,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    ChangeDateClick(row) {
+      this.ChangeDateDialogVisible = true;
+      this.changedatetimeRow = row;
+    },
+    DeleteClick(index, row) {
       // console.log(row.user_id === this.$route.params.userid);
       axios.post('/api/delete-gathering', { user_id: Number(this.$route.params.userid), gathering_id: row.id })
       // eslint-disable-next-line consistent-return
