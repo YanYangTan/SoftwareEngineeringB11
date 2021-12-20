@@ -247,9 +247,9 @@
           <div slot="reference" class="name-wrapper">
             <el-tag type='info' size="medium">{{ scope.row.name }}</el-tag>
             <el-button @click="DeleteClick(scope.$index,scope.row)"
-                   size="mini"
-          type='danger'
-          v-if="matchStateDeleted(scope.row)" >删除</el-button>
+                       style="margin-left: 10px"
+                   size="mini" type='danger' icon="el-icon-delete"
+          v-if="matchStateDeleted(scope.row)" ></el-button>
           </div>
         </el-popover>
       </template>
