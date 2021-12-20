@@ -2,7 +2,8 @@
   <div>
     <el-button  @click="dialogFormVisible = true" type="primary" icon="el-icon-circle-plus-outline
 ">发起新聚会</el-button>
-
+<el-button  @click="deleteClick" type="danger" icon="el-icon-circle-plus-outline
+">{{DeleteButton}}</el-button>
 <el-dialog title="发起聚会" :visible.sync="dialogFormVisible">
   <el-form :model="temp">
     <el-form-item label="聚会名称" :label-width="formLabelWidth">
@@ -140,10 +141,12 @@
     ref="multipleTable"
       v-loading="loading">
         <el-table-column
+          width="150px"
       label="日期"
       prop="content.time">
     </el-table-column>
         <el-table-column
+          width="220px"
       label="地点"
       prop="content.location">
     </el-table-column>
@@ -226,7 +229,7 @@
     <el-table-column
       prop="status"
       label="标签"
-      width="100"
+      width="130px"
       :filters="[{ text: '投票', value: false }, { text: '提议', value: true }]"
       :filter-method="filterTag"
       filter-placement="bottom-end">
@@ -240,6 +243,9 @@
         <el-tag @click="tagClickedVote(scope.row)"
           type='success'
           v-else-if="matchState(scope.row)" >投票</el-tag>
+        <el-tag @click="tagDelete(scope.$index,scope.row)"
+          type='danger'
+          v-if="matchStateDeleted(scope.row)" >删除</el-tag>
       </template>
     </el-table-column>
   </el-table>
@@ -253,6 +259,8 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      DeleteButton: '删除聚会',
+      DeleteVisible: false,
       isIndeterminate: true,
       loading: true,
       gatherlist: [],
@@ -295,6 +303,40 @@ export default {
     currentgroup: {},
   },
   methods: {
+    tagDelete(index, row) {
+      axios.post('/api/delete-gathering', { user_id: this.$route.params.userid, gathering_id: row.id })
+      // eslint-disable-next-line consistent-return
+        .then((res) => {
+          if (res.data.status) {
+            this.$data.gatherlist.splice(index, 1);
+            this.$message({
+              type: 'success',
+              message: '成功删除聚会',
+            });
+          } else {
+            console.log(row.user_id);
+            this.$message({
+              type: 'warning',
+              message: `删除聚会失败 ${res.data.message}`,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    deleteClick() {
+      if (this.DeleteVisible === true) {
+        this.DeleteVisible = false;
+        this.DeleteButton = '删除聚会';
+      } else {
+        this.DeleteVisible = true;
+        this.DeleteButton = '删除完毕';
+      }
+    },
+    matchStateDeleted(row) {
+      return this.DeleteVisible && (Number(row.user_id) === Number(this.$route.params.userid));
+    },
     matchStateVoted(row) {
       return row.status === false && row.voted;
     },
