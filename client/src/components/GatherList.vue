@@ -206,6 +206,7 @@
     style="width: 100%"
   v-loading="loading">
     <el-table-column
+      width="290px"
       label="截止日期"
       prop="enddate">
     </el-table-column>
