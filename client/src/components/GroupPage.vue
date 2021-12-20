@@ -5,7 +5,8 @@
     <el-button
       style="width: 50px;margin-right: 30px;"
       icon="el-icon-back"
-      @click="BackToGroupList" circle></el-button>
+      @click="BackToGroupList" circle
+    type="primary"></el-button>
     <h1>{{this.$props.info.group_name}}
     </h1>
  <el-button  style="position: absolute; top: 10px; right: 10px;" type="primary" icon="el-icon-edit" @click="changeGroupName">更改群名</el-button>
