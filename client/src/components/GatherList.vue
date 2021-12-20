@@ -304,7 +304,8 @@ export default {
   },
   methods: {
     tagDelete(index, row) {
-      axios.post('/api/delete-gathering', { user_id: this.$route.params.userid, gathering_id: row.id })
+      // console.log(row.user_id === this.$route.params.userid);
+      axios.post('/api/delete-gathering', { user_id: Number(this.$route.params.userid), gathering_id: row.id })
       // eslint-disable-next-line consistent-return
         .then((res) => {
           if (res.data.status) {
@@ -314,7 +315,6 @@ export default {
               message: '成功删除聚会',
             });
           } else {
-            console.log(row.user_id);
             this.$message({
               type: 'warning',
               message: `删除聚会失败 ${res.data.message}`,
