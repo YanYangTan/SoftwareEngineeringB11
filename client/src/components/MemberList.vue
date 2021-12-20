@@ -3,10 +3,11 @@
      <el-card>
   <el-table
     :data="tableData.filter(data => !search || data.username.toLowerCase().includes(search.toLowerCase()))"
-    max-height="500px"
-    :row-class-name="tableRowClassName">
-    style="width: 100%;margin-bottom: 20px;"
+    max-height="100%"
+    :row-class-name="tableRowClassName"
   v-loading="loading">
+<!--    style="width: 100%;margin-bottom: 20px;"-->
+<!--  v-loading="loading">-->
     <el-table-column
       label="成员"
       prop="username"
@@ -21,7 +22,7 @@
           placeholder="输入关键字搜索"/>
       </template>
       <template slot-scope="scope">
-        <el-button size="mini" @click="openProfileBubble(scope.$index,scope.row)">详情</el-button>
+        <el-button size="mini" @click="openProfileBubble(scope.$index,scope.row)" type="info">详情</el-button>
         <el-dialog
   title=" "
   :visible.sync="dialogVisible"
