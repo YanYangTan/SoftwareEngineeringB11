@@ -21,8 +21,8 @@
 <!--    </el-main>-->
     </div>
   </el-container>
-      <el-button  style="position: absolute; bottom: 10px; right: 250px;" v-if="this.$props.info.admin" type="primary" icon="el-icon-share" @click="getInviteKey">获取邀请码</el-button>
-      <el-button style="position: absolute; bottom: 10px; right: 130px;" v-if="this.$props.info.admin" type="danger" icon="el-icon-delete"  @click="DeleteGroup">删除群</el-button>
+      <el-button  style="position: absolute; bottom: 10px; right: 239px;" v-if="this.$props.info.admin" type="primary" icon="el-icon-share" @click="getInviteKey">获取邀请码</el-button>
+      <el-button style="position: absolute; bottom: 10px; right: 124px;" v-if="this.$props.info.admin" type="danger" icon="el-icon-delete"  @click="DeleteGroup">删除群</el-button>
       <el-button  style="position: absolute; bottom: 10px; right: 10px;" type="danger" icon="el-icon-warning" @click="leaveGroup">退出群</el-button>
 </el-container>
 </template>
