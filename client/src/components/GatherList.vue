@@ -2,7 +2,7 @@
   <div>
     <el-button  @click="dialogFormVisible = true" type="primary" icon="el-icon-circle-plus-outline
 ">发起新聚会</el-button>
-<el-button  @click="deleteClick" type="danger" icon="el-icon-circle-plus-outline
+<el-button  @click="deleteClick" type="danger" icon="el-icon-delete
 ">{{DeleteButton}}</el-button>
 <el-dialog title="发起聚会" :visible.sync="dialogFormVisible">
   <el-form :model="temp">
