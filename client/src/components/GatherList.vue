@@ -569,6 +569,7 @@ export default {
       this.voteOneFormVisible = false;
     },
     confirmVote() {
+      this.voteFormVisible = false;
       const votecontent = { vote_ids: [], user_id: 0 };
       votecontent.user_id = this.$route.params.userid;
       // eslint-disable-next-line no-restricted-syntax
