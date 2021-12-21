@@ -1,8 +1,9 @@
 <template>
   <div id="app">
-    <div class="text-center">
-      <h1 class="title">家谱</h1>
-    </div>
+    <el-card>
+<!--    <div class="text-center">-->
+<!--&lt;!&ndash;      <h1 class="title">家谱</h1>&ndash;&gt;-->
+<!--    </div>-->
     <VueFamilyTree
       :tree="tree"
       @card-click="cardClick"
@@ -49,6 +50,7 @@
         </el-popover>
       </template>
     </VueFamilyTree>
+      </el-card>
   </div>
 </template>
 
@@ -265,52 +267,100 @@ export default {
   },
 };
 </script>
-
 <style lang="scss" scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 30px;
 }
 .text-center {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
 }
 .custom-card {
   display: flex;
   align-items: center;
-  width: 220px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  width: 110px;
+  padding: 5px;
+  border: 0.5px solid #ddd;
+  border-radius: 5px;
   box-sizing: border-box;
   background-color: #fff;
   cursor: pointer;
-  box-shadow: 0 0 6px 2px rgba(#000, 0);
+  box-shadow: 0 0 3px 1px rgba(#000, 0);
   transition: box-shadow .2s ease;
   &:hover {
-    box-shadow: 0 0 6px 2px rgba(#000, .1);
+    box-shadow: 0 0 3px 1px rgba(#000, .1);
   }
   &__image {
     flex: 0 0 auto;
-    width: 60px;
-    height: 60px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background-color: #dedede;
     background-size: cover;
     background-position: 50%;
   }
   &__info {
-    padding-left: 16px;
+    padding-left: 8px;
   }
   &__name {
-    font-weight: 600;
+    font-weight: 300;
   }
   &__age {
-    margin-top: 4px;
-    font-size: 12px;
+    margin-top: 2px;
+    font-size: 6px;
   }
 }
 </style>
+
+<!--<style lang="scss" scoped>-->
+<!--#app {-->
+<!--  font-family: Avenir, Helvetica, Arial, sans-serif;-->
+<!--  -webkit-font-smoothing: antialiased;-->
+<!--  -moz-osx-font-smoothing: grayscale;-->
+<!--  color: #2c3e50;-->
+<!--  margin-top: 60px;-->
+<!--}-->
+<!--.text-center {-->
+<!--  text-align: center;-->
+<!--  margin-bottom: 32px;-->
+<!--}-->
+<!--.custom-card {-->
+<!--  display: flex;-->
+<!--  align-items: center;-->
+<!--  width: 220px;-->
+<!--  padding: 10px;-->
+<!--  border: 1px solid #ddd;-->
+<!--  border-radius: 10px;-->
+<!--  box-sizing: border-box;-->
+<!--  background-color: #fff;-->
+<!--  cursor: pointer;-->
+<!--  box-shadow: 0 0 6px 2px rgba(#000, 0);-->
+<!--  transition: box-shadow .2s ease;-->
+<!--  &:hover {-->
+<!--    box-shadow: 0 0 6px 2px rgba(#000, .1);-->
+<!--  }-->
+<!--  &__image {-->
+<!--    flex: 0 0 auto;-->
+<!--    width: 60px;-->
+<!--    height: 60px;-->
+<!--    border-radius: 50%;-->
+<!--    background-color: #dedede;-->
+<!--    background-size: cover;-->
+<!--    background-position: 50%;-->
+<!--  }-->
+<!--  &__info {-->
+<!--    padding-left: 16px;-->
+<!--  }-->
+<!--  &__name {-->
+<!--    font-weight: 600;-->
+<!--  }-->
+<!--  &__age {-->
+<!--    margin-top: 4px;-->
+<!--    font-size: 12px;-->
+<!--  }-->
+<!--}-->
+<!--</style>-->

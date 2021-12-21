@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-button class="el-icon-circle-plus" @click="createGroup"> 创建群组</el-button>
-    <el-button class="el-icon-connection" @click="joinGroup"> 加入群组</el-button>
+    <el-button class="el-icon-circle-plus" type="primary" @click="createGroup"> 创建群组</el-button>
+    <el-button class="el-icon-connection" type="primary" @click="joinGroup"> 加入群组</el-button>
     <div class="group-list" v-loading.fullscreen.lock="fullscreenLoading">
 
       <el-row :gutter="20">

@@ -5,25 +5,26 @@
     <el-button
       style="width: 50px;margin-right: 30px;"
       icon="el-icon-back"
-      @click="BackToGroupList" circle></el-button>
+      @click="BackToGroupList" circle
+    type="primary"></el-button>
     <h1>{{this.$props.info.group_name}}
-    <el-button  @click="getInviteKey">获取邀请码</el-button>
-      <el-button  @click="leaveGroup">退出群</el-button>
     </h1>
-
+      <el-button  size="mini" style="margin-left: 10px;margin-bottom: 1px;height: 25px;width: 25px;padding-left: 3px" type="primary" icon="el-icon-edit" @click="changeGroupName"></el-button>
     </el-container>
   </el-header>
   <el-container>
     <el-aside width="300px">
       <MemberList :info="this.$props.info"></MemberList>
     </el-aside>
-    <el-main>
+    <div id="elmain">
+<!--    <el-main id="elmain">-->
       <GenealogyPage :info="this.$props.info"></GenealogyPage>
-    </el-main>
+<!--    </el-main>-->
+    </div>
   </el-container>
-    <el-footer >
-       <el-button style="position: absolute; bottom: 10px; right: 10px;" v-if="this.$props.info.admin" type="danger" icon="el-icon-delete"  @click="DeleteGroup">删除群</el-button>
-    </el-footer>
+      <el-button  style="position: absolute; bottom: 10px; right: 239px;" v-if="this.$props.info.admin" type="primary" icon="el-icon-share" @click="getInviteKey">获取邀请码</el-button>
+      <el-button style="position: absolute; bottom: 10px; right: 124px;" v-if="this.$props.info.admin" type="danger" icon="el-icon-delete"  @click="DeleteGroup">删除群</el-button>
+      <el-button  style="position: absolute; bottom: 10px; right: 10px;" type="danger" icon="el-icon-warning" @click="leaveGroup">退出群</el-button>
 </el-container>
 </template>
 
@@ -49,6 +50,44 @@ export default {
     };
   },
   methods: {
+    changeGroupName() {
+      this.$prompt('为你的群改一个好听的名字', '群名更改', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({ value }) => {
+        if (value === null) {
+          // eslint-disable-next-line
+            value = '';
+        }
+        axios.post('/api/change-groupname', { group_id: this.$props.info.id, new_name: value })
+          .then((res) => {
+            // eslint-disable-next-line no-unused-vars
+            let str;
+            let messagetype;
+            if (res.data.status) {
+              messagetype = 'success';
+              str = `成功更改群名，名为：${value}`;
+              this.$props.info.group_name = value;
+              // eslint-disable-next-line no-empty
+            } else {
+              str = '更改失败';
+              messagetype = 'warning';
+            }
+            this.$message({
+              type: messagetype,
+              message: str,
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入',
+        });
+      });
+    },
     checkAdmin() {
       axios.post('/api/query-admin', { group_id: this.$props.info.id, user_id: this.$route.params.userid })
         .then((res) => {
@@ -144,5 +183,11 @@ export default {
 </script>
 
 <style scoped>
-
+#elmain{
+  /*position: absolute;*/
+  margin-top: -40px;
+  margin-left: 5px;
+  width: 100%;
+  height: 100%;
+}
 </style>

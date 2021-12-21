@@ -1,18 +1,45 @@
 <template>
   <!--add a profile pic here-->
-  <div>
-  <div class=info>
-<el-descriptions title="User Info"
-v-loading="loading">
-    <el-descriptions-item label="Username">{{ username }}</el-descriptions-item>
-    <el-descriptions-item label="Telephone">{{phone}}</el-descriptions-item>
-    <el-descriptions-item label="Birthday">{{ birthday }}</el-descriptions-item>
-    <el-descriptions-item label="Quote">{{quote}}</el-descriptions-item>
-</el-descriptions>
-  </div>
+  <div v-loading.fullscreen.lock="fullscreenLoading">
+    <div class="demo-image" >
+  <img
+    style="margin-left:-21px;margin-top:-20px;width: 103%; height: 300px;"
+    src="https://resilientblog.co/wp-content/uploads/2019/07/sky-quotes.jpg" />
+      </div>
+    <div style="z-index: 1">
+      <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                 style="margin-top: -70px;"  :size="120"></el-avatar>
+    </div>
+<!--        <div class="demo-image" >-->
+<!--  <el-image-->
+<!--    style="margin-left:-21px;margin-top:-20px;width: 120%; height: 300px;" :z-index="this.zinn"-->
+<!--    src="https://resilientblog.co/wp-content/uploads/2019/07/sky-quotes.jpg" >-->
+<!--  </el-image>-->
+<!--      </div>-->
+<!--  <div class=info>-->
+<!--<el-descriptions title="User Info"-->
+<!--v-loading="loading">-->
+<!--    <el-descriptions-item label="Username">{{ username }}</el-descriptions-item>-->
+<!--    <el-descriptions-item label="Telephone">{{phone}}</el-descriptions-item>-->
+<!--    <el-descriptions-item label="Birthday">{{ birthday }}</el-descriptions-item>-->
+<!--    <el-descriptions-item label="Quote">{{quote}}</el-descriptions-item>-->
+<!--</el-descriptions>-->
+<!--  </div>-->
+    <h1 style="margin-left: 10px">{{ username }}</h1>
+    <div style="width:100%">
+    <el-card style="margin-top: 40px">
+      <span >电话号码 : </span><span style="color: #4714ff">  {{phone}}</span><span style="margin-left: 29%">电子邮件    :   </span><span style="color: #4714ff"> {{ email }}</span>
+    </el-card>
+    <el-card style="margin-top: 10px">
+      <span>生日日期    :   </span><span style="color: #4714ff"> {{ birthday }}</span><span style="margin-left: 30%">标语    :     </span><span style="color: #4714ff"> {{quote}}</span>
+    </el-card>
+<!--    <el-card style="margin-top: 10px">-->
+<!--      <span>标语    :     {{quote}}</span>-->
+<!--    </el-card>-->
+      </div>
   <el-row>
-  <el-button type="text" @click="changeQuote">Edit Quote</el-button>
-    <el-button type="text" @click="changeNumber">Change Number</el-button>
+    <el-button type="text" @click="changeNumber">更换电话号码</el-button>
+    <el-button type="text" @click="changeQuote">更改标语</el-button>
   </el-row>
   </div>
 </template>
@@ -32,10 +59,12 @@ export default {
       phone: '',
       username: '',
       quote: '',
+      fullscreenLoading: true,
     };
   },
   methods: {
     getUserInfo() {
+      this.fullscreenLoading = true;
       this.id = this.$route.params.userid;
       console.log(this.$route.params.userid);
       console.log('what is going on');
@@ -52,6 +81,7 @@ export default {
           } else {
             console.log(res.data.message);
           }
+          this.fullscreenLoading = false;
         });
     },
     changeQuote() {

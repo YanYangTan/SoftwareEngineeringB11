@@ -22,9 +22,8 @@
             <el-menu-item index="1-2-4" @click="TurnToImageWall">照片墙</el-menu-item>
             </el-submenu>
 
-          <el-menu-item index="1-2" @click="TurnToUserCalendar">个人日历</el-menu-item>
-          <el-menu-item index="1-3" @click="TurnToRoulette">随机转盘</el-menu-item>
-          <el-menu-item index="1-4" @click="TurnToUpload">Upload</el-menu-item>
+          <el-menu-item index="1-3" @click="TurnToUserCalendar">个人日历</el-menu-item>
+          <el-menu-item index="1-4" @click="TurnToRoulette">随机转盘</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
@@ -40,8 +39,7 @@
           <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
           <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
           <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
-          <GatherList :currentgroup="this.currentgroup" v-if="this.$data.index==='GatherList'"></GatherList>
-          <Upload :currentgroup="this.currentgroup" v-if="this.$data.index==='Upload'"></Upload>
+          <GatherList id="GatherList" :currentgroup="this.currentgroup" v-if="this.$data.index==='GatherList'"></GatherList>
         </el-main>
     </div>
   </el-container>
@@ -61,7 +59,6 @@ import GroupPage from './GroupPage.vue';
 import ImageWall from './ImageWall.vue';
 import Roulette from './roulette.vue';
 import GatherList from './GatherList.vue';
-import Upload from './Upload.vue';
 import Profile from './ProfilePage.vue';
 
 export default {
@@ -82,7 +79,6 @@ export default {
     GroupList,
     GroupPage,
     Roulette,
-    Upload,
     GatherList,
     Profile,
   },
@@ -171,9 +167,6 @@ export default {
         this.$data.index = 'GatherList';
       }
     },
-    TurnToUpload() {
-      this.$data.index = 'Upload';
-    },
     TurnToProfile() {
       this.$data.index = 'ProfilePage';
     },
@@ -210,5 +203,9 @@ export default {
   width: 100%;
   position: relative;
   border: none;
+}
+
+#GatherList{
+  height: 100%;
 }
 </style>
