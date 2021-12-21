@@ -427,27 +427,28 @@ export default {
     },
     queryAllGathering() {
       this.loading = true;
-      axios.post('/api/query-all-gathering', { group_id: this.$props.currentgroup.id })
+      axios.post('/api/query-all-gathering', { group_id: this.$props.currentgroup.id, user_id: this.$route.params.userid })
         .then((res) => {
           if (res.data.status) {
             this.gatherlist = res.data.gathering_list;
+
             // eslint-disable-next-line no-restricted-syntax
-            for (const item of this.gatherlist) {
-              if (item.status === false) {
-                axios.post('/api/check-vote', { user_id: this.$route.params.userid, gathering_id: item.id })
-                // eslint-disable-next-line consistent-return
-                  .then((res2) => {
-                    if (res2.data.status) {
-                      item.voted = res2.data.voted;
-                    } else {
-                      item.voted = false;
-                    }
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                  });
-              }
-            }
+            // for (const item of this.gatherlist) {
+            //   if (item.status === false) {
+            //     axios.post('/api/check-vote', { user_id: this.$route.params.userid, gathering_id: item.id })
+            //     // eslint-disable-next-line consistent-return
+            //       .then((res2) => {
+            //         if (res2.data.status) {
+            //           item.voted = res2.data.voted;
+            //         } else {
+            //           item.voted = false;
+            //         }
+            //       })
+            //       .catch((err) => {
+            //         console.log(err);
+            //       });
+            //   }
+            // }
             // this.$refs.TableGather.doLayout();
             this.loading = false;
             console.log(this.gatherlist);
