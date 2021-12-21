@@ -1,8 +1,9 @@
 from flask import Blueprint, jsonify, request
 from . import db
 from .models import *
-from .utils import check_groupname
-import random
+from .utils import check_groupname, generate_new_key, update_birthday, update_calendar
+from datetime import datetime, timedelta
+import random, configparser, os, json
 
 group = Blueprint('group', __name__)
 
@@ -18,22 +19,19 @@ def create_group():
     if not check_groupname(group_name):
         response_object["message"] = "Error: Group name invalid!"
     else:
-        rand_number = 0
+        length = random.randint(5, 10)
+        rand_num = 0
         while True:
-            rand_number = random.randint(1, 100000)
-            res = Group.query.filter_by(idgroups=rand_number).first()
+            rand_num = random.randint(1, 100000)
+            res = Group.query.filter_by(idgroups=rand_num).first()
             if not res:
                 break
         group = Group()
-        group.idgroups = rand_number
+        group.idgroups = rand_num
         group.name = group_name
-        tmp = 0
-        while True:
-            tmp = random.randint(10000, 1000000)
-            res = Group.query.filter_by(invite_key=tmp).first()
-            if not res:
-                break
-        group.invite_key = tmp
+        group.key_expiry_date = datetime.now() + timedelta(days=7)
+
+        group.invite_key = generate_new_key()
 
         rel = RelationGroupUser()
         rand_number2 = 0
@@ -43,7 +41,7 @@ def create_group():
             if not res:
                 break
         rel.id = rand_number2
-        rel.group_id = rand_number
+        rel.group_id = rand_num
         rel.user_id = user_id
         rel.admin = True
         db.session.add(group)
@@ -52,11 +50,16 @@ def create_group():
             db.session.commit()
             response_object["status"] = True
             response_object["message"] = "Group created!"
-            response_object["group_id"] = rand_number
-            response_object["invite_key"] = tmp
+            response_object["group_id"] = rand_num
+            response_object["invite_key"] = group.invite_key
+            response_object["key_expiry_date"] = group.key_expiry_date
         except Exception as e:
             print(e)
             response_object["message"] = "Failed to create group"
+        try:
+            update_birthday(user_id, group.idgroups)
+        except Exception as e:
+            print(e)
     return jsonify(response_object)
 
 
@@ -69,18 +72,14 @@ def generate_key():
     response_object = {}
     response_object["status"] = False
     if group:
-        tmp = 0
-        while True:
-            tmp = random.randint(10000, 1000000)
-            res = Group.query.filter_by(invite_key=tmp).first()
-            if not res:
-                break
-        group.invite_key = tmp
+        group.invite_key = generate_new_key()
+        group.key_expiry_date = datetime.now() + timedelta(days=7)
         try:
             db.session.commit()
             response_object["status"] = True
             response_object["message"] = "Invite key generated!"
-            response_object["invite_key"] = tmp
+            response_object["invite_key"] = group.invite_key
+            response_object["key_expiry_date"] = group.key_expiry_date
         except Exception as e:
             print(e)
             response_object["message"] = "Failed to generate invite key!"
@@ -108,24 +107,36 @@ def join_group():
         if rel:
             response_object["message"] = "Error: User already in group"
         else:
-            rel_group = RelationGroupUser()
-            rand_number = 0
-            while True:
-                rand_number = random.randint(1, 100000)
-                res = RelationGroupUser.query.filter_by(id=rand_number).first()
-                if not res:
-                    break
-            rel_group.id = rand_number
-            rel_group.group_id = group.idgroups
-            rel_group.user_id = user_id
-            db.session.add(rel_group)
-            try:
-                db.session.commit()
-                response_object["status"] = True
-                response_object["message"] = "User added to group!"
-            except Exception as e:
-                print(e)
-                response_object["message"] = "Failed to join group"
+            if datetime.now() > group.key_expiry_date:
+                response_object["expired"] = True
+                response_object["message"] = "Error: Invite key expired!"
+            else:
+                rel_group = RelationGroupUser()
+                rand_number = 0
+                while True:
+                    rand_number = random.randint(1, 100000)
+                    res = RelationGroupUser.query.filter_by(id=rand_number).first()
+                    if not res:
+                        break
+                rel_group.id = rand_number
+                rel_group.group_id = group.idgroups
+                rel_group.user_id = user_id
+                db.session.add(rel_group)
+                try:
+                    db.session.commit()
+                    response_object["status"] = True
+                    response_object["message"] = "User added to group!"
+                    response_object['group_id'] = group.idgroups
+                    response_object['group_name'] = group.name
+                    response_object['expired'] = False
+                except Exception as e:
+                    print(e)
+                    response_object["message"] = "Failed to join group"
+                try:
+                    update_birthday(user_id, group.idgroups)
+                    update_calendar(user_id, group.idgroups)
+                except Exception as e:
+                    print(e)
     return jsonify(response_object)
 
 
@@ -307,10 +318,52 @@ def delete_group():
     if not group:
         response_object['message'] = "Error: Group does not exist!"
     else:
+        gatherings = Gathering.query.filter_by(group_id=group_id).all()
+        for gathering in gatherings:
+            for rel in gathering.relation_gathering:
+                if gathering.status:
+                    tmp = Suggestion.query.filter_by(id=rel.suggestion_id).first()
+                    if tmp:
+                        db.session.delete(tmp)
+                else:
+                    tmp = VoteOptions.query.filter_by(id=rel.vote_id).first()
+                    if tmp:
+                        db.session.delete(tmp)
+                db.session.delete(rel)
+            db.session.delete(gathering)
+
+        calendar = Calendar.query.filter_by(group_id=group_id).first()
+        if calendar:
+            db.session.delete(calendar)
+
+        genealogy = Genealogy.query.filter_by(group_id=group_id).first()
+        if genealogy:
+            db.session.delete(genealogy)
+
+        posts = PhotoPost.query.filter_by(group_id=group_id).all()
+        for post in posts:
+            config = configparser.RawConfigParser()
+            config.read('config.cfg')
+            photo_dict = dict(config.items('PHOTO'))
+            upload_folder = photo_dict["upload_folder"]
+            # upload_folder = "\\Downloads\\temp\\upload"
+
+            for filename in json.loads(post.media):
+                photo = os.path.join(upload_folder, str(post.group_id), filename)
+                if os.path.isfile(photo):
+                    os.remove(photo)
+
+            for rel in post.relation_post_comment:
+                tmp = Comments.query.filter_by(id=rel.comment_id).first()
+                db.session.delete(tmp)
+                db.session.delete(rel)
+            db.session.delete(post)
+
         groups = group.relation_group_user
         for item in groups:
             db.session.delete(item)
         db.session.delete(group)
+
         try:
             db.session.commit()
             response_object['status'] = True
@@ -379,3 +432,24 @@ def leave_group():
             print(e)
             response_object['message'] = "Failed to leave group"
     return jsonify(response_object)
+
+
+@group.route('/sync-birthday', methods=['GET', 'POST'])
+def sync_birthday():
+    users = User.query.all()
+    for user in users:
+        if user.relation_group_user:
+            for rel in user.relation_group_user:
+                update_birthday(user.idusers, rel.group_id)
+    return jsonify("Done")
+
+
+@group.route('/sync-calendar', methods=['GET', 'POST'])
+def sync_calendar():
+    groups = Group.query.all()
+    for group in groups:
+        if group.relation_group_user:
+            for rel in group.relation_group_user:
+                update_calendar(rel.user_id, group.idgroups)
+    return jsonify("Done")
+

@@ -24,7 +24,6 @@
 
           <el-menu-item index="1-3" @click="TurnToUserCalendar">个人日历</el-menu-item>
           <el-menu-item index="1-4" @click="TurnToRoulette">随机转盘</el-menu-item>
-          <el-menu-item index="1-5" @click="TurnToUpload">Upload</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
@@ -41,7 +40,6 @@
           <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
           <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
           <GatherList id="GatherList" :currentgroup="this.currentgroup" v-if="this.$data.index==='GatherList'"></GatherList>
-          <Upload :currentgroup="this.currentgroup" v-if="this.$data.index==='Upload'"></Upload>
         </el-main>
     </div>
   </el-container>
@@ -61,7 +59,6 @@ import GroupPage from './GroupPage.vue';
 import ImageWall from './ImageWall.vue';
 import Roulette from './roulette.vue';
 import GatherList from './GatherList.vue';
-import Upload from './Upload.vue';
 import Profile from './ProfilePage.vue';
 
 export default {
@@ -82,7 +79,6 @@ export default {
     GroupList,
     GroupPage,
     Roulette,
-    Upload,
     GatherList,
     Profile,
   },
@@ -171,8 +167,8 @@ export default {
         this.$data.index = 'GatherList';
       }
     },
-    TurnToUpload() {
-      this.$data.index = 'Upload';
+    TurnToProfile() {
+      this.$data.index = 'ProfilePage';
     },
     TurnToProfile() {
       this.$data.index = 'ProfilePage';
