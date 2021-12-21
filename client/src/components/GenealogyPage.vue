@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <el-card>
+      <el-button @click="outputUsedtable">test</el-button>
 <!--    <div class="text-center">-->
 <!--&lt;!&ndash;      <h1 class="title">家谱</h1>&ndash;&gt;-->
 <!--    </div>-->
@@ -17,18 +18,24 @@
   width="100"
   trigger="click">
   <el-menu :default-openeds="['2']">
-    <el-menu-item index="2-1" @click="cardClick(item)">查看信息</el-menu-item>
     <el-popover
   placement="right"
   width="100"
   trigger="click">
       <el-menu :default-openeds="['3']">
+        <div v-if="item.id >= 0">
         <el-menu-item index="3-1" @click="addMember(item,'Sibling')">兄弟</el-menu-item>
         <el-menu-item index="2-2" @click="addMember(item,'Children')">儿女</el-menu-item>
         <el-menu-item index="2-2" @click="addMember(item,'Honey')">配偶</el-menu-item>
+          </div>
+        <div v-else v-for="user in userlist" :key="user.id">
+<el-menu-item index="4-1" v-if="user.used===false" @click="item.id=user.id;item.name=user.username;item.image='dd';user.used = true;usedtable.push(user.id)">{{user.username}}</el-menu-item>
+        </div>
       </el-menu>
-    <el-menu-item slot="reference" index="2-2" @click="cardClick(item)">添加成员</el-menu-item>
+    <el-menu-item  v-if="item.id >= 0" slot="reference" index="2-2">添加成员</el-menu-item>
+      <el-menu-item  v-if="item.id < 0" slot="reference" index="2-3">设置成员</el-menu-item>
     </el-popover>
+    <el-menu-item index="2-2" style="color: red" @click="addMember(item,'Delete')">删除</el-menu-item>
   </el-menu>
         <el-button slot="reference" class="custom-card"  @click="cardClick(item)">
           <div
@@ -50,6 +57,10 @@
         </el-popover>
       </template>
     </VueFamilyTree>
+      <div  >
+        <el-button type="danger" icon="el-icon-delete" @click="clearGenealogy">重置家谱</el-button>
+        <el-button type="primary" icon="el-icon-check" @click="saveGenealogy">保存家谱</el-button>
+      </div>
       </el-card>
   </div>
 </template>
@@ -70,6 +81,7 @@ export default {
   data() {
     return {
       customCard: true,
+      usedtable: [],
       userlist: [],
       temptree: [],
       currentchildren: [],
@@ -77,125 +89,19 @@ export default {
       testnum: 100,
       tree: [{
         firstPerson: {
-          name: 'John Walker',
+          name: '未定义',
           image: 'https://picsum.photos/300/300?random=1',
-          id: 1,
+          id: -1,
+          used: false,
+          root: true,
         },
-        secondPerson: {
-          name: 'Jannet Grem',
-          image: 'https://picsum.photos/300/300?random=2',
-          age: 23,
-          id: 2,
-        },
-        children: [{
-          firstPerson: {
-            name: 'Katia',
-            id: 3,
-          },
-          secondPerson: {
-            name: 'Oleg',
-            id: 4,
-          },
-          children: [{
-            firstPerson: {
-              name: 'Gleb',
-              id: 5,
-            },
-            secondPerson: {
-              name: 'Viktoriya',
-              id: 6,
-            },
-            children: [{
-              firstPerson: {
-                name: 'Rim',
-              },
-              secondPerson: {
-                name: 'Natasha',
-              },
-            },
-            {
-              firstPerson: {
-                name: 'Leonid',
-              },
-            }, {
-              firstPerson: {
-                name: 'Leonid',
-              },
-              children: [{
-                firstPerson: {
-                  name: 'Rim',
-                },
-                secondPerson: {
-                  name: 'Natasha',
-                },
-              }],
-            }, {
-              firstPerson: {
-                name: 'Leonid',
-              },
-            }],
-          },
-          {
-            firstPerson: {
-              name: 'Olga',
-            },
-            secondPerson: {
-              name: 'Nikita',
-            },
-          }],
-        },
-        {
-          firstPerson: {
-            name: 'Vitia',
-          },
-          secondPerson: {
-            name: 'Dasha',
-          },
-        },
-        {
-          firstPerson: {
-            name: 'Antonio Wild',
-            image: 'https://picsum.photos/300/300?random=3',
-          },
-          secondPerson: {
-            name: 'Olivia Olson',
-          },
-          children: [{
-            firstPerson: {
-              name: 'Kristina Wild',
-            },
-          },
-          {
-            firstPerson: {
-              name: 'Alexey Wild',
-            },
-          },
-          {
-            firstPerson: {
-              name: 'Viktor Wild',
-              id: 22,
-            },
-          }],
-        }],
       }],
     };
   },
   methods: {
     cardClick(item) {
       console.log(item);
-    },
-    getUser() { // 获取userlist
-      this.loading = true;
-      axios.post('/api/query-user', { group_id: this.$props.info.id })
-        .then((res) => {
-          this.loading = false;
-          if (res.data.status) {
-            this.$data.userlist = res.data.user_list;
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      console.log(this.currentnode);
     },
     // 添加成员
     addMember(item, type) {
@@ -204,13 +110,10 @@ export default {
       if (type === 'Sibling') {
         console.log('addSibling');
         // eslint-disable-next-line no-restricted-syntax
-        const ele = { firstPerson: { name: '未定义', id: this.testnum, image: 's' } };
-        this.testnum += 1;
+        const ele = { firstPerson: { name: '未定义', id: -1, image: 's' } };
         this.currentchildren.push(ele);
-        console.log(this.tree);
       } else if (type === 'Children') {
-        const ele = { firstPerson: { name: '未定义', id: this.testnum, image: 's' } };
-        this.testnum += 1;
+        const ele = { firstPerson: { name: '未定义', id: -1, image: 's' } };
         if (this.currentnode.children !== undefined) {
           this.currentnode.children.push(ele);
         } else {
@@ -220,13 +123,12 @@ export default {
         }
         console.log('addChildren');
       } else if (type === 'Honey') {
-        const ele = { name: '未定义', id: this.testnum, image: 's' };
+        const ele = { name: '未定义', id: -1, image: 's' };
         if (this.currentnode.firstPerson !== undefined && this.currentnode.secondPerson === undefined) { // 说明只有左节点
           this.currentnode.secondPerson = ele;
           this.testnum += 1;
         } else if (this.currentnode.firstPerson === undefined && this.currentnode.secondPerson !== undefined) { // 说明只有右节点
           this.currentnode.firstPerson = ele;
-          this.testnum += 1;
         } else { // 说明两个节点都有
           this.$message({
             type: 'warning',
@@ -234,6 +136,41 @@ export default {
           });
         }
         console.log('addHoney');
+      } else if (type === 'Delete') {
+        if (item.root === true) {
+          this.$message({
+            type: 'warning',
+            message: '根元素无法删除！',
+          });
+        } else {
+          // eslint-disable-next-line no-unused-vars
+          let num;
+          if (this.currentnode.children === undefined || this.currentnode.children.length === 0) {
+            // eslint-disable-next-line no-plusplus,no-empty
+            for (let i = 0; i < this.currentchildren.length; ++i) {
+              if (this.currentchildren.id === item.id) {
+                num = i;
+                break;
+              }
+            }
+            this.currentchildren.splice(this.currentchildren.indexOf(num), 1);
+            this.usedtable.splice(this.usedtable.indexOf(item.id), 1);
+            // eslint-disable-next-line no-restricted-syntax
+            for (const user of this.userlist) {
+              if (user.id === item.id) {
+                user.used = false;
+                break;
+              }
+            }
+            console.log(this.tree);
+            console.log(this.currentchildren);
+          } else {
+            this.$message({
+              type: 'warning',
+              message: '只能删除最子代！',
+            });
+          }
+        }
       } else {
         console.log('Error');
       }
@@ -245,25 +182,97 @@ export default {
       // eslint-disable-next-line guard-for-in,no-restricted-syntax
       for (e of this.temptree) {
         if (e.firstPerson !== undefined && e.firstPerson.id === id) {
-          console.log(e.firstPerson);
           this.currentnode = e;// 当前节点，字典类型
           this.currentchildren = this.temptree; // 当前层，数组类型
-          console.log(this.currentchildren);
         }
         if (e.secondPerson !== undefined && e.secondPerson.id === id) {
           this.currentnode = e; // 当前节点，字典类型
-          console.log(e.secondPerson);
           this.currentchildren = this.temptree; // 当前层，数组类型
-          console.log(this.currentchildren);
         }
         if (e.children !== undefined) { // 若它不是叶子结点
           this.test(e.children, id); // 递归至下一个孩子层
         }
       }
     },
+    clearGenealogy() {
+      this.tree = [{
+        firstPerson: {
+          name: '未定义',
+          image: 'https://picsum.photos/300/300?random=1',
+          id: -1,
+          used: false,
+          root: true,
+        },
+      }];
+      // eslint-disable-next-line no-restricted-syntax
+      for (const user of this.userlist) {
+        user.used = false;
+      }
+      this.usedtable = [];
+    },
+    saveGenealogy() {
+      const temp = {};
+      temp.tree = this.tree;
+      temp.usedtable = this.usedtable;
+      axios.post('/api/save-genealogy', { group_id: this.$props.info.id, content: temp })
+        .then((res) => {
+          this.loading = false;
+          if (res.data.status) {
+            console.log(res.data.message);
+          }
+          this.$message({
+            type: 'info',
+            message: '家谱保存成功',
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    loadGenealogy() {
+      axios.post('/api/query-genealogy', { group_id: this.$props.info.id })
+        .then((res) => {
+          this.loading = false;
+          if (res.data.status) {
+            console.log(res.data.message);
+            this.tree = res.data.content.tree;
+            this.usedtable = res.data.content.usedtable;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      this.loading = true;
+      axios.post('/api/query-user', { group_id: this.$props.info.id })
+        .then((res) => {
+          this.loading = false;
+          if (res.data.status) {
+            this.$data.userlist = res.data.user_list;
+            // eslint-disable-next-line no-restricted-syntax
+            for (const user of this.userlist) { // 判断用户有没有已被家谱用过
+              // eslint-disable-next-line no-restricted-syntax
+              for (const id of this.usedtable) {
+                if (id === user.id) {
+                  user.used = true;
+                  break;
+                } else { user.used = false; }
+              }
+            }
+            console.log(this.userlist);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    outputUsedtable() {
+      console.log(this.usedtable);
+      console.log(this.userlist);
+      console.log(this.tree);
+    },
   },
   created() {
-    this.getUser();
+    this.loadGenealogy();
   },
 };
 </script>
