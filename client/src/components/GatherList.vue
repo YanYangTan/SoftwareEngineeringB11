@@ -649,6 +649,7 @@ export default {
         });
     },
     tagClickedSuggestion(row) {
+      this.resetForm();
       this.loading = true;
       axios.post('/api/query-gathering', { gathering_id: row.id })
         .then((res) => {
