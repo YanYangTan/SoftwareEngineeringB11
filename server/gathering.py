@@ -137,6 +137,7 @@ def query_all_gathering():
     if request.method == 'POST':
         post_data = request.get_json()
         group_id = post_data.get('group_id')
+        user_id = post_data.get('user_id')
     response_object = {}
     response_object['status'] = False
 
@@ -155,6 +156,18 @@ def query_all_gathering():
             item['description'] = gathering.description
             item['enddate'] = gathering.enddate
             item['status'] = gathering.status
+            if not gathering.status:
+                voted = False
+                for rel in gathering.relation_gathering:
+                    vote = VoteOptions.query.filter_by(id=rel.vote_id).first()
+                    voters = json.loads(vote.voters)
+                    for voter in voters:
+                        if str(user_id) == voter:
+                            voted = True
+                            break
+                    if voted == True:
+                        break
+                item['voted'] = voted
             ret.append(item)
         response_object['status'] = True
         response_object['message'] = "Query success!"
