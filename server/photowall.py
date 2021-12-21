@@ -29,31 +29,31 @@ def upload_post():
     if not os.path.exists(dir):
         os.makedirs(dir)
 
-    photo_post = PhotoPost()
-    rand_num = 0
-    while True:
-        rand_num = random.randint(1, 1000000)
-        res = PhotoPost.query.filter_by(id=rand_num).first()
-        if not res:
-            break
-    photo_post.id = rand_num
-    photo_post.user_id = int(user_id)
-    photo_post.group_id = int(group_id)
-    photo_post.caption = caption
-    photo_post.like = 0
-    like_users = []
-    photo_post.like_users = json.dumps(like_users)
-    photo_post.date_created = datetime.now()
-    locations = []
     if files:
         for file in files:
+            photo_post = PhotoPost()
+            rand_num = 0
+            while True:
+                rand_num = random.randint(1, 1000000)
+                res = PhotoPost.query.filter_by(id=rand_num).first()
+                if not res:
+                    break
+            photo_post.id = rand_num
+            photo_post.user_id = int(user_id)
+            photo_post.group_id = int(group_id)
+            photo_post.caption = caption
+            photo_post.like = 0
+            like_users = []
+            photo_post.like_users = json.dumps(like_users)
+            photo_post.date_created = datetime.now()
+            locations = []
             file_ext = pathlib.Path(file.filename).suffix
             filename = uuid.uuid4().hex + file_ext
             path = os.path.join(dir, filename)
             file.save(path)
             locations.append(filename)
-    photo_post.media = json.dumps(locations)
-    db.session.add(photo_post)
+            photo_post.media = json.dumps(locations)
+            db.session.add(photo_post)
 
     try:
         db.session.commit()
