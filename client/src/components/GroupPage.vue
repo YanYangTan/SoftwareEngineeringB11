@@ -9,7 +9,7 @@
     type="primary"></el-button>
     <h1>{{this.$props.info.group_name}}
     </h1>
- <el-button  style="position: absolute; top: 10px; right: 10px;" type="primary" icon="el-icon-edit" @click="changeGroupName">更改群名</el-button>
+      <el-button  size="mini" style="margin-left: 10px;margin-bottom: 1px;height: 25px;width: 25px;padding-left: 3px" type="primary" icon="el-icon-edit" @click="changeGroupName"></el-button>
     </el-container>
   </el-header>
   <el-container>
@@ -185,7 +185,7 @@ export default {
 <style scoped>
 #elmain{
   /*position: absolute;*/
-  margin-top: -55px;
+  margin-top: -40px;
   margin-left: 5px;
   width: 100%;
   height: 100%;
