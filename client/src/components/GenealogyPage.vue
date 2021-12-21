@@ -40,28 +40,32 @@
     <el-menu-item  v-if="item.defined" slot="reference" index="3-2">添加成员</el-menu-item>
       <el-menu-item  v-if="!item.defined" slot="reference" index="3-3">选择成员</el-menu-item>
     </el-popover>
-            <el-popover
-  placement="right"
-  v-model="seeable"
-  width="300"
-  trigger="click">
-              <el-menu>
-              <el-menu-item index="4-1" >
-                <el-input v-model="nameinput" placeholder="请输入内容"></el-input>
-                <el-button @click="customizeName();
-                     item.defined=true;
-                     item.name=nameinput;
-                     item.image='https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
-                     seeable=false;
-                     "
-                >确定</el-button>
-              </el-menu-item>
-                </el-menu>
-                          <el-menu-item  v-if="!item.defined"
-                     slot="reference"
-                     index="3-4">自定义成员</el-menu-item>
-                            </el-popover>
-    <el-menu-item index="2-4" style="color: red" @click="addMember(item,'Delete')">删除</el-menu-item>
+    <el-menu-item  v-if="!item.defined"
+                     index="3-4"
+     @click="customizeName(item);
+            ">自定义成员</el-menu-item>
+<!--            <el-popover-->
+<!--  placement="right"-->
+<!--  v-model="seeable"-->
+<!--  width="300"-->
+<!--  trigger="click">-->
+<!--              <el-menu>-->
+<!--              <el-menu-item index="4-1" >-->
+<!--                <el-input v-model="nameinput" placeholder="请输入内容"></el-input>-->
+<!--                <el-button @click="customizeName();-->
+<!--                     item.defined=true;-->
+<!--                     item.name=nameinput;-->
+<!--                     item.image='https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'-->
+<!--                     seeable=false;-->
+<!--                     "-->
+<!--                >确定</el-button>-->
+<!--              </el-menu-item>-->
+<!--                </el-menu>-->
+<!--                          <el-menu-item  v-if="!item.defined"-->
+<!--                     slot="reference"-->
+<!--                     index="3-4">自定义成员</el-menu-item>-->
+<!--                            </el-popover>-->
+    <el-menu-item index="2-4" style="color: #dc0606" @click="addMember(item,'Delete')">删除</el-menu-item>
   </el-menu>
         <el-button slot="reference" class="custom-card"  @click="cardClick(item)">
           <div
@@ -317,22 +321,43 @@ export default {
       console.log(this.currentchildren);
       console.log(this.uppertree);
     },
-    customizeName() {
-      let q = false;
-      // eslint-disable-next-line no-constant-condition,no-plusplus
-      for (let i = 0; i > 1; --i) {
-        this.randomnum = Math.round(Math.random() * 100000);
-        console.log(this.randomnum);
-        // eslint-disable-next-line no-restricted-syntax,no-plusplus
-        for (let j = 0; j < this.userlist; ++j) {
-          if (j === this.userlist.length - 1 && this.randomnum !== this.userlist[j].id) {
-            q = true;
-          }
+    customizeName(item) {
+      this.$prompt('输入自定义成员名', '自定义成员', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({ value }) => {
+        if (value === null) {
+          // eslint-disable-next-line
+            value = '';
         }
-        if (q === true) {
-          break;
-        }
-      }
+        // eslint-disable-next-line no-param-reassign
+        item.defined = true;
+        // eslint-disable-next-line no-param-reassign
+        item.name = value;
+        // eslint-disable-next-line no-param-reassign
+        item.image = 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png';
+        this.$forceUpdate();
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入',
+        });
+      });
+      // let q = false;
+      // // eslint-disable-next-line no-constant-condition,no-plusplus
+      // for (let i = 0; i > 1; --i) {
+      //   this.randomnum = Math.round(Math.random() * 100000);
+      //   console.log(this.randomnum);
+      //   // eslint-disable-next-line no-restricted-syntax,no-plusplus
+      //   for (let j = 0; j < this.userlist; ++j) {
+      //     if (j === this.userlist.length - 1 && this.randomnum !== this.userlist[j].id) {
+      //       q = true;
+      //     }
+      //   }
+      //   if (q === true) {
+      //     break;
+      //   }
+      // }
     },
   },
   created() {
