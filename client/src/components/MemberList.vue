@@ -28,12 +28,12 @@
   :visible.sync="dialogVisible"
   width="50%">
           <span>
-  <el-descriptions title="User Info"
+  <el-descriptions title="用户信息"
   v-loading="loading">
-    <el-descriptions-item label="Username">{{ username }}</el-descriptions-item>
-    <el-descriptions-item label="Telephone">{{phone}}</el-descriptions-item>
-    <el-descriptions-item label="Birthday">{{ birthday }}</el-descriptions-item>
-    <el-descriptions-item label="Quote">{{quote}}</el-descriptions-item>
+    <el-descriptions-item label="用户名">{{ username }}</el-descriptions-item>
+    <el-descriptions-item label="电话号码">{{phone}}</el-descriptions-item>
+    <el-descriptions-item label="生日日期">{{ birthday }}</el-descriptions-item>
+    <el-descriptions-item label="标语">{{quote}}</el-descriptions-item>
   </el-descriptions></span>
   <span slot="footer" class="dialog-footer">
     <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
