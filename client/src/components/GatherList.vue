@@ -234,7 +234,7 @@
                  style="margin-left: 10px"
                    size="mini"
                  icon="el-icon-edit"
-          type='warning'
+          type='primary'
           v-if="matchStateDate(scope.row)" ></el-button>
       </template>
     </el-table-column>
