@@ -2,6 +2,7 @@
 2. (Linux) 运行./run.sh启动后端（可能需要先执行chmod u+x run.sh)
 3. (Windows) 依次执行
  ```
+ venv\Scripts\activate
  set FLASK_APP=__init__.py
  set FLASK_RUN_HOST=0.0.0.0
  set FLASK_RUN_PORT=8000
@@ -13,7 +14,7 @@
 - 调用数据库的类
 
 ### auth.py
-- 与前端关联函数（注册、登录）
+- 与前端关联函数（登录、注册）
 
 ### group.py
 - 与前端关联函数（群组）
@@ -21,8 +22,6 @@
 ### gathering.py
 - 与前端关联函数（聚会）
 
-### photowall.py
-- 与前端关联函数（照片墙）
-
 ### utils.py
 - 后端的函数（与前端无关）
+

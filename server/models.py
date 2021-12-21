@@ -18,7 +18,6 @@ class Group(db.Model):
     idgroups = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(45))
     invite_key = db.Column(db.String(45))
-    key_expiry_date = db.Column(db.DateTime)
 
     relation_group_user = db.relationship("RelationGroupUser", backref="groups")
 
@@ -40,7 +39,6 @@ class Gathering(db.Model):
     description = db.Column(db.Text)
     enddate = db.Column(db.DateTime)
     status = db.Column(db.Boolean, default=False)
-    allow_multiple_vote = db.Column(db.Boolean, default=False)
 
     relation_gathering = db.relationship("RelationGathering", backref="gathering")
 
@@ -78,34 +76,3 @@ class Calendar(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.idgroups'))
     content = db.Column(db.Text)
-
-
-class PhotoPost(db.Model):
-    __tablename__ = 'photo_post'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.idusers'))
-    group_id = db.Column(db.Integer, db.ForeignKey('groups.idgroups'))
-    caption = db.Column(db.Text)
-    media = db.Column(db.Text)
-    like = db.Column(db.Integer)
-    like_users = db.Column(db.Text)
-    date_created = db.Column(db.DateTime)
-
-    relation_post_comment = db.relationship("RelationPostComment", backref="photo_post")
-
-
-class Comments(db.Model):
-    __tablename__ = 'comments'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.idusers'))
-    content = db.Column(db.Text)
-    date_created = db.Column(db.DateTime)
-
-    relation_post_comment = db.relationship("RelationPostComment", backref="comments")
-
-
-class RelationPostComment(db.Model):
-    __tablename__ = 'relation_post_comment'
-    id = db.Column(db.Integer, primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey('photo_post.id'))
-    comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'))

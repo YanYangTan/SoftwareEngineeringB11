@@ -27,7 +27,7 @@ export default new Router({
       component: Register,
     },
     {
-      path: '/Calender/:groupid',
+      path: '/Calender/:isGroup/:id',
       name: 'Calender',
       component: Calender,
     },
