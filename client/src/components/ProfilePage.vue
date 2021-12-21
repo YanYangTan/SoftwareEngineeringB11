@@ -1,6 +1,6 @@
 <template>
   <!--add a profile pic here-->
-  <div>
+  <div v-loading.fullscreen.lock="fullscreenLoading">
     <div class="demo-image" >
   <img
     style="margin-left:-21px;margin-top:-20px;width: 103%; height: 300px;"
@@ -59,10 +59,12 @@ export default {
       phone: '',
       username: '',
       quote: '',
+      fullscreenLoading: true,
     };
   },
   methods: {
     getUserInfo() {
+      this.fullscreenLoading = true;
       this.id = this.$route.params.userid;
       console.log(this.$route.params.userid);
       console.log('what is going on');
@@ -79,6 +81,7 @@ export default {
           } else {
             console.log(res.data.message);
           }
+          this.fullscreenLoading = false;
         });
     },
     changeQuote() {
