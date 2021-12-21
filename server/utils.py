@@ -345,3 +345,4 @@ def update_calendar(user_id, group_id):
         print("User calendar updated!")
     except Exception as e:
         print(e)
+

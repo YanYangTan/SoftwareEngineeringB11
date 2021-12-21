@@ -3,6 +3,7 @@ from . import db, scheduler
 from .models import *
 from .utils import query_username_by_id, update_suggestion, update_vote
 from datetime import datetime
+from sqlalchemy import asc
 import random, json
 
 gathering = Blueprint('gathering', __name__)
@@ -145,7 +146,7 @@ def query_all_gathering():
     if not group:
         response_object['message'] = "Error: Group does not exist"
     else:
-        gatherings = Gathering.query.filter_by(group_id=group_id).all()
+        gatherings = Gathering.query.filter_by(group_id=group_id).order_by(asc(Gathering.enddate)).all()
         ret = []
         for gathering in gatherings:
             item = {}

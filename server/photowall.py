@@ -3,6 +3,7 @@ from . import db
 from .models import *
 from datetime import datetime
 from .utils import query_username_by_id
+from sqlalchemy import desc
 import os, configparser, random, uuid, json, pathlib
 
 photowall = Blueprint('photowall', __name__)
@@ -78,7 +79,7 @@ def query_all_post():
     if not group:
         response_object['message'] = "Error: Group does not exist!"
     else:
-        posts = PhotoPost.query.filter_by(group_id=group_id).all()
+        posts = PhotoPost.query.filter_by(group_id=group_id).order_by(desc(PhotoPost.date_created)).all()
         ret = []
         for post in posts:
             item = {}
@@ -228,6 +229,7 @@ def query_comment():
             item['content'] = comment.content
             item['date_created'] = comment.date_created
             ret.append(item)
+        ret.sort(key=lambda x: x['date_created'])
         response_object['status'] = True
         response_object['message'] = "Query success!"
         response_object['comments_list'] = ret
