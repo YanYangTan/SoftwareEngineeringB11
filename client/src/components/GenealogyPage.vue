@@ -27,17 +27,18 @@
   width="100"
   trigger="click">
       <el-menu :default-openeds="['3']">
-        <div v-if="item.id >= 0">
+        <div v-if="item.defined">
         <el-menu-item index="2-1" @click="addMember(item,'Sibling')">兄弟</el-menu-item>
         <el-menu-item index="2-2" @click="addMember(item,'Children')">儿女</el-menu-item>
         <el-menu-item index="2-3" @click="addMember(item,'Honey')">配偶</el-menu-item>
           </div>
         <div v-else v-for="user in userlist" :key="user.id">
-<el-menu-item index="4-1" v-if="user.used===false" @click="item.id=user.id;item.name=user.username;item.image='https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png';user.used = true;usedtable.push(user.id)">{{user.username}}</el-menu-item>
+<el-menu-item index="4-1" v-if="user.used===false" @click="item.id=user.id;
+          item.defined=true;item.name=user.username;item.image='https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png';user.used = true;usedtable.push(user.id)">{{user.username}}</el-menu-item>
         </div>
       </el-menu>
-    <el-menu-item  v-if="item.id >= 0" slot="reference" index="3-2">添加成员</el-menu-item>
-      <el-menu-item  v-if="item.id < 0" slot="reference" index="3-3">选择成员</el-menu-item>
+    <el-menu-item  v-if="item.defined" slot="reference" index="3-2">添加成员</el-menu-item>
+      <el-menu-item  v-if="!item.defined" slot="reference" index="3-3">选择成员</el-menu-item>
     </el-popover>
             <el-popover
   placement="right"
@@ -48,12 +49,15 @@
               <el-menu-item index="4-1" >
                 <el-input v-model="nameinput" placeholder="请输入内容"></el-input>
                 <el-button @click="customizeName();
-                     item.id=randomnum;
+                     item.defined=true;
                      item.name=nameinput;
-                     item.image='https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'">确定</el-button>
+                     item.image='https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+                     seeable=false;
+                     "
+                >确定</el-button>
               </el-menu-item>
                 </el-menu>
-                          <el-menu-item  v-if="item.id < 0"
+                          <el-menu-item  v-if="!item.defined"
                      slot="reference"
                      index="3-4">自定义成员</el-menu-item>
                             </el-popover>
@@ -114,6 +118,7 @@ export default {
           name: '未定义',
           image: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
           id: -1,
+          defined: false,
           used: false,
           root: true,
         },
@@ -188,6 +193,7 @@ export default {
     },
     // 递归遍历所有节点，根据id找到对应的children数组和节点
     test(tree, id, type) {
+      this.$forceUpdate();
       let e;
       this.temptree = tree;
       // eslint-disable-next-line guard-for-in,no-restricted-syntax
@@ -234,6 +240,7 @@ export default {
           name: '未定义',
           image: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
           id: -1,
+          defined: false,
           used: false,
           root: true,
         },
