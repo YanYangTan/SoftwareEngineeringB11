@@ -27,15 +27,15 @@
 <!--  </div>-->
     <h1 style="margin-left: 10px">{{ username }}</h1>
     <div style="width:100%">
-    <el-card>
-      <span>电话号码 :   {{phone}}</span>
+    <el-card style="margin-top: 40px">
+      <span >电话号码 : </span><span style="color: #4714ff">  {{phone}}</span><span style="margin-left: 29%">电子邮件    :   </span><span style="color: #4714ff"> {{ email }}</span>
     </el-card>
     <el-card style="margin-top: 10px">
-      <span>生日日期    :   {{ birthday }}</span>
+      <span>生日日期    :   </span><span style="color: #4714ff"> {{ birthday }}</span><span style="margin-left: 30%">标语    :     </span><span style="color: #4714ff"> {{quote}}</span>
     </el-card>
-    <el-card style="margin-top: 10px">
-      <span>标语    :     {{quote}}</span>
-    </el-card>
+<!--    <el-card style="margin-top: 10px">-->
+<!--      <span>标语    :     {{quote}}</span>-->
+<!--    </el-card>-->
       </div>
   <el-row>
     <el-button type="text" @click="changeNumber">更换电话号码</el-button>
