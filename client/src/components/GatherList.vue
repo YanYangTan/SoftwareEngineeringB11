@@ -234,7 +234,7 @@
                  style="margin-left: 10px"
                    size="mini"
                  icon="el-icon-edit"
-          type='primary'
+          type='warning'
           v-if="matchStateDate(scope.row)" ></el-button>
       </template>
     </el-table-column>
@@ -519,13 +519,23 @@ export default {
         content: this.gathering.content,
       })
         .then((res) => {
+          let messagetype;
+          let str;
           if (res.data.status) {
             this.gatherlist = res.data.gathering_list;
             // appendTag();
+            messagetype = 'success';
+            str = '成功发起聚会';
             this.queryAllGathering();
           } else {
+            messagetype = 'warning';
+            str = '发起聚会失败';
             console.log(res.data.status);
           }
+          this.$message({
+            type: messagetype,
+            message: str,
+          });
         })
         .catch((err) => {
           console.log(err);
