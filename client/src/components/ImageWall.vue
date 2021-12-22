@@ -17,13 +17,13 @@
     <el-row :gutter="20" v-loading.fullscreen.lock="fullscreenLoading">
 
           <el-col :span="4" v-for="item in imagelist" :key="item.post_id" style="height:400px">
-            <el-card :body-style="{ padding: '5px 10px' }">
-              <row> <el-footer>
+            <el-card :body-style="{ padding: '5px 15px' }">
+                <row> <h4>
                   {{item.caption}}
-                </el-footer></row>
+                </h4></row>
               <div slot="header">
                 <el-image
-      style="width: auto; height: 200px"
+      style="width: auto; height: 230px"
       :src="item.src"
       :preview-src-list="srcList">
     </el-image>
