@@ -66,7 +66,7 @@
             <el-button type="primary" icon="el-icon-edit" @click="addComment" style="padding: 10px 10px;">Comment</el-button>
              <el-button type="success"
                 size="default"
-                icon="el-icon-arrow-up"
+                icon="el-icon-star-on"
                 style="padding: 10px 10px;"
                 @click="like()"
               >Like  {{this.likes}}</el-button></div>

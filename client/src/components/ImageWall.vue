@@ -29,12 +29,21 @@
     </el-image>
 
   </div>
-              <el-button type="success"
+              <template v-if="iconOn === true"> <el-button type="success"
                 size="mini"
-                icon="el-icon-arrow-up"
+                icon="el-icon-star-off"
+                style="padding: 2px 5px;"
+                @click="like(item)"
+              >{{item.like}} Liked</el-button></template>
+              <template v-if="iconOn === false">
+                <el-button type="success"
+                size="mini"
+                icon="el-icon-star-off"
                 style="padding: 2px 5px;"
                 @click="like(item)"
               >{{item.like}} Liked</el-button>
+              </template>
+
               <el-button type="primary"
                 size="mini"
                 icon="el-icon-edit-outline"
@@ -65,6 +74,7 @@ export default {
       srcList: [],
       comments: [],
       likeCount: [],
+      iconOn: false,
     };
   },
   props: {
@@ -107,6 +117,17 @@ export default {
         })
         .catch((err) => {
           console.log(err);
+        });
+    },
+    hasLiked(pic) {
+      let tmp = false;
+      axios.post('/api/query-like', { post_id: pic.post_id, user_id: this.$route.params.userid })
+        .then((res) => {
+          if (res.data.status) {
+            tmp = res.data.liked;
+            this.iconOn = tmp;
+            console.log(tmp);
+          }
         });
     },
     like(pic) {
