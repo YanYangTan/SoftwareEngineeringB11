@@ -1,16 +1,18 @@
 <template>
   <div>
     <div>
-      <h2>Multiple File</h2>
-      <hr/>
-      <label>Files
+       <el-button icon="el-icon-folder-add" type="primary" @click="UploadClick"> 上传照片</el-button>
+      <el-dialog title="上传照片" :visible.sync="DialogVisible">
+         <label>Files
         <input type="file" id="files" ref="files" multiple v-on:change="handleFileUpload( $event )"/>
       </label>
       <label>Caption
         <input type="text" v-model="caption"/>
       </label>
       <br>
-      <el-button v-on:click="SubmitFile()">Submit</el-button>
+        <el-button @click="DialogVisible = false">取 消</el-button>
+      <el-button icon="el-icon-upload" v-on:click="SubmitFile()" type="primary" >Submit</el-button>
+      </el-dialog>
     </div>
     <el-row :gutter="20" v-loading.fullscreen.lock="fullscreenLoading">
           <el-col :span="4" v-for="item in imagelist" :key="item.post_id" style="height:250px">
@@ -49,6 +51,7 @@ export default {
   name: 'ImageWall',
   data() {
     return {
+      DialogVisible: false,
       files: '',
       caption: '',
       fullscreenLoading: true,
@@ -64,6 +67,9 @@ export default {
     info: {},
   },
   methods: {
+    UploadClick() {
+      this.DialogVisible = true;
+    },
     getPost() {
       this.imagelist = [];
       this.srcList = [];
@@ -157,6 +163,7 @@ export default {
       this.files = this.$refs.files.files;
     },
     SubmitFile() {
+      this.DialogVisible = false;
       this.fullscreenLoading = true;
       // eslint-disable-next-line prefer-const
       let formData = new FormData();
