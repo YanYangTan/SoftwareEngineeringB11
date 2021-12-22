@@ -14,9 +14,14 @@
    <el-card :body-style="{ padding: '10px' }" shadow="hover">
      <el-image
       :src="info.src"
-      :preview-src-list="[info.src]"
-      :fit="fit">
+      :preview-src-list="[info.src]">
     </el-image>
+                   <el-button type="success"
+                size="large"
+                icon="el-icon-arrow-up"
+                style="padding: 1px 1px;"
+                @click="like(info.like)"
+              >{{info.like}}</el-button>
    </el-card>
  </el-aside>
       <el-container>
@@ -41,14 +46,18 @@
   </div>
   </el-container>
 </template>
-import axios from 'axios';
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'ViewPhoto',
   data() {
     return {
-      comment: '',
+      comment: {},
+      imagelist: [],
+      srcList: [],
+      picData: {},
     };
   },
   props: {
@@ -95,7 +104,40 @@ export default {
           });
         },
         getPost() {
-          axios.post('/api/query-all-post', { group_id: this.$props.info.id })
+          this.picData = this.info;
+          console.log(this.picData);
+          axios.post('/api/query-all-post', { group_id: this.$props.info.id }).then((res) => {
+            let posts = [];
+            if (res.data.status) {
+              posts = res.data.post_list;
+              console.log(posts);
+              for (let i = 0; i < posts.length; i += 1) {
+                // eslint-disable-next-line
+                const src = '/api/show/' + this.$props.info.id + '/' + posts[i].media;
+                const tmp = {};
+                tmp.src = src;
+                tmp.post_id = posts[i].id;
+                tmp.caption = posts[i].caption;
+                tmp.date_created = posts[i].date_created;
+                tmp.like = posts[i].like;
+                tmp.user_id = posts[i].user_id;
+                tmp.username = posts[i].username;
+                this.imagelist.push(tmp);
+                this.srcList.push(src);
+              }
+              console.log(this.imagelist);
+              this.fullscreenLoading = false;
+            }
+          }).catch((err) => {
+            console.log(err);
+          });
+          axios.post('/api/comment', { post_id: this.picData.post_id }).then((res) => {
+            let comments = [];
+            if (res.data.status) {
+              comments = res.data.comments_list;
+              console.log(comments);
+            }
+          });
         },
       },
   created() {
