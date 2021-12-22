@@ -9,7 +9,7 @@
     type="primary">回到照片墙</el-button>
     </el-container>
     <el-container>
- <el-aside width="1090px">
+ <el-aside width="900px">
    <el-card :body-style="{ padding: '10px' }" shadow="hover">
      <el-image
       :src="info.src"
