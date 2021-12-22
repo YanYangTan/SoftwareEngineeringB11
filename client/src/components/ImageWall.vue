@@ -1,14 +1,13 @@
 <template>
   <div>
     <div>
-       <el-button icon="el-icon-folder-add" type="primary" @click="UploadClick"> 上传照片</el-button>
+       <el-button icon="el-icon-folder-add" type="primary" @click="UploadClick" style="margin-bottom: 10px" size="medium"> 上传照片</el-button>
       <el-dialog title="上传照片" :visible.sync="DialogVisible">
-         <label>Files
+        <label>标题  :   </label>
+        <el-input type="text" v-model="caption"/>
+        <br>
+         <label style="margin-top: 10px;margin-bottom: 10px;margin-right: 10px">选择上传图片或动图文件 </label>
         <input type="file" id="files" ref="files" multiple v-on:change="handleFileUpload( $event )"/>
-      </label>
-      <label>Caption
-        <input type="text" v-model="caption"/>
-      </label>
       <br>
         <el-button @click="DialogVisible = false">取 消</el-button>
       <el-button icon="el-icon-upload" v-on:click="SubmitFile()" type="primary" >Submit</el-button>
