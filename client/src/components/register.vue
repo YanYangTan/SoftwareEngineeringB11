@@ -33,7 +33,7 @@
                 <script type="application/javascript">birthdayID.max = new Date().toISOString().split("T")[0];</script>
             </div>
 
-            <button type="submit" class="btn btn-dark btn-lg btn-block">register</button>
+            <button type="submit" class="btn btn-dark btn-lg btn-block">Register</button>
         </form>
         <span>Registered? </span>
         <el-button type="text" @click="SignIn">Sign In</el-button>
