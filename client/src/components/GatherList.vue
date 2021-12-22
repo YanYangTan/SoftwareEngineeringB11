@@ -69,7 +69,7 @@
     style="width: 100%"
       v-loading="loading">
         <el-table-column
-      width="150px"
+      width="170px"
       label="日期"
       prop="content.time">
     </el-table-column>
@@ -105,7 +105,7 @@
     style="width: 100%"
       v-loading="loading">
         <el-table-column
-      width="150px"
+      width="170px"
       label="日期"
       prop="content.time">
     </el-table-column>
@@ -143,7 +143,7 @@
     ref="multipleTable"
       v-loading="loading">
         <el-table-column
-          width="150px"
+          width="170px"
       label="日期"
       prop="content.time">
     </el-table-column>

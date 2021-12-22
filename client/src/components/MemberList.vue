@@ -36,7 +36,7 @@
     <el-descriptions-item label="标语">{{quote}}</el-descriptions-item>
   </el-descriptions></span>
   <span slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确定</el-button>
   </span>
 </el-dialog>
 

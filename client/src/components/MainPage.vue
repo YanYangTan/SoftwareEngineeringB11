@@ -117,7 +117,7 @@ export default {
       if (this.$data.currentgroup.id === undefined) {
         this.$message({
           type: 'warning',
-          message: 'Not in any group!',
+          message: '你不在任何群!',
         });
       } else {
         this.index = 'ImageWall';
@@ -143,7 +143,7 @@ export default {
       if (this.$data.currentgroup.id === undefined) {
         this.$message({
           type: 'warning',
-          message: 'Not in any group!',
+          message: '你不在任何群!',
         });
       } else {
         // eslint-disable-next-line
@@ -163,7 +163,7 @@ export default {
       if (this.$data.currentgroup.id === undefined) {
         this.$message({
           type: 'warning',
-          message: 'Not in any group!',
+          message: '你不在任何群!',
         });
       } else {
         this.$data.index = 'GroupPage';
@@ -173,7 +173,7 @@ export default {
       if (this.$data.currentgroup.id === undefined) {
         this.$message({
           type: 'warning',
-          message: 'Not in any group!',
+          message: '你不在任何群!',
         });
       } else {
         this.$data.index = 'GatherList';

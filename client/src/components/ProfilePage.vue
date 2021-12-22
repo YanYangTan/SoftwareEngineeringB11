@@ -85,7 +85,7 @@ export default {
         });
     },
     changeQuote() {
-      this.$prompt('Enter your new quote', {
+      this.$prompt('输入新标语', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
       }).then(({ value }) => {
@@ -117,7 +117,7 @@ export default {
       });
     },
     changeNumber() {
-      this.$prompt('Enter your new phone number', {
+      this.$prompt('输入新手机号', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
       }).then(({ value }) => {

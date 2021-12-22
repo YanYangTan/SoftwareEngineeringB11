@@ -5,24 +5,24 @@
       <div class="sidebar">
         <div class="side-form">
           <form @submit.prevent="login">
-              <h3>Sign In</h3>
+              <h3>登录</h3>
 
               <div class="form-group">
-                  <label>Username</label>
+                  <label>用户</label>
                   <input type="username" class="form-control form-control-lg" v-model="userForm.username"/>
               </div>
 
               <div class="form-group">
-                  <label>Password</label>
+                  <label>密码</label>
                   <input type="password" class="form-control form-control-lg" v-model="userForm.password"/>
               </div>
 
-              <button type="login" class="btn btn-dark btn-lg btn-block">Sign In</button>
+              <button type="login" class="btn btn-dark btn-lg btn-block">登录</button>
           </form>
         <form @submit.prevent="register">
           <div class="form-group">
-            <span>Not Registered yet? </span>
-            <el-button type="text" @click="register ">Register</el-button>
+            <span>还未注册？ </span>
+            <el-button type="text" @click="register ">注册</el-button>
           </div>
         </form>
       </div>
@@ -45,7 +45,6 @@ export default {
   },
   methods: {
     login() {
-      let str;
       axios.post('/api/login', { username: this.userForm.username, password: this.userForm.password })
         .then((res) => {
           if (res.data.status) {
@@ -55,10 +54,9 @@ export default {
             this.loginpath += String(this.$data.userForm.username);
             this.$router.push(this.loginpath);
           } else {
-            str = res.data.message;
             this.$message({
               type: 'warning',
-              message: str,
+              message: '用户名或密码错误！',
             });
           }
         })

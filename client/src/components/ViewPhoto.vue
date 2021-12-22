@@ -240,4 +240,3 @@ export default {
     }
   }
 </style>
-© 2021 GitHub, Inc.
