@@ -41,11 +41,11 @@
       :data="commentList"
       style="width: 100%">
       <el-table-column prop="username"
-        label="Username"
+        label="用户"
         width="100">
       </el-table-column>
 
-      <el-table-column prop="content" label="Comments" width="400">
+      <el-table-column prop="content" label="评论" width="400">
         <template slot-scope="scope">
           <p>{{ scope.row.content }}</p>
           <div slot="reference" class="name-wrapper">
@@ -63,13 +63,13 @@
             <el-row :gutter="20">
             <el-input placeholder="写个评论吧！" v-model="comment"></el-input></el-row>
             <div>
-            <el-button type="primary" icon="el-icon-edit" @click="addComment" style="padding: 10px 10px;">Comment</el-button>
+            <el-button type="primary" icon="el-icon-edit" @click="addComment" style="padding: 10px 10px;">发布</el-button>
              <el-button type="success"
                 size="default"
                 icon="el-icon-star-on"
                 style="padding: 10px 10px;"
                 @click="like()"
-              >Like  {{this.likes}}</el-button></div>
+              >点赞  {{this.likes}}</el-button></div>
            </el-card>
         </div>
       </el-main>

@@ -10,7 +10,7 @@
         <input type="file" id="files" ref="files" multiple v-on:change="handleFileUpload( $event )"/>
       <br>
         <el-button @click="DialogVisible = false">取 消</el-button>
-      <el-button icon="el-icon-upload" v-on:click="SubmitFile()" type="primary" >Submit</el-button>
+      <el-button icon="el-icon-upload" v-on:click="SubmitFile()" type="primary" >发布</el-button>
       </el-dialog>
     </div>
 
@@ -34,14 +34,14 @@
                 icon="el-icon-star-off"
                 style="padding: 2px 5px;"
                 @click="like(item)"
-              >{{item.like}} Liked</el-button></template>
+              >{{item.like}} 点赞</el-button></template>
               <template v-if="iconOn === false">
                 <el-button type="success"
                 size="mini"
                 icon="el-icon-star-off"
                 style="padding: 2px 5px;"
                 @click="like(item)"
-              >{{item.like}} Liked</el-button>
+              >{{item.like}} 点赞</el-button>
               </template>
 
               <el-button type="primary"
