@@ -14,11 +14,11 @@
       </el-dialog>
     </div>
     <el-row :gutter="20" v-loading.fullscreen.lock="fullscreenLoading">
-          <el-col :span="4" v-for="item in imagelist" :key="item.post_id" style="height:250px">
-            <el-card :body-style="{ padding: '0px 0px' }">
+          <el-col :span="4" v-for="item in imagelist" :key="item.post_id" style="height:300px">
+            <el-card :body-style="{ padding: '5px 10px' }">
               <div slot="header">
                 <el-image
-      style="width: auto; height: 160px"
+      style="width: auto; height: 200px"
       :src="item.src"
       :preview-src-list="srcList">
     </el-image>
@@ -26,14 +26,13 @@
               <el-button type="success"
                 size="mini"
                 icon="el-icon-arrow-up"
-                style="padding: 1px 1px;"
+                style="padding: 2px 5px;"
                 @click="like(item)"
-              >{{item.like}}</el-button>
-              <el-button
+              >{{item.like}} Liked</el-button>
+              <el-button type="primary"
                 size="mini"
                 icon="el-icon-edit-outline"
-                style="padding: 1px 2px;"
-                type="text"
+                style="padding: 2px 5px;"
                 class="button"
                 @click="viewPhoto(item)"
               >详情</el-button>

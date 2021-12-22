@@ -3,25 +3,19 @@
   <div>
     <el-container style="margin-bottom: 4px">
     <el-button
-      style="width: 50px;margin-right: 30px;"
+      style="margin-bottom: 10px" size="medium"
       icon="el-icon-back"
-      @click="BackToImageWall" circle
-    type="primary"></el-button>
-    <h1 >{{this.$props.info.caption}}</h1>
+      @click="BackToImageWall"
+    type="primary">回到照片墙</el-button>
     </el-container>
     <el-container>
- <el-aside width="900px">
+ <el-aside width="1090px">
    <el-card :body-style="{ padding: '10px' }" shadow="hover">
      <el-image
       :src="info.src"
       :preview-src-list="[info.src]">
     </el-image>
-                   <el-button type="success"
-                size="large"
-                icon="el-icon-arrow-up"
-                style="padding: 1px 1px;"
-                @click="like(info.like)"
-              >{{info.like}}</el-button>
+
    </el-card>
  </el-aside>
       <el-container>
@@ -35,8 +29,38 @@
         <h3 style="margin-top: 12px;margin-left: 5px">
           {{info.username}}
         </h3>
+
             </el-container>
         <span style="margin-left: 5px">{{info.date_created}}</span>
+            <el-row>
+              <h2 style="margin-top: 12px;margin-left: 5px">{{this.$props.info.caption}}</h2>
+            </el-row>
+
+    <el-row :gutter="20">
+            <el-table
+      :data="commentList"
+      style="width: 100%">
+      <el-table-column
+        prop="username"
+        label="Username"
+        width="100">
+      </el-table-column>
+      <el-table-column
+        prop="content"
+        label="Comments"
+        width="400">
+      </el-table-column>
+    </el-table></el-row>
+            <el-row :gutter="20">
+            <el-input placeholder="写个评论吧！" v-model="comment"></el-input></el-row>
+            <div>
+            <el-button type="primary" icon="el-icon-edit" @click="addComment" style="padding: 10px 10px;">Comment</el-button>
+             <el-button type="success"
+                size="default"
+                icon="el-icon-arrow-up"
+                style="padding: 10px 10px;"
+                @click="like()"
+              >Like  {{this.likes}}</el-button></div>
            </el-card>
         </div>
       </el-main>
@@ -54,10 +78,12 @@ export default {
   name: 'ViewPhoto',
   data() {
     return {
-      comment: {},
+      comment: '',
       imagelist: [],
       srcList: [],
       picData: {},
+      commentList: {},
+      likes: '',
     };
   },
   props: {
@@ -68,11 +94,11 @@ export default {
         BackToImageWall() {
           this.$emit('BacktoImageWall');
         },
-        like(pic) {
-          axios.post('/api/query-like', { post_id: pic.post_id, user_id: this.$route.params.userid }).then((res) => {
+        like() {
+          axios.post('/api/query-like', { post_id: this.$props.info.post_id, user_id: this.$route.params.userid }).then((res) => {
             if (res.data.status) {
               if (res.data.liked) {
-                axios.post('/api/cancel-like', { post_id: pic.post_id, user_id: this.$route.params.userid }).then((res2) => {
+                axios.post('/api/cancel-like', { post_id: this.$props.info.post_id, user_id: this.$route.params.userid }).then((res2) => {
                   if (res2.data.status) {
                     this.$message({
                       type: 'warning',
@@ -85,7 +111,7 @@ export default {
                     console.log(err2);
                   });
               } else {
-                axios.post('/api/like-post', { post_id: pic.post_id, user_id: this.$route.params.userid }).then((res2) => {
+                axios.post('/api/like-post', { post_id: this.$props.info.post_id, user_id: this.$route.params.userid }).then((res2) => {
                   if (res2.data.status) {
                     console.log('Liked');
                     this.$message({
@@ -104,46 +130,60 @@ export default {
           });
         },
         getPost() {
-          this.picData = this.info;
-          console.log(this.picData);
-          axios.post('/api/query-all-post', { group_id: this.$props.info.id }).then((res) => {
-            let posts = [];
-            if (res.data.status) {
-              posts = res.data.post_list;
-              console.log(posts);
-              for (let i = 0; i < posts.length; i += 1) {
-                // eslint-disable-next-line
-                const src = '/api/show/' + this.$props.info.id + '/' + posts[i].media;
-                const tmp = {};
-                tmp.src = src;
-                tmp.post_id = posts[i].id;
-                tmp.caption = posts[i].caption;
-                tmp.date_created = posts[i].date_created;
-                tmp.like = posts[i].like;
-                tmp.user_id = posts[i].user_id;
-                tmp.username = posts[i].username;
-                this.imagelist.push(tmp);
-                this.srcList.push(src);
-              }
-              console.log(this.imagelist);
-              this.fullscreenLoading = false;
-            }
-          }).catch((err) => {
-            console.log(err);
-          });
-          axios.post('/api/comment', { post_id: this.picData.post_id }).then((res) => {
+          console.log('getPost');
+          this.likes = this.info.like;
+          // axios.post('/api/query-all-post', { group_id: this.$props.info.id }).then((res) => {
+          //   let posts = [];
+          //   if (res.data.status) {
+          //     posts = res.data.post_list;
+          //     console.log(posts);
+          //     for (let i = 0; i < posts.length; i += 1) {
+          //       // eslint-disable-next-line
+          //       const src = '/api/show/' + this.$props.info.id + '/' + posts[i].media;
+          //       const tmp = {};
+          //       tmp.src = src;
+          //       tmp.post_id = posts[i].id;
+          //       tmp.caption = posts[i].caption;
+          //       tmp.date_created = posts[i].date_created;
+          //       tmp.like = posts[i].like;
+          //       tmp.user_id = posts[i].user_id;
+          //       tmp.username = posts[i].username;
+          //       this.imagelist.push(tmp);
+          //       this.srcList.push(src);
+          //     }
+          //     console.log(this.imagelist);
+          //     this.fullscreenLoading = false;
+          //   }
+          // }).catch((err) => {
+          //   console.log(err);
+          // });
+          axios.post('/api/query-comment', { post_id: this.info.post_id }).then((res) => {
             let comments = [];
             if (res.data.status) {
               comments = res.data.comments_list;
-              console.log(comments);
+              this.commentList = comments;
+              // console.log('comments');
+              // console.log(comments);
+              this.comment = '';
+              // console.log(this.$props.info.like);
             }
+          });
+        },
+        addComment() {
+          axios.post('/api/add-comment', { post_id: this.info.post_id, user_id: this.$route.params.userid, content: this.comment }).then((res) => {
+            if (res.data.status) {
+              console.log('Comment posted');
+              this.getPost();
+            }
+          }).catch((err) => {
+            console.log(err);
           });
         },
       },
   created() {
     console.log('success!');
     // this.data = this.info;
-    console.log(this.info);
+    this.getPost();
   },
 };
 </script>
@@ -152,5 +192,11 @@ export default {
   .el-image {
     width: 100%;
     object-fit: scale-down;
+  }
+  .el-row {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 </style>
