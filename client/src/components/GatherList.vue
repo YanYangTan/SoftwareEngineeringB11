@@ -238,22 +238,23 @@
           v-if="matchStateDate(scope.row)" ></el-button>
       </template>
     </el-table-column>
-    <el-table-column
-      label="名字"
-    prop="name">
+
+    <el-table-column label="名字" prop="name">
       <template slot-scope="scope">
         <el-popover trigger="hover" placement="top-start" >
           <p>描述: {{ scope.row.description }}</p>
           <div slot="reference" class="name-wrapper">
             <el-tag type='info' size="medium">{{ scope.row.name }}</el-tag>
-            <el-button @click="DeleteClick(scope.$index,scope.row)"
-                       style="margin-left: 10px"
-                   size="mini" type='danger' icon="el-icon-delete"
-          v-if="matchStateDeleted(scope.row)" ></el-button>
+            <el-button
+                @click="DeleteClick(scope.$index,scope.row)"
+                style="margin-left: 10px"
+                size="mini" type='danger' icon="el-icon-delete"
+                v-if="matchStateDeleted(scope.row)" ></el-button>
           </div>
         </el-popover>
       </template>
     </el-table-column>
+
 <!--    <el-table-column-->
 <!--      align="right">-->
 <!--      <template slot="header" slot-scope={}>-->

@@ -13,15 +13,21 @@
       <el-button icon="el-icon-upload" v-on:click="SubmitFile()" type="primary" >Submit</el-button>
       </el-dialog>
     </div>
+
     <el-row :gutter="20" v-loading.fullscreen.lock="fullscreenLoading">
-          <el-col :span="4" v-for="item in imagelist" :key="item.post_id" style="height:300px">
+
+          <el-col :span="4" v-for="item in imagelist" :key="item.post_id" style="height:400px">
             <el-card :body-style="{ padding: '5px 10px' }">
+              <row> <el-footer>
+                  {{item.caption}}
+                </el-footer></row>
               <div slot="header">
                 <el-image
       style="width: auto; height: 200px"
       :src="item.src"
       :preview-src-list="srcList">
     </el-image>
+
   </div>
               <el-button type="success"
                 size="mini"
@@ -202,5 +208,9 @@ export default {
 </script>
 
 <style scoped>
+  .el-footer {
+    text-align: center;
+    line-height: 20px;
 
+  }
 </style>

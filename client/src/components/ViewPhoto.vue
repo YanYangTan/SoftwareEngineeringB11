@@ -40,17 +40,26 @@
             <el-table
       :data="commentList"
       style="width: 100%">
-      <el-table-column
-        prop="username"
+      <el-table-column prop="username"
         label="Username"
         width="100">
       </el-table-column>
-      <el-table-column
-        prop="content"
-        label="Comments"
-        width="400">
+
+      <el-table-column prop="content" label="Comments" width="400">
+        <template slot-scope="scope">
+          <p>{{ scope.row.content }}</p>
+          <div slot="reference" class="name-wrapper">
+            <el-button
+                style="margin-left: 0px"
+                size="mini" type='danger' icon="el-icon-delete"
+                @click="deleteComment(scope.$index, scope.row)"
+                v-if="matchStateDeleted(scope.row)"></el-button>
+          </div>
+        </template>
       </el-table-column>
-    </el-table></el-row>
+    </el-table>
+    </el-row>
+
             <el-row :gutter="20">
             <el-input placeholder="写个评论吧！" v-model="comment"></el-input></el-row>
             <div>
@@ -84,6 +93,7 @@ export default {
       picData: {},
       commentList: {},
       likes: '',
+      DeleteVisible: false,
     };
   },
   props: {
@@ -130,6 +140,11 @@ export default {
           });
         },
         getPost() {
+          axios.post('/api/query-post', { post_id: this.info.post_id }).then((res) => {
+            if (res.data.status) {
+              this.likes = res.data.content.like;
+            }
+          });
           console.log('getPost');
           this.likes = this.info.like;
           // axios.post('/api/query-all-post', { group_id: this.$props.info.id }).then((res) => {
@@ -175,15 +190,35 @@ export default {
               console.log('Comment posted');
               this.getPost();
             }
-          }).catch((err) => {
-            console.log(err);
           });
+        },
+        deleteComment(index, row) {
+          console.log(row.id);
+          axios.post('/api/delete-comment', { comment_id: row.id, user_id: Number(this.$route.params.userid) }).then((res) => {
+            if (res.data.status) {
+              console.log('delete success');
+              this.getPost();
+            } else {
+              console.log(res.data.message);
+            }
+          });
+        },
+        matchStateDeleted(row) {
+          return this.DeleteVisible && (Number(row.user_id) === Number(this.$route.params.userid));
+        },
+        deleteCheck() {
+          if (this.DeleteVisible === true) {
+            this.DeleteVisible = false;
+          } else {
+            this.DeleteVisible = true;
+          }
         },
       },
   created() {
     console.log('success!');
     // this.data = this.info;
     this.getPost();
+    this.deleteCheck();
   },
 };
 </script>
