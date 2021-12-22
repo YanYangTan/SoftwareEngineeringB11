@@ -13,27 +13,41 @@
       <el-button icon="el-icon-upload" v-on:click="SubmitFile()" type="primary" >Submit</el-button>
       </el-dialog>
     </div>
+
     <el-row :gutter="20" v-loading.fullscreen.lock="fullscreenLoading">
-          <el-col :span="4" v-for="item in imagelist" :key="item.post_id" style="height:250px">
-            <el-card :body-style="{ padding: '0px 0px' }">
+
+          <el-col :span="4" v-for="item in imagelist" :key="item.post_id" style="height:300px">
+            <el-card :body-style="{ padding: '5px 15px' }">
+                <row> <h4>
+                  {{item.caption}}
+                </h4></row>
               <div slot="header">
                 <el-image
-      style="width: auto; height: 160px"
+      style="width: auto; height: 170px"
       :src="item.src"
       :preview-src-list="srcList">
     </el-image>
+
   </div>
-              <el-button type="success"
+              <template v-if="iconOn === true"> <el-button type="success"
                 size="mini"
-                icon="el-icon-arrow-up"
-                style="padding: 1px 1px;"
+                icon="el-icon-star-off"
+                style="padding: 2px 5px;"
                 @click="like(item)"
-              >{{item.like}}</el-button>
-              <el-button
+              >{{item.like}} Liked</el-button></template>
+              <template v-if="iconOn === false">
+                <el-button type="success"
+                size="mini"
+                icon="el-icon-star-off"
+                style="padding: 2px 5px;"
+                @click="like(item)"
+              >{{item.like}} Liked</el-button>
+              </template>
+
+              <el-button type="primary"
                 size="mini"
                 icon="el-icon-edit-outline"
-                style="padding: 1px 2px;"
-                type="text"
+                style="padding: 2px 5px;"
                 class="button"
                 @click="viewPhoto(item)"
               >详情</el-button>
@@ -60,6 +74,7 @@ export default {
       srcList: [],
       comments: [],
       likeCount: [],
+      iconOn: false,
     };
   },
   props: {
@@ -102,6 +117,17 @@ export default {
         })
         .catch((err) => {
           console.log(err);
+        });
+    },
+    hasLiked(pic) {
+      let tmp = false;
+      axios.post('/api/query-like', { post_id: pic.post_id, user_id: this.$route.params.userid })
+        .then((res) => {
+          if (res.data.status) {
+            tmp = res.data.liked;
+            this.iconOn = tmp;
+            console.log(tmp);
+          }
         });
     },
     like(pic) {
@@ -203,5 +229,9 @@ export default {
 </script>
 
 <style scoped>
+  .el-footer {
+    text-align: center;
+    line-height: 20px;
 
+  }
 </style>
