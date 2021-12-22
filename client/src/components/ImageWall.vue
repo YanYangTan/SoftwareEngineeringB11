@@ -16,14 +16,14 @@
 
     <el-row :gutter="20" v-loading.fullscreen.lock="fullscreenLoading">
 
-          <el-col :span="4" v-for="item in imagelist" :key="item.post_id" style="height:400px">
+          <el-col :span="4" v-for="item in imagelist" :key="item.post_id" style="height:300px">
             <el-card :body-style="{ padding: '5px 15px' }">
                 <row> <h4>
                   {{item.caption}}
                 </h4></row>
               <div slot="header">
                 <el-image
-      style="width: auto; height: 230px"
+      style="width: auto; height: 170px"
       :src="item.src"
       :preview-src-list="srcList">
     </el-image>
