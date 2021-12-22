@@ -63,13 +63,15 @@
             <el-row :gutter="20">
             <el-input placeholder="写个评论吧！" v-model="comment"></el-input></el-row>
             <div>
-            <el-button type="primary" icon="el-icon-edit" @click="addComment" style="padding: 10px 10px;">发布</el-button>
+            <el-button type="primary" icon="el-icon-edit" @click="addComment" style="padding: 10px 10px;" size="medium">发布</el-button>
              <el-button type="success"
-                size="default"
+                size="medium"
                 icon="el-icon-star-on"
                 style="padding: 10px 10px;"
                 @click="like()"
-              >点赞  {{this.likes}}</el-button></div>
+              >点赞  {{this.likes}}</el-button>
+            <el-button  @click="deleteCheck()" type="danger" icon="el-icon-delete" size="medium">{{DeleteButton}}</el-button>
+            </div>
            </el-card>
         </div>
       </el-main>
@@ -87,6 +89,7 @@ export default {
   name: 'ViewPhoto',
   data() {
     return {
+      DeleteButton: '撤回评论',
       comment: '',
       imagelist: [],
       srcList: [],
@@ -189,6 +192,7 @@ export default {
             if (res.data.status) {
               console.log('Comment posted');
               this.getPost();
+              this.comment = '';
             }
           });
         },
@@ -209,8 +213,10 @@ export default {
         deleteCheck() {
           if (this.DeleteVisible === true) {
             this.DeleteVisible = false;
+            this.DeleteButton = '撤回评论';
           } else {
             this.DeleteVisible = true;
+            this.DeleteButton = '编辑完毕';
           }
         },
       },
@@ -218,7 +224,6 @@ export default {
     console.log('success!');
     // this.data = this.info;
     this.getPost();
-    this.deleteCheck();
   },
 };
 </script>
