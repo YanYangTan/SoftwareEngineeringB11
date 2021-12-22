@@ -1,16 +1,18 @@
 <template>
   <div>
     <div>
-      <h2>Multiple File</h2>
-      <hr/>
-      <label>Files
+       <el-button icon="el-icon-folder-add" type="primary" @click="UploadClick"> 上传照片</el-button>
+      <el-dialog title="上传照片" :visible.sync="DialogVisible">
+         <label>Files
         <input type="file" id="files" ref="files" multiple v-on:change="handleFileUpload( $event )"/>
       </label>
       <label>Caption
         <input type="text" v-model="caption"/>
       </label>
       <br>
-      <el-button v-on:click="SubmitFile()">Submit</el-button>
+        <el-button @click="DialogVisible = false">取 消</el-button>
+      <el-button icon="el-icon-upload" v-on:click="SubmitFile()" type="primary" >Submit</el-button>
+      </el-dialog>
     </div>
     <el-row :gutter="20" v-loading.fullscreen.lock="fullscreenLoading">
           <el-col :span="4" v-for="item in imagelist" :key="item.post_id" style="height:250px">
@@ -22,21 +24,19 @@
       :preview-src-list="srcList">
     </el-image>
   </div>
-              <el-button
+              <el-button type="success"
                 size="mini"
-                icon="el-icon-zoom-in"
+                icon="el-icon-arrow-up"
                 style="padding: 1px 1px;"
-                type="text"
-                class="button"
                 @click="like(item)"
-              >点赞</el-button>
+              >{{item.like}}</el-button>
               <el-button
                 size="mini"
                 icon="el-icon-edit-outline"
                 style="padding: 1px 2px;"
                 type="text"
                 class="button"
-                @click="get_info(item)"
+                @click="viewPhoto(item)"
               >详情</el-button>
             </el-card>
           </el-col>
@@ -51,6 +51,7 @@ export default {
   name: 'ImageWall',
   data() {
     return {
+      DialogVisible: false,
       files: '',
       caption: '',
       fullscreenLoading: true,
@@ -59,12 +60,16 @@ export default {
       view_index: 0,
       srcList: [],
       comments: [],
+      likeCount: [],
     };
   },
   props: {
     info: {},
   },
   methods: {
+    UploadClick() {
+      this.DialogVisible = true;
+    },
     getPost() {
       this.imagelist = [];
       this.srcList = [];
@@ -76,23 +81,24 @@ export default {
             posts = res.data.post_list;
             console.log(posts);
             for (let i = 0; i < posts.length; i += 1) {
-              for (let j = 0; j < posts[i].media.length; j += 1) {
-                // eslint-disable-next-line
-                const src = '/api/show/' + this.$props.info.id + '/' + posts[i].media[j];
-                const tmp = {};
-                tmp.src = src;
-                tmp.post_id = posts[i].id;
-                tmp.caption = posts[i].caption;
-                tmp.date_created = posts[i].date_created;
-                tmp.like = posts[i].like;
-                tmp.user_id = posts[i].user_id;
-                tmp.username = posts[i].username;
-                this.imagelist.push(tmp);
-                this.srcList.push(src);
-              }
+              // eslint-disable-next-line
+              const src = '/api/show/' + this.$props.info.id + '/' + posts[i].media;
+              const tmp = {};
+              tmp.src = src;
+              tmp.post_id = posts[i].id;
+              tmp.caption = posts[i].caption;
+              tmp.date_created = posts[i].date_created;
+              tmp.like = posts[i].like;
+              this.likeCount[i] = tmp.like;
+              tmp.user_id = posts[i].user_id;
+              tmp.username = posts[i].username;
+              this.imagelist.push(tmp);
+              this.srcList.push(src);
             }
             console.log(this.imagelist);
             this.fullscreenLoading = false;
+            console.log('like count here');
+            console.log(this.likeCount);
           }
         })
         .catch((err) => {
@@ -111,6 +117,7 @@ export default {
                       type: 'warning',
                       message: '你已点赞此帖，取消点赞',
                     });
+                    this.getPost();
                   }
                 })
                 .catch((err2) => {
@@ -125,6 +132,7 @@ export default {
                       type: 'success',
                       message: '成功点赞',
                     });
+                    this.getPost();
                   }
                 })
                 .catch((err2) => {
@@ -137,24 +145,25 @@ export default {
           console.log(err);
         });
     },
-    get_info(pic) {
-      axios.post('/api/query-comment', { post_id: pic.post_id })
-        .then((res) => {
-          if (res.data.status) {
-            this.comments = res.data.comments_list;
-            console.log(pic.caption);
-            console.log(this.comments);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    viewPhoto(item) {
+      this.$emit('viewPhoto', item);
+      // axios.post('/api/query-comment', { post_id: pic.post_id })
+      //   .then((res) => {
+      //     if (res.data.status) {
+      //       this.comments = res.data.comments_list;
+      //       console.log(this.comments);
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
     },
     handleFileUpload() {
       // eslint-disable-next-line prefer-destructuring
       this.files = this.$refs.files.files;
     },
     SubmitFile() {
+      this.DialogVisible = false;
       this.fullscreenLoading = true;
       // eslint-disable-next-line prefer-const
       let formData = new FormData();
@@ -181,11 +190,6 @@ export default {
             message: '成功上传',
           });
           this.getPost();
-        } else {
-          this.$message({
-            type: 'warning',
-            message: '上传失败',
-          });
         }
       })
         .catch((err) => {

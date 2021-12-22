@@ -22,7 +22,7 @@
           placeholder="输入关键字搜索"/>
       </template>
       <template slot-scope="scope">
-        <el-button size="mini" @click="openProfileBubble(scope.$index,scope.row)" type="info">详情</el-button>
+        <el-button size="mini" @click="openProfileBubble(scope.$index,scope.row)" >详情</el-button>
         <el-dialog
   title=" "
   :visible.sync="dialogVisible"
