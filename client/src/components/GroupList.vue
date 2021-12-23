@@ -47,6 +47,13 @@ export default {
           headers: { tokens: sessionStorage.getItem('token') },
         })
           .then((res) => {
+            if (res.data.message === 'Error: Unauthorized!') {
+              this.$message({
+                type: 'warning',
+                message: '检测到用户还未登录，自动跳转到登录页面',
+              });
+              this.$router.push('/');
+            }
             if (res.data.status) {
               //               data { status, message, group_list }
               // group_list [{ “id：群组ID”, “group_name：群组名字”, “admin”：用户是否是群主},...]

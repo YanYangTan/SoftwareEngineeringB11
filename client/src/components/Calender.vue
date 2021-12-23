@@ -154,6 +154,13 @@ export default {
         headers: { tokens: sessionStorage.getItem('token') },
       })
         .then((res) => {
+          if (res.data.message === 'Error: Unauthorized!') {
+            this.$message({
+              type: 'warning',
+              message: '检测到用户还未登录，自动跳转到登录页面',
+            });
+            this.$router.push('/');
+          }
           if (res.data.status) {
             console.log('Query success!');
             events = res.data.calendar;
