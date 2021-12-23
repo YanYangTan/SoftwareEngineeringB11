@@ -214,8 +214,13 @@ export default {
             type: 'success',
             message: '成功上传',
           });
-          this.getPost();
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '上传失败',
+          });
         }
+        this.getPost();
       })
         .catch((err) => {
           console.log(err);
