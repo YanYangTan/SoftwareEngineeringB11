@@ -37,7 +37,8 @@
           <Profile v-if="this.$data.index==='ProfilePage'"></Profile>
           <GroupList @groupPage='groupInfo' @defaultGroup="defaultedGroup" v-if="this.$data.index==='GroupList' "></GroupList>
           <GroupPage @BacktoGroupList='BackToGroupList' v-if="this.$data.index==='GroupPage'" :info="this.$data.currentgroup"></GroupPage>
-          <ImageWall v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
+          <ImageWall @viewPhoto='viewPhoto' v-if="this.$data.index==='ImageWall'" :info="this.$data.currentgroup"></ImageWall>
+          <ViewPhoto @BacktoImageWall='BackToImageWall' v-if="this.$data.index==='ViewPhoto'" :info="this.$data.currentpic"></ViewPhoto>
           <Roulette v-if="this.$data.index==='Roulette'"></Roulette>
           <GatherList id="GatherList" :currentgroup="this.currentgroup" v-if="this.$data.index==='GatherList'"></GatherList>
         </el-main>
@@ -60,6 +61,7 @@ import ImageWall from './ImageWall.vue';
 import Roulette from './roulette.vue';
 import GatherList from './GatherList.vue';
 import Profile from './ProfilePage.vue';
+import ViewPhoto from './ViewPhoto.vue';
 
 export default {
   name: 'MainPage',
@@ -81,6 +83,7 @@ export default {
     Roulette,
     GatherList,
     Profile,
+    ViewPhoto,
   },
   data() {
     return {
@@ -90,6 +93,7 @@ export default {
       index: 'GroupList',
       defaultgroup: false,
       currentgroup: {},
+      currentpic: {},
     };
   },
   methods: {
@@ -101,11 +105,19 @@ export default {
     BackToGroupList() {
       this.$data.index = 'GroupList';
     },
+    viewPhoto(dunno) {
+      this.currentpic = dunno;
+      this.$data.index = 'ViewPhoto';
+      console.log(this.currentpic);
+    },
+    BackToImageWall() {
+      this.$data.index = 'ImageWall';
+    },
     TurnToImageWall() {
       if (this.$data.currentgroup.id === undefined) {
         this.$message({
           type: 'warning',
-          message: 'Not in any group!',
+          message: '你不在任何群!',
         });
       } else {
         this.index = 'ImageWall';
@@ -131,7 +143,7 @@ export default {
       if (this.$data.currentgroup.id === undefined) {
         this.$message({
           type: 'warning',
-          message: 'Not in any group!',
+          message: '你不在任何群!',
         });
       } else {
         // eslint-disable-next-line
@@ -151,7 +163,7 @@ export default {
       if (this.$data.currentgroup.id === undefined) {
         this.$message({
           type: 'warning',
-          message: 'Not in any group!',
+          message: '你不在任何群!',
         });
       } else {
         this.$data.index = 'GroupPage';
@@ -161,7 +173,7 @@ export default {
       if (this.$data.currentgroup.id === undefined) {
         this.$message({
           type: 'warning',
-          message: 'Not in any group!',
+          message: '你不在任何群!',
         });
       } else {
         this.$data.index = 'GatherList';

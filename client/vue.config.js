@@ -4,7 +4,7 @@ module.exports = {
   indexPath: 'index.html',
   filenameHashing: true,
   devServer: process.env.NODE_ENV === 'production' ? {} : {
-    host: '127.0.0.1',
+    host: '0.0.0.0',
     port: 8024, // 端口号
     https: false, // https:{type:Boolean}
     open: false,
