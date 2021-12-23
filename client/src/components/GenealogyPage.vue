@@ -38,7 +38,7 @@
         <el-menu-item index="2-3" @click="addMember(item,'Honey')">配偶</el-menu-item>
           </div>
         <div v-else v-for="user in userlist" :key="user.id">
-<el-menu-item index="4-1" v-if="user.used===false" @click="item.id=user.id;
+<el-menu-item index="4-1" v-if="user.used===false||user.used === undefined" @click="item.id=user.id;
           item.defined=true;item.name=user.username;item.image='https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png';user.used = true;usedtable.push(user.id);this.$forceUpdate;">{{user.username}}</el-menu-item>
         </div>
       </el-menu>
@@ -222,6 +222,15 @@ export default {
               } else if (first) {
                 if (user.id === id) {
                   user.used = false;
+                  if (e.secondPerson !== undefined) {
+                    // eslint-disable-next-line no-plusplus
+                    for (let num = 0; num < this.userlist.length; ++num) {
+                      if (this.userlist[num].id === e.secondPerson.id) {
+                        this.userlist[num].used = false;
+                      }
+                    }
+                    console.log(e.secondPerson.id);
+                  }
                 }
               }
             }
@@ -233,6 +242,14 @@ export default {
               } else if (first) {
                 if (user.id === id) {
                   user.used = false;
+                  if (e.firstPerson !== undefined) {
+                    // eslint-disable-next-line no-plusplus
+                    for (let num = 0; num < this.userlist.length; ++num) {
+                      if (this.userlist[num].id === e.firstPerson.id) {
+                        this.userlist[num].used = false;
+                      }
+                    }
+                  }
                 }
               }
             }

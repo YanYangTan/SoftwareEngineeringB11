@@ -1,6 +1,6 @@
 import unittest
-
 from utils import checkregister
+
 
 class MyTestCase(unittest.TestCase):
     def test_username1(self):
@@ -62,7 +62,7 @@ class MyTestCase(unittest.TestCase):
             'password': 'dadhdAA1212',
             'phone': '13121771068',
             'email': 'asdadadada8989@sssss.ffdf.asd1asd.add',
-            'birthday':'2021-11-19'
+            'birthday':'2021-12-31'
         }), ('birthday', False))
 
     def test_success(self):

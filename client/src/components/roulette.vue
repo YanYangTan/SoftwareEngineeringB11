@@ -17,7 +17,7 @@
           </div>
         </div>
       </div>
-      <el-button id="choose-button" @click="locationPicker">SPIN</el-button>
+      <el-button id="choose-button" @click="locationPicker">转</el-button>
       <el-input id="entries" type="textarea" :autosize="{minRows:2, maxRows:9}" placeholder="Please input" v-model="list"></el-input>
     </el-card>
   </div>

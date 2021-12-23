@@ -69,7 +69,7 @@
     style="width: 100%"
       v-loading="loading">
         <el-table-column
-      width="150px"
+      width="170px"
       label="日期"
       prop="content.time">
     </el-table-column>
@@ -105,7 +105,7 @@
     style="width: 100%"
       v-loading="loading">
         <el-table-column
-      width="150px"
+      width="170px"
       label="日期"
       prop="content.time">
     </el-table-column>
@@ -143,7 +143,7 @@
     ref="multipleTable"
       v-loading="loading">
         <el-table-column
-          width="150px"
+          width="170px"
       label="日期"
       prop="content.time">
     </el-table-column>
@@ -520,13 +520,23 @@ export default {
         content: this.gathering.content,
       })
         .then((res) => {
+          let messagetype;
+          let str;
           if (res.data.status) {
             this.gatherlist = res.data.gathering_list;
             // appendTag();
+            messagetype = 'success';
+            str = '成功发起聚会';
             this.queryAllGathering();
           } else {
+            messagetype = 'warning';
+            str = '发起聚会失败';
             console.log(res.data.status);
           }
+          this.$message({
+            type: messagetype,
+            message: str,
+          });
         })
         .catch((err) => {
           console.log(err);

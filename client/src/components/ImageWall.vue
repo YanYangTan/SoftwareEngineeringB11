@@ -10,20 +10,20 @@
         <input type="file" id="files" ref="files" multiple v-on:change="handleFileUpload( $event )"/>
       <br>
         <el-button @click="DialogVisible = false">取 消</el-button>
-      <el-button icon="el-icon-upload" v-on:click="SubmitFile()" type="primary" >Submit</el-button>
+      <el-button icon="el-icon-upload" v-on:click="SubmitFile()" type="primary" >发布</el-button>
       </el-dialog>
     </div>
 
     <el-row :gutter="20" v-loading.fullscreen.lock="fullscreenLoading">
 
-          <el-col :span="4" v-for="item in imagelist" :key="item.post_id" style="height:400px">
+          <el-col :span="4" v-for="item in imagelist" :key="item.post_id" style="height:300px">
             <el-card :body-style="{ padding: '5px 15px' }">
                 <row> <h4>
                   {{item.caption}}
                 </h4></row>
               <div slot="header">
                 <el-image
-      style="width: auto; height: 230px"
+      style="width: auto; height: 170px"
       :src="item.src"
       :preview-src-list="srcList">
     </el-image>
@@ -34,14 +34,14 @@
                 icon="el-icon-star-off"
                 style="padding: 2px 5px;"
                 @click="like(item)"
-              >{{item.like}} Liked</el-button></template>
+              >{{item.like}} 点赞</el-button></template>
               <template v-if="iconOn === false">
                 <el-button type="success"
                 size="mini"
                 icon="el-icon-star-off"
                 style="padding: 2px 5px;"
                 @click="like(item)"
-              >{{item.like}} Liked</el-button>
+              >{{item.like}} 点赞</el-button>
               </template>
 
               <el-button type="primary"
@@ -214,8 +214,13 @@ export default {
             type: 'success',
             message: '成功上传',
           });
-          this.getPost();
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '上传失败',
+          });
         }
+        this.getPost();
       })
         .catch((err) => {
           console.log(err);

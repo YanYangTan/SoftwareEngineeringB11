@@ -6,37 +6,37 @@
         <div class="side-form">
 <!--      <el-card class="carrd">-->
         <form @submit.prevent="register">
-            <h3>Register</h3>
+            <h3>注册</h3>
             <div class="form-group">
-                <label>Username</label>
+                <label>用户名</label>
                 <input type="username" minlength="6" maxlength="10" required class="form-control form-control-lg" v-model="userForm.username"/>
             </div>
 
             <div class="form-group">
-                <label>Password</label>
+                <label>密码</label>
                 <input type="password" required minlength="6" maxlength="18" class="form-control form-control-lg" v-model="userForm.password"/>
             </div>
 <!--hihi-->
           <div class="form-group">
-                <label>Email</label>
+                <label>邮箱</label>
                 <input type="email" required class="form-control form-control-lg" v-model="userForm.email"/>
             </div>
 
           <div class="form-group">
-                <label>Phone</label>
+                <label>手机号码</label>
                 <input type="text" required pattern="[0-9]{11}" class="form-control form-control-lg" v-model="userForm.phone"/>
             </div>
 
           <div class="form-group">
-                <label>Birthday</label>
+                <label>生日日期</label>
                 <input type="date" id="birthdayID" required class="form-control form-control-lg" v-model="userForm.birthday"/>
                 <script type="application/javascript">birthdayID.max = new Date().toISOString().split("T")[0];</script>
             </div>
 
-            <button type="submit" class="btn btn-dark btn-lg btn-block">register</button>
+            <button type="submit" class="btn btn-dark btn-lg btn-block">注册</button>
         </form>
-        <span>Registered? </span>
-        <el-button type="text" @click="SignIn">Sign In</el-button>
+        <span>已有账户？ </span>
+        <el-button type="text" @click="SignIn">登录</el-button>
 <!--        </el-card>-->
            </div>
          </div>

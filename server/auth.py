@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request, make_response
 from . import db
 from .models import *
-import datetime, random, configparser, re
+from datetime import datetime, timedelta
+import random, configparser, re, jwt
 from .utils import *
 
 auth = Blueprint('auth', __name__)
@@ -27,6 +28,13 @@ def login():
             response_object["status"] = True
             response_object["message"] = "Login success!"
             response_object["userid"] = user.idusers
+            config = configparser.RawConfigParser()
+            config.read('config.cfg')
+            db_dict = dict(config.items('DATABASE'))
+            secret = db_dict['secret_key']
+            token = jwt.encode({'idusers': user.idusers, 'exp': datetime.now().utcnow() + timedelta(days=1)},
+                               secret, algorithm="HS256")
+            response_object["token"] = token
         else:
             response_object["message"] = "Incorrect username/password!"
     return jsonify(response_object)
@@ -98,6 +106,17 @@ def query_userinfo():
     response_object = {}
     response_object['status'] = False
 
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     user = User.query.filter_by(idusers=user_id).first()
     if not user:
         response_object['message'] = "Error: User does not exist!"
@@ -121,6 +140,21 @@ def save_userinfo():
         quote = post_data.get('quote')
     response_object = {}
     response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
+    if not check_len45(quote):
+        response_object['message'] = "Error: Invalid quote!"
+        return jsonify(response_object)
 
     user = User.query.filter_by(idusers=user_id).first()
     if not user:

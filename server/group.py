@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from . import db
 from .models import *
-from .utils import check_groupname, generate_new_key, update_birthday, update_calendar
+from .utils import check_len45, generate_new_key, update_birthday, update_calendar, authorize
 from datetime import datetime, timedelta
 import random, configparser, os, json
 
@@ -16,7 +16,19 @@ def create_group():
         user_id = post_data.get('user_id')
     response_object = {}
     response_object["status"] = False
-    if not check_groupname(group_name):
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
+    if not check_len45(group_name):
         response_object["message"] = "Error: Group name invalid!"
     else:
         length = random.randint(5, 10)
@@ -71,6 +83,18 @@ def generate_key():
     group = Group.query.filter_by(idgroups=group_id).first()
     response_object = {}
     response_object["status"] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     if group:
         group.invite_key = generate_new_key()
         group.key_expiry_date = datetime.now() + timedelta(days=7)
@@ -96,6 +120,18 @@ def join_group():
         invite_key = str(post_data.get('invite_key'))
     response_object = {}
     response_object["status"] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     user = User.query.filter_by(idusers=user_id).first()
     group = Group.query.filter_by(invite_key=invite_key).first()
     if not user:
@@ -147,6 +183,18 @@ def query_group():
         user_id = post_data.get('user_id')
     response_object = {}
     response_object["status"] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     user = User.query.filter_by(idusers=user_id).first()
     if user:
         groups = user.relation_group_user
@@ -175,6 +223,18 @@ def query_user():
         group_id = post_data.get('group_id')
     response_object = {}
     response_object["status"] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     group = Group.query.filter_by(idgroups=group_id).first()
     if group:
         users = group.relation_group_user
@@ -204,6 +264,18 @@ def query_admin():
         user_id = post_data.get('user_id')
     response_object = {}
     response_object['status']= False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     rel = RelationGroupUser.query.filter_by(group_id=group_id, user_id=user_id).first()
     if not rel:
         response_object['message'] = "Error: User not in group!"
@@ -222,6 +294,18 @@ def set_admin():
         user_id = post_data.get('user_id')
     response_object = {}
     response_object["status"] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     rel = RelationGroupUser.query.filter_by(group_id=group_id, user_id=user_id).first()
     if not rel:
         response_object["message"] = "Error: User not in group!"
@@ -248,6 +332,17 @@ def remove_admin():
         user_id = post_data.get('user_id')
     response_object = {}
     response_object["status"] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
 
     group = Group.query.filter_by(idgroups=group_id).first()
     if not group:
@@ -289,11 +384,23 @@ def change_group_name():
         new_name = post_data.get('new_name')
     response_object = {}
     response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     group = Group.query.filter_by(idgroups=group_id).first()
     if not group:
         response_object['message'] = "Error: Group does not exist!"
     else:
-        if not check_groupname(new_name):
+        if not check_len45(new_name):
             response_object["message"] = "Error: New group name invalid!"
         else:
             group.name = new_name
@@ -314,6 +421,18 @@ def delete_group():
         group_id = post_data.get('group_id')
     response_object = {}
     response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     group = Group.query.filter_by(idgroups=group_id).first()
     if not group:
         response_object['message'] = "Error: Group does not exist!"
@@ -382,6 +501,18 @@ def remove_member():
         user_id = post_data.get('user_id')
     response_object = {}
     response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     rel = RelationGroupUser.query.filter_by(group_id=group_id, user_id=user_id).first()
     if not rel:
         response_object['message'] = "Error: User not in group!"
@@ -405,6 +536,18 @@ def leave_group():
         user_id = post_data.get('user_id')
     response_object = {}
     response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     rel = RelationGroupUser.query.filter_by(group_id=group_id, user_id=user_id).first()
     if not rel:
         response_object['message'] = "Error: User not in group!"
@@ -432,24 +575,4 @@ def leave_group():
             print(e)
             response_object['message'] = "Failed to leave group"
     return jsonify(response_object)
-
-
-@group.route('/sync-birthday', methods=['GET', 'POST'])
-def sync_birthday():
-    users = User.query.all()
-    for user in users:
-        if user.relation_group_user:
-            for rel in user.relation_group_user:
-                update_birthday(user.idusers, rel.group_id)
-    return jsonify("Done")
-
-
-@group.route('/sync-calendar', methods=['GET', 'POST'])
-def sync_calendar():
-    groups = Group.query.all()
-    for group in groups:
-        if group.relation_group_user:
-            for rel in group.relation_group_user:
-                update_calendar(rel.user_id, group.idgroups)
-    return jsonify("Done")
 

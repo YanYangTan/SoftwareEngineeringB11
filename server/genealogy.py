@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from . import db
 from .models import *
-from .utils import query_username_by_id
+from .utils import authorize
 import random, json
 
 genealogy = Blueprint('genealogy', __name__)
@@ -14,6 +14,17 @@ def query_genealogy():
         group_id = post_data.get('group_id')
     response_object = {}
     response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
 
     group = Group.query.filter_by(idgroups=group_id).first()
     if not group:
@@ -56,6 +67,17 @@ def save_genealogy():
         content = post_data.get('content')
     response_object = {}
     response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
 
     group = Group.query.filter_by(idgroups=group_id).first()
     if not group:
