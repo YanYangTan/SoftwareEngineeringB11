@@ -96,7 +96,10 @@ export default {
   data: () => ({
     // storeKey: 'dayspanState',
     fullscreenLoading: true,
-    calendar: Calendar.months(),
+    calendar: Calendar.months(undefined, undefined, undefined, {
+      fill: true,
+      updateRows: true,
+    }),
     readOnly: false,
     defaultEvents: [],
   }),
