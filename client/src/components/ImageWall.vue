@@ -89,7 +89,8 @@ export default {
       this.srcList = [];
       this.fullscreenLoading = true;
       axios.post('/api/query-all-post', { group_id: this.$props.info.id }, {
-        headers: { tokens: sessionStorage.getItem('token') },
+        // headers: { tokens: sessionStorage.getItem('token') },
+        headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           let posts = [];
@@ -124,7 +125,8 @@ export default {
     hasLiked(pic) {
       let tmp = false;
       axios.post('/api/query-like', { post_id: pic.post_id, user_id: this.$route.params.userid }, {
-        headers: { tokens: sessionStorage.getItem('token') },
+        // headers: { tokens: sessionStorage.getItem('token') },
+        headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           if (res.data.status) {
@@ -136,13 +138,15 @@ export default {
     },
     like(pic) {
       axios.post('/api/query-like', { post_id: pic.post_id, user_id: this.$route.params.userid }, {
-        headers: { tokens: sessionStorage.getItem('token') },
+        // headers: { tokens: sessionStorage.getItem('token') },
+        headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           if (res.data.status) {
             if (res.data.liked) {
               axios.post('/api/cancel-like', { post_id: pic.post_id, user_id: this.$route.params.userid }, {
-                headers: { tokens: sessionStorage.getItem('token') },
+                // headers: { tokens: sessionStorage.getItem('token') },
+                headers: { tokens: localStorage.getItem('token') },
               })
                 .then((res2) => {
                   if (res2.data.status) {
@@ -158,7 +162,8 @@ export default {
                 });
             } else {
               axios.post('/api/like-post', { post_id: pic.post_id, user_id: this.$route.params.userid }, {
-                headers: { tokens: sessionStorage.getItem('token') },
+                // headers: { tokens: sessionStorage.getItem('token') },
+                headers: { tokens: localStorage.getItem('token') },
               })
                 .then((res2) => {
                   if (res2.data.status) {
@@ -215,7 +220,8 @@ export default {
         formData,
         {
           headers: {
-            tokens: sessionStorage.getItem('token'),
+            // headers: { tokens: sessionStorage.getItem('token') },
+            headers: { tokens: localStorage.getItem('token') },
             'Content-Type': 'multipart/form-data',
           },
           // eslint-disable-next-line prefer-arrow-callback

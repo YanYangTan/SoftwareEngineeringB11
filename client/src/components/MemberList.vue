@@ -94,7 +94,8 @@ export default {
   methods: {
     handleSetAdmin(index, row) {
       axios.post('/api/set-admin', { group_id: this.$props.info.id, user_id: row.id }, {
-        headers: { tokens: sessionStorage.getItem('token') },
+        // headers: { tokens: sessionStorage.getItem('token') },
+        headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           if (res.data.status) {
@@ -108,7 +109,8 @@ export default {
     },
     handleRemoveAdmin(index, row) {
       axios.post('/api/remove-admin', { group_id: this.$props.info.id, user_id: row.id }, {
-        headers: { tokens: sessionStorage.getItem('token') },
+        // headers: { tokens: sessionStorage.getItem('token') },
+        headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           if (res.data.status) {
@@ -147,7 +149,8 @@ export default {
       console.log(row.id);
       console.log(this.id);
       axios.post('/api/query-userinfo', { user_id: this.id }, {
-        headers: { tokens: sessionStorage.getItem('token') },
+        // headers: { tokens: sessionStorage.getItem('token') },
+        headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           if (res.data.status) {
@@ -165,7 +168,8 @@ export default {
     },
     handleDelete(index, row) {
       axios.post('/api/remove-member', { group_id: this.$props.info.id, user_id: row.id }, {
-        headers: { tokens: sessionStorage.getItem('token') },
+        // headers: { tokens: sessionStorage.getItem('token') },
+        headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           if (res.data.status) {
@@ -198,7 +202,8 @@ export default {
     getUser() {
       this.loading = true;
       axios.post('/api/query-user', { group_id: this.$props.info.id }, {
-        headers: { tokens: sessionStorage.getItem('token') },
+        // headers: { tokens: sessionStorage.getItem('token') },
+        headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           this.loading = false;

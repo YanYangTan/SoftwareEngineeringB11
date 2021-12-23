@@ -109,12 +109,14 @@ export default {
         },
         like() {
           axios.post('/api/query-like', { post_id: this.$props.info.post_id, user_id: this.$route.params.userid }, {
-            headers: { tokens: sessionStorage.getItem('token') },
+            // headers: { tokens: sessionStorage.getItem('token') },
+            headers: { tokens: localStorage.getItem('token') },
           }).then((res) => {
             if (res.data.status) {
               if (res.data.liked) {
                 axios.post('/api/cancel-like', { post_id: this.$props.info.post_id, user_id: this.$route.params.userid }, {
-                  headers: { tokens: sessionStorage.getItem('token') },
+                  // headers: { tokens: sessionStorage.getItem('token') },
+                  headers: { tokens: localStorage.getItem('token') },
                 }).then((res2) => {
                   if (res2.data.status) {
                     this.$message({
@@ -129,7 +131,8 @@ export default {
                   });
               } else {
                 axios.post('/api/like-post', { post_id: this.$props.info.post_id, user_id: this.$route.params.userid }, {
-                  headers: { tokens: sessionStorage.getItem('token') },
+                  // headers: { tokens: sessionStorage.getItem('token') },
+                  headers: { tokens: localStorage.getItem('token') },
                 }).then((res2) => {
                   if (res2.data.status) {
                     console.log('Liked');
@@ -150,7 +153,8 @@ export default {
         },
         getPost() {
           axios.post('/api/query-post', { post_id: this.info.post_id }, {
-            headers: { tokens: sessionStorage.getItem('token') },
+            // headers: { tokens: sessionStorage.getItem('token') },
+            headers: { tokens: localStorage.getItem('token') },
           }).then((res) => {
             if (res.data.status) {
               this.likes = res.data.content.like;
@@ -184,7 +188,8 @@ export default {
           //   console.log(err);
           // });
           axios.post('/api/query-comment', { post_id: this.info.post_id }, {
-            headers: { tokens: sessionStorage.getItem('token') },
+            // headers: { tokens: sessionStorage.getItem('token') },
+            headers: { tokens: localStorage.getItem('token') },
           }).then((res) => {
             let comments = [];
             if (res.data.status) {
@@ -199,7 +204,8 @@ export default {
         },
         addComment() {
           axios.post('/api/add-comment', { post_id: this.info.post_id, user_id: this.$route.params.userid, content: this.comment }, {
-            headers: { tokens: sessionStorage.getItem('token') },
+            // headers: { tokens: sessionStorage.getItem('token') },
+            headers: { tokens: localStorage.getItem('token') },
           }).then((res) => {
             if (res.data.status) {
               console.log('Comment posted');
@@ -211,7 +217,8 @@ export default {
         deleteComment(index, row) {
           console.log(row.id);
           axios.post('/api/delete-comment', { comment_id: row.id, user_id: Number(this.$route.params.userid) }, {
-            headers: { tokens: sessionStorage.getItem('token') },
+            // headers: { tokens: sessionStorage.getItem('token') },
+            headers: { tokens: localStorage.getItem('token') },
           }).then((res) => {
             if (res.data.status) {
               console.log('delete success');

@@ -48,7 +48,8 @@ export default {
       axios.post('/api/login', { username: this.userForm.username, password: this.userForm.password })
         .then((res) => {
           if (res.data.status) {
-            window.sessionStorage.setItem('token', res.data.token);
+            // window.sessionStorage.setItem('token', res.data.token);
+            window.localStorage.setItem('token', res.data.token);
             this.loginpath = '/success/';
             this.loginpath += String(res.data.userid);
             this.loginpath += '/';

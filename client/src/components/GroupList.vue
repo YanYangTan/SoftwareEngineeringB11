@@ -44,7 +44,8 @@ export default {
       getQuery() {
         this.fullscreenLoading = true;
         axios.post('/api/query-group', { user_id: this.$route.params.userid }, {
-          headers: { tokens: sessionStorage.getItem('token') },
+          // headers: { tokens: sessionStorage.getItem('token') },
+          headers: { tokens: localStorage.getItem('token') },
         })
           .then((res) => {
             if (res.data.message === 'Error: Unauthorized!') {
@@ -76,7 +77,8 @@ export default {
             value = '';
           }
           axios.post('/api/create-group', { user_id: this.$route.params.userid, group_name: value }, {
-            headers: { tokens: sessionStorage.getItem('token') },
+            // headers: { tokens: sessionStorage.getItem('token') },
+            headers: { tokens: localStorage.getItem('token') },
           })
             .then((res) => {
               // eslint-disable-next-line no-unused-vars
@@ -112,7 +114,8 @@ export default {
           cancelButtonText: '取消',
         }).then(({ value }) => {
           axios.post('/api/join-group', { user_id: this.$route.params.userid, invite_key: value }, {
-            headers: { tokens: sessionStorage.getItem('token') },
+            // headers: { tokens: sessionStorage.getItem('token') },
+            headers: { tokens: localStorage.getItem('token') },
           })
             .then((res) => {
               // eslint-disable-next-line no-unused-vars

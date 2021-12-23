@@ -69,7 +69,8 @@ export default {
       console.log(this.$route.params.userid);
       console.log('what is going on');
       axios.post('/api/query-userinfo', { user_id: this.$route.params.userid }, {
-        headers: { tokens: sessionStorage.getItem('token') },
+        // headers: { tokens: sessionStorage.getItem('token') },
+        headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           if (res.data.status) {
@@ -94,7 +95,8 @@ export default {
         let str;
         let messagetype;
         axios.post('/api/save-userinfo', { user_id: this.$route.params.userid, phone: this.phone, quote: value }, {
-          headers: { tokens: sessionStorage.getItem('token') },
+          // headers: { tokens: sessionStorage.getItem('token') },
+          headers: { tokens: localStorage.getItem('token') },
         })
           .then((res) => {
             if (res.data.status) {
@@ -128,7 +130,8 @@ export default {
         let str;
         let messagetype;
         axios.post('/api/save-userinfo', { user_id: this.$route.params.userid, phone: value, quote: this.quote }, {
-          headers: { tokens: sessionStorage.getItem('token') },
+          // headers: { tokens: sessionStorage.getItem('token') },
+          headers: { tokens: localStorage.getItem('token') },
         })
           .then((res) => {
             if (res.data.status) {

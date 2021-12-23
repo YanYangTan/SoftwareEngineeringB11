@@ -300,7 +300,8 @@ export default {
       temp.usedtable = this.usedtable;
       temp.minus = this.minus;
       axios.post('/api/save-genealogy', { group_id: this.$props.info.id, content: temp }, {
-        headers: { tokens: sessionStorage.getItem('token') },
+        // headers: { tokens: sessionStorage.getItem('token') },
+        headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           this.saving = false;
@@ -319,7 +320,8 @@ export default {
     loadGenealogy() {
       this.loading = true;
       axios.post('/api/query-genealogy', { group_id: this.$props.info.id }, {
-        headers: { tokens: sessionStorage.getItem('token') },
+        // headers: { tokens: sessionStorage.getItem('token') },
+        headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           if (res.data.status) {
@@ -335,7 +337,8 @@ export default {
         });
       this.loading = true;
       axios.post('/api/query-user', { group_id: this.$props.info.id }, {
-        headers: { tokens: sessionStorage.getItem('token') },
+        // headers: { tokens: sessionStorage.getItem('token') },
+        headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           this.loading = false;

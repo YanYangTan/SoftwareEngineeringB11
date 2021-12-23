@@ -124,7 +124,8 @@ export default {
         id: this.$route.params.id,
         content: json,
       }, {
-        headers: { tokens: sessionStorage.getItem('token') },
+        // headers: { tokens: sessionStorage.getItem('token') },
+        headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           if (res.data.status) {
@@ -151,7 +152,8 @@ export default {
         isGroup: this.$route.params.isGroup === '1',
         id: this.$route.params.id,
       }, {
-        headers: { tokens: sessionStorage.getItem('token') },
+        // headers: { tokens: sessionStorage.getItem('token') },
+        headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           if (res.data.message === 'Error: Unauthorized!') {
