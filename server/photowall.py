@@ -70,14 +70,16 @@ def upload_post():
             photo_post.media = json.dumps(locations)
             db.session.add(photo_post)
 
-    try:
-        db.session.commit()
-        response_object['status'] = True
-        response_object['message'] = "Photos uploaded!"
-        response_object['post_id'] = photo_post.id
-    except Exception as e:
-        print(e)
-        response_object['message'] = "Upload failed!"
+        try:
+            db.session.commit()
+            response_object['status'] = True
+            response_object['message'] = "Photos uploaded!"
+            response_object['post_id'] = photo_post.id
+        except Exception as e:
+            print(e)
+            response_object['message'] = "Upload failed!"
+    else:
+        response_object['message'] = "Error: No image!"
 
     return jsonify(response_object)
 
