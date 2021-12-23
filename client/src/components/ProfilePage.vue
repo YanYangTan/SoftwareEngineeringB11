@@ -99,7 +99,7 @@ export default {
               this.getUserInfo();
             } else {
               messagetype = 'warning';
-              str = '电话号码格式错误';
+              str = '标语不合法';
             }
             this.$message({
               type: messagetype,
