@@ -43,7 +43,9 @@ export default {
       },
       getQuery() {
         this.fullscreenLoading = true;
-        axios.post('/api/query-group', { user_id: this.$route.params.userid })
+        axios.post('/api/query-group', { user_id: this.$route.params.userid }, {
+          headers: { tokens: sessionStorage.getItem('token') },
+        })
           .then((res) => {
             if (res.data.status) {
               //               data { status, message, group_list }
@@ -66,7 +68,9 @@ export default {
             // eslint-disable-next-line
             value = '';
           }
-          axios.post('/api/create-group', { user_id: this.$route.params.userid, group_name: value })
+          axios.post('/api/create-group', { user_id: this.$route.params.userid, group_name: value }, {
+            headers: { tokens: sessionStorage.getItem('token') },
+          })
             .then((res) => {
               // eslint-disable-next-line no-unused-vars
               let str;
@@ -100,7 +104,9 @@ export default {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
         }).then(({ value }) => {
-          axios.post('/api/join-group', { user_id: this.$route.params.userid, invite_key: value })
+          axios.post('/api/join-group', { user_id: this.$route.params.userid, invite_key: value }, {
+            headers: { tokens: sessionStorage.getItem('token') },
+          })
             .then((res) => {
               // eslint-disable-next-line no-unused-vars
               let str;

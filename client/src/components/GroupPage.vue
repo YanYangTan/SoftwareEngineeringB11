@@ -59,7 +59,9 @@ export default {
           // eslint-disable-next-line
             value = '';
         }
-        axios.post('/api/change-groupname', { group_id: this.$props.info.id, new_name: value })
+        axios.post('/api/change-groupname', { group_id: this.$props.info.id, new_name: value }, {
+          headers: { tokens: sessionStorage.getItem('token') },
+        })
           .then((res) => {
             // eslint-disable-next-line no-unused-vars
             let str;
@@ -89,7 +91,9 @@ export default {
       });
     },
     checkAdmin() {
-      axios.post('/api/query-admin', { group_id: this.$props.info.id, user_id: this.$route.params.userid })
+      axios.post('/api/query-admin', { group_id: this.$props.info.id, user_id: this.$route.params.userid }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
         .then((res) => {
           if (res.data.status) {
             this.$props.info.admin = res.data.admin;
@@ -102,7 +106,9 @@ export default {
     DeleteGroup() {
       // eslint-disable-next-line
       if (confirm('确定删除群？')) {
-        axios.post('/api/delete-group', { group_id: this.$props.info.id })
+        axios.post('/api/delete-group', { group_id: this.$props.info.id }, {
+          headers: { tokens: sessionStorage.getItem('token') },
+        })
           .then((res) => {
             let str;
             let messagetype;
@@ -129,7 +135,9 @@ export default {
     },
     getInviteKey() {
       let str;
-      axios.post('/api/generate-key', { group_id: this.$props.info.id })
+      axios.post('/api/generate-key', { group_id: this.$props.info.id }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
         .then((res) => {
           if (res.data.status) {
             this.invitekey.num = res.data.invite_key;
@@ -153,6 +161,8 @@ export default {
         axios.post('/api/leave-group', {
           group_id: this.$props.info.id,
           user_id: this.$route.params.userid,
+        }, {
+          headers: { tokens: sessionStorage.getItem('token') },
         })
           .then((res) => {
             // eslint-disable-next-line no-empty

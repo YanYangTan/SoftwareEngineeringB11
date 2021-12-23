@@ -352,7 +352,9 @@ export default {
     },
     confirmChangeDate() {
       this.ChangeDateDialogVisible = false;
-      axios.post('/api/change-enddate', { gathering_id: this.changedatetimeRow.id, new_date: this.changedatetime })
+      axios.post('/api/change-enddate', { gathering_id: this.changedatetimeRow.id, new_date: this.changedatetime }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
       // eslint-disable-next-line consistent-return
         .then((res) => {
           if (res.data.status) {
@@ -378,7 +380,9 @@ export default {
     },
     DeleteClick(index, row) {
       // console.log(row.user_id === this.$route.params.userid);
-      axios.post('/api/delete-gathering', { user_id: Number(this.$route.params.userid), gathering_id: row.id })
+      axios.post('/api/delete-gathering', { user_id: Number(this.$route.params.userid), gathering_id: row.id }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
       // eslint-disable-next-line consistent-return
         .then((res) => {
           if (res.data.status) {
@@ -427,7 +431,9 @@ export default {
     },
     queryAllGathering() {
       this.loading = true;
-      axios.post('/api/query-all-gathering', { group_id: this.$props.currentgroup.id, user_id: this.$route.params.userid })
+      axios.post('/api/query-all-gathering', { group_id: this.$props.currentgroup.id, user_id: this.$route.params.userid }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
         .then((res) => {
           if (res.data.status) {
             this.gatherlist = res.data.gathering_list;
@@ -517,6 +523,8 @@ export default {
         status: this.gathering.status,
         allow_multiple_vote: this.gathering.allow_multiple_vote,
         content: this.gathering.content,
+      }, {
+        headers: { tokens: sessionStorage.getItem('token') },
       })
         .then((res) => {
           let messagetype;
@@ -552,6 +560,8 @@ export default {
         gathering_id: this.currentgathering.id,
         user_id: this.gathering.user_id,
         content: this.gathering.content,
+      }, {
+        headers: { tokens: sessionStorage.getItem('token') },
       })
         .then((res) => {
           if (res.data.status) {
@@ -566,7 +576,9 @@ export default {
       this.gathering.content = [];
     },
     VoteOne(row) {
-      axios.post('/api/vote', { vote_ids: [row.id], user_id: this.$route.params.userid })
+      axios.post('/api/vote', { vote_ids: [row.id], user_id: this.$route.params.userid }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
         .then((res) => {
           if (res.data.status) {
             console.log(res.data.message);
@@ -589,7 +601,9 @@ export default {
         }
       }
       if (votecontent.vote_ids.length !== 0) {
-        axios.post('/api/vote', { vote_ids: votecontent.vote_ids, user_id: votecontent.user_id })
+        axios.post('/api/vote', { vote_ids: votecontent.vote_ids, user_id: votecontent.user_id }, {
+          headers: { tokens: sessionStorage.getItem('token') },
+        })
           .then((res) => {
             if (res.data.status) {
               console.log(res.data.message);
@@ -623,7 +637,9 @@ export default {
     tagClickedVote(row) {
       this.contents = {};
       console.log(row);
-      axios.post('/api/check-vote', { user_id: this.$route.params.userid, gathering_id: row.id })
+      axios.post('/api/check-vote', { user_id: this.$route.params.userid, gathering_id: row.id }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
         // eslint-disable-next-line consistent-return
         .then((res) => {
           if (res.data.status) {
@@ -635,7 +651,9 @@ export default {
               });
             } else {
               this.loading = true;
-              axios.post('/api/query-gathering', { gathering_id: row.id })
+              axios.post('/api/query-gathering', { gathering_id: row.id }, {
+                headers: { tokens: sessionStorage.getItem('token') },
+              })
                 .then((res1) => {
                   this.loading = false;
                   if (res1.data.status) {
@@ -663,7 +681,9 @@ export default {
     tagClickedSuggestion(row) {
       this.resetForm();
       this.loading = true;
-      axios.post('/api/query-gathering', { gathering_id: row.id })
+      axios.post('/api/query-gathering', { gathering_id: row.id }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
         .then((res) => {
           this.loading = false;
           if (res.data.status) {
@@ -679,7 +699,9 @@ export default {
         });
     },
     checkVoted(gathering) {
-      axios.post('/api/check-vote', { user_id: this.$route.params.userid, gathering_id: gathering.id })
+      axios.post('/api/check-vote', { user_id: this.$route.params.userid, gathering_id: gathering.id }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
         // eslint-disable-next-line consistent-return
         .then((res) => {
           if (res.data.status) {

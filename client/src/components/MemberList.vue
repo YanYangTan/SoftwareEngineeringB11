@@ -93,7 +93,9 @@ export default {
   },
   methods: {
     handleSetAdmin(index, row) {
-      axios.post('/api/set-admin', { group_id: this.$props.info.id, user_id: row.id })
+      axios.post('/api/set-admin', { group_id: this.$props.info.id, user_id: row.id }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
         .then((res) => {
           if (res.data.status) {
             // this.$data.tableData = res.data.user_list;
@@ -105,7 +107,9 @@ export default {
         });
     },
     handleRemoveAdmin(index, row) {
-      axios.post('/api/remove-admin', { group_id: this.$props.info.id, user_id: row.id })
+      axios.post('/api/remove-admin', { group_id: this.$props.info.id, user_id: row.id }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
         .then((res) => {
           if (res.data.status) {
             // this.$data.tableData = res.data.user_list;
@@ -142,7 +146,9 @@ export default {
       this.id = row.id;
       console.log(row.id);
       console.log(this.id);
-      axios.post('/api/query-userinfo', { user_id: this.id })
+      axios.post('/api/query-userinfo', { user_id: this.id }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
         .then((res) => {
           if (res.data.status) {
             console.log('Query success!');
@@ -158,7 +164,9 @@ export default {
         });
     },
     handleDelete(index, row) {
-      axios.post('/api/remove-member', { group_id: this.$props.info.id, user_id: row.id })
+      axios.post('/api/remove-member', { group_id: this.$props.info.id, user_id: row.id }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
         .then((res) => {
           if (res.data.status) {
             // this.$data.tableData = res.data.user_list;
@@ -189,7 +197,9 @@ export default {
     },
     getUser() {
       this.loading = true;
-      axios.post('/api/query-user', { group_id: this.$props.info.id })
+      axios.post('/api/query-user', { group_id: this.$props.info.id }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
         .then((res) => {
           this.loading = false;
           if (res.data.status) {

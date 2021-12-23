@@ -123,6 +123,8 @@ export default {
         isGroup: this.$route.params.isGroup === '1',
         id: this.$route.params.id,
         content: json,
+      }, {
+        headers: { tokens: sessionStorage.getItem('token') },
       })
         .then((res) => {
           if (res.data.status) {
@@ -148,6 +150,8 @@ export default {
       axios.post('/api/query-calendar', {
         isGroup: this.$route.params.isGroup === '1',
         id: this.$route.params.id,
+      }, {
+        headers: { tokens: sessionStorage.getItem('token') },
       })
         .then((res) => {
           if (res.data.status) {

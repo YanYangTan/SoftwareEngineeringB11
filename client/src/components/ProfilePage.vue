@@ -68,7 +68,9 @@ export default {
       this.id = this.$route.params.userid;
       console.log(this.$route.params.userid);
       console.log('what is going on');
-      axios.post('/api/query-userinfo', { user_id: this.$route.params.userid })
+      axios.post('/api/query-userinfo', { user_id: this.$route.params.userid }, {
+        headers: { tokens: sessionStorage.getItem('token') },
+      })
         .then((res) => {
           if (res.data.status) {
             console.log('Query success!');
@@ -91,7 +93,9 @@ export default {
       }).then(({ value }) => {
         let str;
         let messagetype;
-        axios.post('/api/save-userinfo', { user_id: this.$route.params.userid, phone: this.phone, quote: value })
+        axios.post('/api/save-userinfo', { user_id: this.$route.params.userid, phone: this.phone, quote: value }, {
+          headers: { tokens: sessionStorage.getItem('token') },
+        })
           .then((res) => {
             if (res.data.status) {
               messagetype = 'success';
@@ -99,7 +103,7 @@ export default {
               this.getUserInfo();
             } else {
               messagetype = 'warning';
-              str = '电话号码格式错误';
+              str = '标语不合法';
             }
             this.$message({
               type: messagetype,
@@ -123,7 +127,9 @@ export default {
       }).then(({ value }) => {
         let str;
         let messagetype;
-        axios.post('/api/save-userinfo', { user_id: this.$route.params.userid, phone: value, quote: this.quote })
+        axios.post('/api/save-userinfo', { user_id: this.$route.params.userid, phone: value, quote: this.quote }, {
+          headers: { tokens: sessionStorage.getItem('token') },
+        })
           .then((res) => {
             if (res.data.status) {
               messagetype = 'success';
