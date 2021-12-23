@@ -10,7 +10,7 @@
       <i style="margin-left: 50px;margin-top: 30px;margin-bottom: 30px" class="el-icon-loading" v-if="loading"></i>
       <span  v-if="loading" >加载中....</span>
 
-<!--      <el-button @click="outputUsedtable">test</el-button>-->
+      <el-button @click="outputUsedtable">test</el-button>
 <!--    <div class="text-center">-->
 <!--&lt;!&ndash;      <h1 class="title">家谱</h1>&ndash;&gt;-->
 <!--    </div>-->
@@ -101,6 +101,7 @@ export default {
       temptree: [],
       currentchildren: [],
       currentnode: {},
+      currentperson: {},
       minus: -1,
       uppertree: [],
       tree: [{
@@ -119,12 +120,11 @@ export default {
     cardClick(item) {
       console.log(item);
       console.log(this.tree);
+      this.currentperson = item;
     },
     // 添加成员
     addMember(item, type) {
-      console.log(item);
       this.test(this.tree, item.id); // 返回选中节点和层的信息
-      console.log(this.currentchildren);
       if (type === 'Sibling') {
         if (item.root === true) {
           this.$message({
@@ -136,6 +136,7 @@ export default {
           // eslint-disable-next-line no-restricted-syntax
           const ele = { firstPerson: { name: '未定义', id: this.minus, image: 's' } };
           this.minus -= 1;
+          console.log(this.currentchildren);
           this.currentchildren.push(ele);
         }
       } else if (type === 'Children') {
@@ -173,10 +174,6 @@ export default {
         } else {
           // eslint-disable-next-line no-unused-vars
           this.test(this.currentchildren, item.id, 'Delete', true);
-          // const ttemp = [];
-          // ttemp.push(this.currentchildren);
-          // ttemp.splice(0, 1);
-          // delete this.currentchildren;
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < this.uppertree.length; ++i) {
             if (this.uppertree[i].firstPerson !== undefined && this.uppertree[i].firstPerson.id === item.id) {
@@ -198,78 +195,47 @@ export default {
       // eslint-disable-next-line guard-for-in,no-restricted-syntax
       for (e of this.temptree) {
         if (type === 'Delete') {
-          if (e.firstPerson !== undefined) {
-            if (!first) {
-              this.usedtable.splice(this.usedtable.indexOf(e.firstPerson.id), 1);
-            } else if (first) {
-              this.usedtable.splice(this.usedtable.indexOf(id), 1);
+          if (first) {
+            // --------------------是当前子树-----------------------
+            if ((e.firstPerson !== undefined && e.firstPerson.id === id)
+              || (e.secondPerson !== undefined && e.secondPerson.id === id)) {
+              console.log('no skip');
+              console.log(e);
+            } else {
+              console.log('skipped!');
+              // eslint-disable-next-line no-continue
+              continue;
             }
           }
-          if (e.secondPerson !== undefined) {
-            if (!first) {
-              this.usedtable.splice(this.usedtable.indexOf(e.secondPerson.id), 1);
-            } else if (first) {
-              this.usedtable.splice(this.usedtable.indexOf(id), 1);
-            }
+          if (e.firstPerson !== undefined && this.usedtable.indexOf(e.firstPerson.id) !== -1) {
+            console.log(e.firstPerson.id);
+            this.usedtable.splice(this.usedtable.indexOf(e.firstPerson.id), 1);
           }
-          // eslint-disable-next-line no-restricted-syntax
-          for (const user of this.userlist) {
-            if (e.firstPerson !== undefined) {
-              if (!first) {
-                if (user.id === e.firstPerson.id) {
-                  user.used = false;
-                }
-              } else if (first) {
-                if (user.id === id) {
-                  user.used = false;
-                  if (e.secondPerson !== undefined) {
-                    // eslint-disable-next-line no-plusplus
-                    for (let num = 0; num < this.userlist.length; ++num) {
-                      if (this.userlist[num].id === e.secondPerson.id) {
-                        this.userlist[num].used = false;
-                      }
-                    }
-                    console.log(e.secondPerson.id);
-                  }
-                }
-              }
-            }
-            if (e.secondPerson !== undefined) {
-              if (!first) {
-                if (user.id === e.secondPerson.id) {
-                  user.used = false;
-                }
-              } else if (first) {
-                if (user.id === id) {
-                  user.used = false;
-                  if (e.firstPerson !== undefined) {
-                    // eslint-disable-next-line no-plusplus
-                    for (let num = 0; num < this.userlist.length; ++num) {
-                      if (this.userlist[num].id === e.firstPerson.id) {
-                        this.userlist[num].used = false;
-                      }
-                    }
-                  }
-                }
-              }
-            }
+          if (e.secondPerson !== undefined && this.usedtable.indexOf(e.secondPerson.id) !== -1) {
+            console.log(e.secondPerson.id);
+            this.usedtable.splice(this.usedtable.indexOf(e.secondPerson.id), 1);
           }
+          this.checkUsedtable();
         }
         if (e.firstPerson !== undefined && e.firstPerson.id === id) {
           this.currentnode = e;// 当前节点，字典类型
-          this.currentchildren = this.temptree; // 当前层，数组类型
+          this.currentchildren = tree; // 当前层，数组类型
           this.uppertree = this.temptree;
-        }
-        if (e.secondPerson !== undefined && e.secondPerson.id === id) {
+          console.log(id);
+          console.log(this.currentchildren);
+        } else if (e.secondPerson !== undefined && e.secondPerson.id === id) {
           this.currentnode = e; // 当前节点，字典类型
-          this.currentchildren = this.temptree; // 当前层，数组类型
+          this.currentchildren = tree; // 当前层，数组类型
           this.uppertree = this.temptree; // 总是返回上一层children数组
+          console.log(id);
+          console.log(this.currentchildren);
         }
         if (e.children !== undefined) { // 若它不是叶子结点
           if (type === 'Delete') {
             this.test(e.children, id, 'Delete', false);
           } else {
-            this.test(e.children, id, false);
+            console.log(e.children);
+            this.test(e.children, id, 'Normal', false);
           } // 递归至下一个孩子层
         }
       }
@@ -319,16 +285,28 @@ export default {
     },
     loadGenealogy() {
       this.loading = true;
+      let newcreate = false;
       axios.post('/api/query-genealogy', { group_id: this.$props.info.id }, {
         // headers: { tokens: sessionStorage.getItem('token') },
         headers: { tokens: localStorage.getItem('token') },
       })
         .then((res) => {
           if (res.data.status) {
-            console.log(res.data.message);
-            this.tree = res.data.content.tree;
-            this.usedtable = res.data.content.usedtable;
-            this.minus = res.data.content.minus;
+            console.log(res.data.content);
+            let contentempty = true;
+            // eslint-disable-next-line guard-for-in,no-unused-vars,no-restricted-syntax
+            for (const n in res.data.content) {
+              contentempty = false;
+            }
+            if (contentempty) {
+              newcreate = true;
+            } else {
+              console.log(res.data);
+              this.tree = res.data.content.tree;
+              this.usedtable = res.data.content.usedtable;
+              this.minus = res.data.content.minus;
+              this.checkUsedtable();
+            }
             this.loading = false;
           }
         })
@@ -344,17 +322,24 @@ export default {
           this.loading = false;
           if (res.data.status) {
             this.$data.userlist = res.data.user_list;
+            console.log(this.tree);
+            console.log(newcreate);
+            if (newcreate) {
+              this.clearGenealogy();
+              console.log(this.tree);
+            } else {
             // eslint-disable-next-line no-restricted-syntax
-            for (const user of this.userlist) { // 判断用户有没有已被家谱用过
+              for (const user of this.userlist) { // 判断用户有没有已被家谱用过
               // eslint-disable-next-line no-restricted-syntax
-              for (const id of this.usedtable) {
-                if (id === user.id) {
-                  user.used = true;
-                  break;
-                } else { user.used = false; }
+                for (const id of this.usedtable) {
+                  if (id === user.id) {
+                    user.used = true;
+                    break;
+                  } else { user.used = false; }
+                }
               }
+              console.log(this.userlist);
             }
-            console.log(this.userlist);
           }
         })
         .catch((err) => {
@@ -391,21 +376,12 @@ export default {
           message: '取消输入',
         });
       });
-      // let q = false;
-      // // eslint-disable-next-line no-constant-condition,no-plusplus
-      // for (let i = 0; i > 1; --i) {
-      //   this.randomnum = Math.round(Math.random() * 100000);
-      //   console.log(this.randomnum);
-      //   // eslint-disable-next-line no-restricted-syntax,no-plusplus
-      //   for (let j = 0; j < this.userlist; ++j) {
-      //     if (j === this.userlist.length - 1 && this.randomnum !== this.userlist[j].id) {
-      //       q = true;
-      //     }
-      //   }
-      //   if (q === true) {
-      //     break;
-      //   }
-      // }
+    },
+    checkUsedtable() {
+      // eslint-disable-next-line no-plusplus
+      for (let num = 0; num < this.userlist.length; ++num) {
+        this.userlist[num].used = this.usedtable.indexOf(this.userlist[num].id) !== -1;
+      }
     },
   },
   created() {
