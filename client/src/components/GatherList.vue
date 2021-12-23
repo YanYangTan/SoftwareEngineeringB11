@@ -511,47 +511,69 @@ export default {
       });
     },
     confirmGathering() {
-      this.dialogFormVisible = false;
       this.gathering.group_id = this.$props.currentgroup.id;
       this.gathering.user_id = this.$route.params.userid;
       this.gathering.status = this.gathering.status === '提议';
-      // this.gathering.status = '1';
-      console.log(this.gathering);
-      axios.post('/api/create-gathering', {
-        user_id: this.gathering.user_id,
-        group_id: this.gathering.group_id,
-        name: this.gathering.name,
-        description: this.gathering.description,
-        enddate: this.gathering.enddate,
-        status: this.gathering.status,
-        allow_multiple_vote: this.gathering.allow_multiple_vote,
-        content: this.gathering.content,
-      }, {
-        // headers: { tokens: sessionStorage.getItem('token') },
-        headers: { tokens: localStorage.getItem('token') },
-      })
-        .then((res) => {
-          let messagetype;
-          let str;
-          if (res.data.status) {
-            this.gatherlist = res.data.gathering_list;
-            // appendTag();
-            messagetype = 'success';
-            str = '成功发起聚会';
-            this.queryAllGathering();
-          } else {
-            messagetype = 'warning';
-            str = '发起聚会失败';
-            console.log(res.data.status);
-          }
-          this.$message({
-            type: messagetype,
-            message: str,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
+      console.log(this.gathering.enddate);
+      if (this.gathering.enddate === '' || this.gathering.enddate === null) {
+        this.$message({
+          type: 'warning',
+          message: '截止日期不能为空',
         });
+      } else {
+        let illegal = false;
+        // eslint-disable-next-line no-restricted-syntax
+        for (const e of this.gathering.content) {
+          if (e.time === '' || e.time === null) {
+            illegal = true;
+            this.$message({
+              type: 'warning',
+              message: '聚会日期不能为空',
+            });
+            break;
+          }
+        }
+        if (illegal === false) {
+          this.dialogFormVisible = false;
+          // this.gathering.status = '1';
+          console.log(this.gathering);
+          axios.post('/api/create-gathering', {
+            user_id: this.gathering.user_id,
+            group_id: this.gathering.group_id,
+            name: this.gathering.name,
+            description: this.gathering.description,
+            enddate: this.gathering.enddate,
+            status: this.gathering.status,
+            allow_multiple_vote: this.gathering.allow_multiple_vote,
+            content: this.gathering.content,
+          }, {
+            // headers: { tokens: sessionStorage.getItem('token') },
+            headers: { tokens: localStorage.getItem('token') },
+          })
+            .then((res) => {
+              let messagetype;
+              let str;
+              if (res.data.status) {
+                this.gatherlist = res.data.gathering_list;
+                // appendTag();
+                messagetype = 'success';
+                str = '成功发起聚会';
+                this.queryAllGathering();
+              } else {
+                messagetype = 'warning';
+                str = '发起聚会失败';
+                console.log(res.data.status);
+              }
+              this.$message({
+                type: messagetype,
+                message: str,
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      }
     },
     confirmContent() {
       this.gathering.user_id = this.$route.params.userid;
