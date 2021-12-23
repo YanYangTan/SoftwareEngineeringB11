@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from . import db, scheduler
 from .models import *
-from .utils import query_username_by_id, update_suggestion, update_vote
+from .utils import query_username_by_id, update_suggestion, update_vote, check_len45, check_len100, authorize
 from datetime import datetime
 from sqlalchemy import asc
 import random, json
@@ -30,6 +30,17 @@ def create_gathering():
     response_object = {}
     response_object['status'] = False
 
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     try:
         content = json.loads(content)
     except Exception as e:
@@ -44,6 +55,14 @@ def create_gathering():
         enddate = datetime.strptime(enddate, '%Y-%m-%d %H:%M:%S')
         if enddate < datetime.now():
             valid = False
+
+    if not check_len45(name):
+        response_object['message'] = "Error: Invalid gathering name!"
+        return jsonify(response_object)
+
+    if not check_len100(description):
+        response_object['message'] = "Error: Invalid gathering description!"
+        return jsonify(response_object)
 
     if not valid:
         response_object["message"] = "Error: Cannot set end date earlier than current time!"
@@ -142,6 +161,17 @@ def query_all_gathering():
     response_object = {}
     response_object['status'] = False
 
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     group = Group.query.filter_by(idgroups=group_id).first()
     if not group:
         response_object['message'] = "Error: Group does not exist"
@@ -184,6 +214,17 @@ def query_gathering():
     response_object = {}
     response_object['status'] = False
 
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     gathering = Gathering.query.filter_by(id=gathering_id).first()
     if not gathering:
         response_object['message'] = "Error: Gathering not found!"
@@ -225,6 +266,17 @@ def save_suggestion():
         content = post_data.get('content')
     response_object = {}
     response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
 
     try:
         content = json.loads(content)
@@ -287,6 +339,17 @@ def vote():
     response_object = {}
     response_object['status'] = False
 
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     try:
         vote_ids = json.loads(vote_ids)
     except Exception as e:
@@ -324,6 +387,18 @@ def change_enddate():
         new_date = post_data.get('new_date')
     response_object = {}
     response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     valid = True
     try:
         if new_date < datetime.now():
@@ -360,6 +435,17 @@ def query_calendar():
         id = post_data.get('id')
     response_object = {}
     response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
 
     if isGroup:
         group = Group.query.filter_by(idgroups=id).first()
@@ -436,6 +522,17 @@ def save_calendar():
     response_object = {}
     response_object['status'] = False
 
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     try:
         content = json.loads(content)
     except Exception as e:
@@ -507,6 +604,17 @@ def check_vote():
     response_object = {}
     response_object['status'] = False
 
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     gathering = Gathering.query.filter_by(id=gathering_id).first()
     if not gathering:
         response_object['message'] = "Error: Gathering not found!"
@@ -538,6 +646,17 @@ def delete_gathering():
         user_id = post_data.get('user_id')
     response_object = {}
     response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
 
     gathering = Gathering.query.filter_by(id=gathering_id).first()
     user = User.query.filter_by(idusers=user_id).first()

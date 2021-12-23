@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request, make_response
 from . import db
 from .models import *
 from datetime import datetime
-from .utils import query_username_by_id
+from .utils import query_username_by_id, check_len45, authorize
 from sqlalchemy import desc
 import os, configparser, random, uuid, json, pathlib
 
@@ -19,11 +19,26 @@ def upload_post():
     response_object = {}
     response_object['status'] = False
 
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     config = configparser.RawConfigParser()
     config.read('config.cfg')
     photo_dict = dict(config.items('PHOTO'))
     upload_folder = photo_dict["upload_folder"]
     # upload_folder = "\\Downloads\\temp\\upload"
+
+    if not check_len45(caption):
+        response_object['message'] = "Error: Invalid caption"
+        return jsonify(response_object)
 
     dir = os.path.join(upload_folder, group_id)
     if not os.path.exists(dir):
@@ -74,6 +89,17 @@ def query_all_post():
         group_id = post_data.get('group_id')
     response_object = {}
     response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
 
     group = Group.query.filter_by(idgroups=group_id).first()
     if not group:
@@ -133,6 +159,17 @@ def like_post():
     response_object = {}
     response_object['status'] = False
 
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     post = PhotoPost.query.filter_by(id=post_id).first()
     user = User.query.filter_by(idusers=user_id).first()
     if not post:
@@ -163,6 +200,21 @@ def add_comment():
         content = post_data.get('content')
     response_object = {}
     response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
+    if not check_len45(content):
+        response_object['message'] = "Error: Comment invalid!"
+        return jsonify(response_object)
 
     post = PhotoPost.query.filter_by(id=post_id).first()
     user = User.query.filter_by(idusers=user_id).first()
@@ -213,6 +265,17 @@ def query_comment():
     response_object = {}
     response_object['status'] = False
 
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     post = PhotoPost.query.filter_by(id=post_id).first()
     if not post:
         response_object['message'] = "Error: Post does not exist!"
@@ -245,6 +308,17 @@ def query_like():
     response_object = {}
     response_object['status'] = False
 
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     post = PhotoPost.query.filter_by(id=post_id).first()
     user = User.query.filter_by(idusers=user_id).first()
     if not post:
@@ -272,6 +346,17 @@ def delete_post():
         user_id = post_data.get('user_id')
     response_object = {}
     response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
 
     post = PhotoPost.query.filter_by(id=post_id).first()
     user = User.query.filter_by(idusers=user_id).first()
@@ -319,6 +404,17 @@ def delete_comment():
     response_object = {}
     response_object['status'] = False
 
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     comment = Comments.query.filter_by(id=comment_id).first()
     user = User.query.filter_by(idusers=user_id).first()
     if not comment:
@@ -350,6 +446,17 @@ def cancel_like():
     response_object = {}
     response_object['status'] = False
 
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
     post = PhotoPost.query.filter_by(id=post_id).first()
     user = User.query.filter_by(idusers=user_id).first()
     if not post:
@@ -376,4 +483,41 @@ def cancel_like():
             except Exception as e:
                 print(e)
                 response_object['message'] = "Failed to unlike"
+    return jsonify(response_object)
+
+
+@photowall.route('/query-post', methods=['GET', 'POST'])
+def query_post():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        post_id = post_data.get('post_id')
+    response_object = {}
+    response_object['status'] = False
+
+    if 'tokens' in request.headers:
+        token = request.headers['tokens']
+    else:
+        response_object['message'] = "Error: No token!"
+        return jsonify(response_object)
+
+    status, message = authorize(token)
+    if not status:
+        response_object['message'] = message
+        return jsonify(response_object)
+
+    post = PhotoPost.query.filter_by(id=post_id).first()
+    if not post:
+        response_object['message'] = "Error: Post does not exist!"
+    else:
+        response_object['status'] = True
+        response_object['message'] = "Query success!"
+        item = {}
+        item['post_id'] = post.id
+        item['user_id'] = post.user_id
+        item['username'] = query_username_by_id(post.user_id)
+        item['caption'] = post.caption
+        item['media'] = json.loads(post.media)
+        item['like'] = post.like
+        item['date_created'] = post.date_created
+        response_object['content'] = item
     return jsonify(response_object)

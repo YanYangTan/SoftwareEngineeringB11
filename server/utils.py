@@ -3,7 +3,20 @@ import re
 from datetime import datetime, timedelta
 from . import scheduler
 from .models import *
-import random, string
+import random, string, jwt
+
+
+def authorize(token):
+    config = configparser.RawConfigParser()
+    config.read('config.cfg')
+    db_dict = dict(config.items('DATABASE'))
+    secret = db_dict['secret_key']
+
+    try:
+        data = jwt.decode(token, secret, algorithms=["HS256"])
+        return True, "Authorized!"
+    except Exception as e:
+        return False, "Error: Unauthorized!"
 
 
 def encrypt_password(pw):
@@ -46,9 +59,11 @@ def checkregister(content):
     return "ok", True
 
 
-def check_groupname(name):
+def check_len45(name):
     flag = True
-    if len(name) == 0 or len(name) > 45:
+    if not name:
+        flag = False
+    elif len(name) == 0 or len(name) > 45:
         flag = False
     return flag
 
@@ -67,6 +82,15 @@ def generate_new_key():
         if not res:
             break
     return rand_key
+
+
+def check_len100(desc):
+    flag = True
+    if not desc:
+        flag = False
+    elif len(desc) == 0 or len(desc) > 100:
+        flag = False
+    return flag
 
 
 def update_suggestion():
@@ -345,4 +369,6 @@ def update_calendar(user_id, group_id):
         print("User calendar updated!")
     except Exception as e:
         print(e)
+
+
 
