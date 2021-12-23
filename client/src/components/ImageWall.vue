@@ -221,7 +221,7 @@ export default {
         {
           headers: {
             // headers: { tokens: sessionStorage.getItem('token') },
-            headers: { tokens: localStorage.getItem('token') },
+            tokens: localStorage.getItem('token'),
             'Content-Type': 'multipart/form-data',
           },
           // eslint-disable-next-line prefer-arrow-callback
