@@ -36,8 +36,8 @@ def create_gathering():
         response_object['message'] = "Error: No token!"
         return jsonify(response_object)
 
-    status, message = authorize(token)
-    if not status:
+    token_status, message = authorize(token)
+    if not token_status:
         response_object['message'] = message
         return jsonify(response_object)
 
