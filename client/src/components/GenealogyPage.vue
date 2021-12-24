@@ -10,7 +10,7 @@
       <i style="margin-left: 50px;margin-top: 30px;margin-bottom: 30px" class="el-icon-loading" v-if="loading"></i>
       <span  v-if="loading" >加载中....</span>
 
-      <el-button @click="outputUsedtable">test</el-button>
+<!--      <el-button @click="outputUsedtable">test</el-button>-->
 <!--    <div class="text-center">-->
 <!--&lt;!&ndash;      <h1 class="title">家谱</h1>&ndash;&gt;-->
 <!--    </div>-->
