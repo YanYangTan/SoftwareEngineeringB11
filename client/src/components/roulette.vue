@@ -104,7 +104,7 @@ export default {
         for (let i = 0; i < this.locationNames.length; i += 1) {
           angle = i * arc;
           ctx.fillStyle = colors[i % 3];
-          if (i === this.locationNames.length - 1 && i % 3 === 0) ctx.fillStyle = '#abcdef';
+          if (i === this.locationNames.length - 1 && i % 3 === 0) ctx.fillStyle = '#d5e8ff';
 
           ctx.beginPath();
           ctx.arc(252, 252, 250, angle, angle + arc, false);
