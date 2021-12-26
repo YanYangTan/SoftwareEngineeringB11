@@ -105,6 +105,7 @@ export default {
           angle = i * arc;
           ctx.fillStyle = colors[i % 3];
           if (i === this.locationNames.length - 1 && i % 3 === 0) ctx.fillStyle = '#d5e8ff';
+          if (i === 1) ctx.fillStyle = '#abcdef';
 
           ctx.beginPath();
           ctx.arc(252, 252, 250, angle, angle + arc, false);
